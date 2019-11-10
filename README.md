@@ -64,18 +64,18 @@ sudo port install cmake.
 ```
 
 ### Cloning the Assignment Repository
-Before you can clone your private assignment repository, you need to have an active [Github](https://github.com/) account. You can then create your own private repository or join and existing one by following the link we sent you via moodle. The name of the repository will always have the form "computergraphics2018-'Team_name'", where 'Team_name' is replace by the name you chose.
+Before you can clone your private assignment repository, you need to have an active [Github](https://github.com/) account. You can then create your own private repository or join and existing one by following the link we sent you via moodle. The name of the repository will always have the form "mesh-viewer-'Your_Team_Name'", where 'Your_Team_Name' is replace by the name you chose.
 
 Next, you will need to clone it to your computer, either by using SourceTree, or by typing the following in command line.
 ```
-git clone --recursive https://github.com/HaifaGraphics/computergraphics2018-'Team_Name'.git
+git clone --recursive https://github.com/ComputerGraphics2020/mesh-viewer-'Your_Team_Name'.git
 ```
 This can take several minutes.
 
 Next, go into the newly created folder, and add the base assignment repository as a remote (pay attention to capital letters):
 ```
-cd computergraphics2018-'Team_Name'
-git remote add base https://github.com/HaifaGraphics/ComputerGraphics2018.git
+cd mesh-viewer-'Team_Name'
+git remote add base https://github.com/HaifaGraphics/computer-graphics-winter-2020.git
 ```
 
 Note: You only have to do this once. This will allow you to recieve updates to the repository from us.
@@ -90,7 +90,7 @@ git push
 **Never push large files to the remote repository! You should almost always only push code. Never push executables or build data**
 
 Please refer to the git book for an explanation on the differences between those steps.
-You should be able to see your name online on your private repository: https://github.com/HaifaGraphics/computergraphics2018-'Your_Team_Name'.git
+You should be able to see your name online on your private repository: https://github.com/ComputerGraphics2020/mesh-viewer-'Your_Team_Name'.git
 
 ### Building the code
 Use the CMAKE gui as explained in class to create a visual studio solution, or use your compiler/IDE of choice. For a better workflow, we recommend placing a build/ folder inside your code folder, where all the build information will be generates.
