@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
-
 #include "Renderer.h"
 #include "InitShader.h"
 
