@@ -1,10 +1,10 @@
 # Computer Graphics 203.3710, Winter 2020
 ## Students Team data
 
-Name: 'Your real name'  
-Student Number: 'Your student number'
+Name: Tom Goldman
+Student Number: 204380836
 
-Name: 'Your real name'  
+Name: Tal Bogen
 Student Number: 'Your student number'
 
 ### Lecturer
