@@ -13,12 +13,15 @@ Renderer::Renderer(int viewport_width, int viewport_height) :
 {
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
+
+	DrawLine(glm::vec2(0 , 0), glm::vec2(1000 , 1000), glm::vec3(0,0,0));
 }
 
 Renderer::~Renderer()
 {
 	delete[] color_buffer_;
 }
+
 
 void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 {
@@ -34,7 +37,29 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 {
 	// TODO: Implement bresenham algorithm
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+		glm::vec3 greenColor = glm::vec3(0, 1, 0);
+		for (int i = 0; i <= 1000; ++i) {
+			PutPixel(i, i, greenColor);
+		}
+		int x = p1.x;
+		int y = p1.y;
+		int deltaX = p2.x - p1.x;
+		int deltaY = p2.y - p1.y;
+		int e = -deltaX;
+		while (x <= p2.x)
+		{
+			if (e > 0)
+			{
+				y = y + 1;
+				e = e - 2 * (deltaX);
+			}
+			PutPixel(x, y, greenColor);
+			x = x + 1;
+			e = e + 2 * (deltaY);
+		}
+
 }
+
 
 void Renderer::CreateBuffers(int w, int h)
 {

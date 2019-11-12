@@ -42,6 +42,9 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 
 int main(int argc, char **argv)
 {
+	glm::vec2 test1 = glm::vec2(0 , 0);
+	glm::vec2 test2 = glm::vec2(1200 , 1200);
+	glm::vec3 test3 = glm::vec3(0.5, 1, 0);
 	int windowWidth = 1280, windowHeight = 720;
 	GLFWwindow* window = SetupGlfwWindow(windowWidth, windowHeight, "Mesh Viewer");
 	if (!window)
@@ -52,18 +55,21 @@ int main(int argc, char **argv)
 	glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
 
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
+	renderer.DrawLine(test1, test2, test3);
 	Scene scene = Scene();
-	
 	ImGuiIO& io = SetupDearImgui(window);
 	glfwSetScrollCallback(window, ScrollCallback);
+	renderer.DrawLine(test1, test2, test3);
     while (!glfwWindowShouldClose(window))
     {
+		
         glfwPollEvents();
 		StartFrame();
 		DrawImguiMenus(io, scene);
 		RenderFrame(window, scene, renderer, io);
+		renderer.DrawLine(test1, test2, test3);
     }
-
+	renderer.DrawLine(test1, test2, test3);
 	Cleanup(window);
     return 0;
 }
