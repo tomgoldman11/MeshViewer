@@ -14,7 +14,7 @@ Renderer::Renderer(int viewport_width, int viewport_height) :
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
 
-	DrawLine(glm::vec2(0 , 0), glm::vec2(1000 , 1000), glm::vec3(0,0,0));
+	DrawLine(glm::vec2(0, 0), glm::vec2(1000, 1000), glm::vec3(0, 0, 0));
 }
 
 Renderer::~Renderer()
@@ -27,7 +27,7 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 {
 	if (i < 0) return; if (i >= viewport_width_) return;
 	if (j < 0) return; if (j >= viewport_height_) return;
-	
+
 	color_buffer_[INDEX(viewport_width_, i, j, 0)] = color.x;
 	color_buffer_[INDEX(viewport_width_, i, j, 1)] = color.y;
 	color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
@@ -37,10 +37,7 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 {
 	// TODO: Implement bresenham algorithm
 	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-		glm::vec3 greenColor = glm::vec3(0, 1, 0);
-		for (int i = 0; i <= 1000; ++i) {
-			PutPixel(i, i, greenColor);
-		}
+/*		glm::vec3 greenColor = glm::vec3(0, 1, 0);
 		int x = p1.x;
 		int y = p1.y;
 		int deltaX = p2.x - p1.x;
@@ -56,8 +53,89 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 			PutPixel(x, y, greenColor);
 			x = x + 1;
 			e = e + 2 * (deltaY);
+		}*/
+	int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
+	float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+	dx = x2 - x1;
+	dy = y2 - y1;
+	dx1 = fabs(dx);
+	dy1 = fabs(dy);
+	px = 2 * dy1 - dx1;
+	py = 2 * dx1 - dy1;
+	if (dy1 <= dx1)
+	{
+		if (dx >= 0)
+		{
+			x = x1;
+			y = y1;
+			xe = x2;
 		}
-
+		else
+		{
+			x = x2;
+			y = y2;
+			xe = x1;
+		}
+		PutPixel(x, y, color);
+		for (i = 0; x < xe; i++)
+		{
+			x = x + 1;
+			if (px < 0)
+			{
+				px = px + 2 * dy1;
+			}
+			else
+			{
+				if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0))
+				{
+					y = y + 1;
+				}
+				else
+				{
+					y = y - 1;
+				}
+				px = px + 2 * (dy1 - dx1);
+			}
+			PutPixel(x, y, color);
+		}
+	}
+	else
+	{
+		if (dy >= 0)
+		{
+			x = x1;
+			y = y1;
+			ye = y2;
+		}
+		else
+		{
+			x = x2;
+			y = y2;
+			ye = y1;
+		}
+		PutPixel(x, y, color);
+		for (i = 0; y < ye; i++)
+		{
+			y = y + 1;
+			if (py <= 0)
+			{
+				py = py + 2 * dx1;
+			}
+			else
+			{
+				if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0))
+				{
+					x = x + 1;
+				}
+				else
+				{
+					x = x - 1;
+				}
+				py = py + 2 * (dx1 - dy1);
+			}
+			PutPixel(x, y, color);
+		}
+	}
 }
 
 
@@ -96,7 +174,7 @@ void Renderer::InitOpenGLRendering()
 	//	     | \ | <--- The exture is drawn over two triangles that stretch over the screen.
 	//	     |__\|
 	// (-1,-1)    (1,-1)
-	const GLfloat vtc[]={
+	const GLfloat vtc[] = {
 		-1, -1,
 		 1, -1,
 		-1,  1,
@@ -105,19 +183,19 @@ void Renderer::InitOpenGLRendering()
 		 1,  1
 	};
 
-	const GLfloat tex[]={
+	const GLfloat tex[] = {
 		0,0,
 		1,0,
 		0,1,
 		0,1,
 		1,0,
-		1,1};
+		1,1 };
 
 	// Makes this buffer the current one.
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
 	// This is the opengl way for doing malloc on the gpu. 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vtc)+sizeof(tex), NULL, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vtc) + sizeof(tex), NULL, GL_STATIC_DRAW);
 
 	// memcopy vtc to buffer[0,sizeof(vtc)-1]
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vtc), vtc);
@@ -126,25 +204,25 @@ void Renderer::InitOpenGLRendering()
 	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vtc), sizeof(tex), tex);
 
 	// Loads and compiles a sheder.
-	GLuint program = InitShader( "vshader.glsl", "fshader.glsl" );
+	GLuint program = InitShader("vshader.glsl", "fshader.glsl");
 
 	// Make this program the current one.
 	glUseProgram(program);
 
 	// Tells the shader where to look for the vertex position data, and the data dimensions.
-	GLint  vPosition = glGetAttribLocation( program, "vPosition" );
-	glEnableVertexAttribArray( vPosition );
-	glVertexAttribPointer( vPosition,2,GL_FLOAT,GL_FALSE,0,0 );
+	GLint  vPosition = glGetAttribLocation(program, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	glVertexAttribPointer(vPosition, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	// Same for texture coordinates data.
-	GLint  vTexCoord = glGetAttribLocation( program, "vTexCoord" );
-	glEnableVertexAttribArray( vTexCoord );
-	glVertexAttribPointer( vTexCoord,2,GL_FLOAT,GL_FALSE,0,(GLvoid *)sizeof(vtc) );
+	GLint  vTexCoord = glGetAttribLocation(program, "vTexCoord");
+	glEnableVertexAttribArray(vTexCoord);
+	glVertexAttribPointer(vTexCoord, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid *)sizeof(vtc));
 
 	//glProgramUniform1i( program, glGetUniformLocation(program, "texture"), 0 );
 
 	// Tells the shader to use GL_TEXTURE0 as the texture id.
-	glUniform1i(glGetUniformLocation(program, "texture"),0);
+	glUniform1i(glGetUniformLocation(program, "texture"), 0);
 }
 
 void Renderer::CreateOpenGLBuffer()
@@ -198,8 +276,8 @@ void Renderer::Render(const Scene& scene)
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
-	
-	for(int i = 0; i < viewport_width_; i++)
+
+	/*for(int i = 0; i < viewport_width_; i++)
 	{
 		for (int j = half_height - thickness; j < half_height + thickness; j++)
 		{
@@ -214,6 +292,21 @@ void Renderer::Render(const Scene& scene)
 			PutPixel(j, i, glm::vec3(1, 0, 1));
 		}
 	}
+	*/
+	/*for (int i = half_width; i < viewport_width_; i++)
+	{
+		for (int j = half_height - thickness; j < half_height + thickness; j++)
+		{
+			PutPixel(i, j, glm::vec3(1, 1, 0));
+		}
+	}*/
+	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_, half_height), glm::vec3(1, 1, 0));
+	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_, viewport_height_), glm::vec3(1, 1, 0));
+	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * 3 / 4, viewport_height_ * 2 / 3), glm::vec3(1, 0, 0));
+	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * 3 / 4, viewport_height_*(-2) / 3), glm::vec3(0, 1, 0));
+	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * (-3) / 4, viewport_height_*(-2) / 3), glm::vec3(1, 1, 1));
+	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * (-3) / 4, viewport_height_ * 2 / 3), glm::vec3(0, 1, 1));
+
 }
 
 int Renderer::GetViewportWidth() const
