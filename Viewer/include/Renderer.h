@@ -11,6 +11,7 @@ public:
 	void Render(const Scene& scene);
 	void SwapBuffers();
 	void ClearColorBuffer(const glm::vec3& color);
+	void DrawAsterisk();
 	int GetViewportWidth() const;
 	int GetViewportHeight() const;
 	void DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);

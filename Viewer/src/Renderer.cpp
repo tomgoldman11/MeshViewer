@@ -23,7 +23,7 @@ Renderer::~Renderer()
 }
 
 
-void Renderer::PutPixel(int i, int j, const glm::vec3& color) // highlight a pixel
+void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 {
 	if (i < 0) return; if (i >= viewport_width_) return;
 	if (j < 0) return; if (j >= viewport_height_) return;
@@ -258,36 +258,32 @@ void Renderer::Render(const Scene& scene)
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
 
-	/*for(int i = 0; i < viewport_width_; i++)
-	{
-		for (int j = half_height - thickness; j < half_height + thickness; j++)
-		{
-			PutPixel(i, j, glm::vec3(1, 1, 0));
-		}
-	}
+	DrawAsterisk();
 
-	for (int i = 0; i < viewport_height_; i++)
-	{
-		for (int j = half_width - thickness; j < half_width + thickness; j++)
-		{
-			PutPixel(j, i, glm::vec3(1, 0, 1));
-		}
-	}
-	*/
-	/*for (int i = half_width; i < viewport_width_; i++)
-	{
-		for (int j = half_height - thickness; j < half_height + thickness; j++)
-		{
-			PutPixel(i, j, glm::vec3(1, 1, 0));
-		}
-	}*/
-	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_, half_height), glm::vec3(1, 1, 0));
-	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_, viewport_height_), glm::vec3(1, 1, 0));
-	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * 3 / 4, viewport_height_ * 2 / 3), glm::vec3(1, 0, 0));
-	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * 3 / 4, viewport_height_*(-2) / 3), glm::vec3(0, 1, 0));
-	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * (-3) / 4, viewport_height_*(-2) / 3), glm::vec3(1, 1, 1));
-	DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewport_width_ * (-3) / 4, viewport_height_ * 2 / 3), glm::vec3(0, 1, 1));
+}
 
+void Renderer::DrawAsterisk() // testing function for DrawLine
+{
+	DrawLine(glm::ivec2({ 350,350 }), glm::ivec2({ 350,50 }), glm::vec3(0, 1, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 200,50 }), glm::vec3(1, 0, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 250,50 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 350,50 }), glm::vec3(1, 1, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 350,150 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 350,200 }), glm::vec3(1, 0, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 350,250 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 350,350 }), glm::vec3(1, 1, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 250,350 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 200,350 }), glm::vec3(1, 0, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 150,350 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 50,350 }), glm::vec3(1, 1, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 50,250 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 50,200 }), glm::vec3(1, 0, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 50,150 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 50,50 }), glm::vec3(1, 1, 0));
+	DrawLine(glm::ivec2({ 200,200 }), glm::ivec2({ 150,50 }), glm::vec3(0, 0, 1));
+	DrawLine(glm::ivec2({ 50,350 }), glm::ivec2({ 350,350 }), glm::vec3(0, 1, 1));
+	DrawLine(glm::ivec2({ 50,50 }), glm::ivec2({ 350,50 }), glm::vec3(0, 1, 1));
+	DrawLine(glm::ivec2({ 50,350 }), glm::ivec2({ 50,50 }), glm::vec3(0, 1, 1));
 }
 
 int Renderer::GetViewportWidth() const
