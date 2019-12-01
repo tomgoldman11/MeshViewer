@@ -23,7 +23,7 @@ Renderer::~Renderer()
 }
 
 
-void Renderer::PutPixel(int i, int j, const glm::vec3& color)
+void Renderer::PutPixel(int i, int j, const glm::vec3& color) // highlight a pixel
 {
 	if (i < 0) return; if (i >= viewport_width_) return;
 	if (j < 0) return; if (j >= viewport_height_) return;
