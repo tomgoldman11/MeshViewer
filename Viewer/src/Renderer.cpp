@@ -35,25 +35,6 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
-	// TODO: Implement bresenham algorithm
-	// https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-/*		glm::vec3 greenColor = glm::vec3(0, 1, 0);
-		int x = p1.x;
-		int y = p1.y;
-		int deltaX = p2.x - p1.x;
-		int deltaY = p2.y - p1.y;
-		int e = -deltaX;
-		while (x <= p2.x)
-		{
-			if (e > 0)
-			{
-				y = y + 1;
-				e = e - 2 * (deltaX);
-			}
-			PutPixel(x, y, greenColor);
-			x = x + 1;
-			e = e + 2 * (deltaY);
-		}*/
 	int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
 	float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
 	dx = x2 - x1;
