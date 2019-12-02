@@ -11,6 +11,8 @@ public:
 	int GetNormalIndex(int index) const;
 	int GetTextureIndex(int index) const;
 
+	int getVerticesCount() const;
+
 private:
 	std::vector<int> vertex_indices_;
 	std::vector<int> normal_indices_;

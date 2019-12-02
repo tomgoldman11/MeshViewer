@@ -258,7 +258,28 @@ void Renderer::Render(const Scene& scene)
 	int half_height = viewport_height_ / 2;
 	int thickness = 15;
 
-	DrawAsterisk();
+
+	//auto& activeCamera = scene.GetActiveCamera();
+
+	//const glm::mat4x4& cameraViewMatrix = activeCamera.GetViewTransformation();
+
+	for (int i = 0; i < scene.GetModelCount(); i++) {
+		MeshModel mesh = scene.GetModel(i);
+		std::vector<glm::vec3>& vertices = mesh.getVertices();
+
+		for (int j = 0; j < mesh.GetFacesCount(); j++) {
+			Face currFace = mesh.GetFace(j);
+			if (currFace.getVerticesCount() == 3) {
+				DrawLine(vertices[currFace.GetVertexIndex(0) - 1], vertices[currFace.GetVertexIndex(1) - 1], glm::vec3(0, 0, 0));
+				DrawLine(vertices[currFace.GetVertexIndex(1) - 1], vertices[currFace.GetVertexIndex(2) - 1], glm::vec3(0, 0, 0));
+				DrawLine(vertices[currFace.GetVertexIndex(2) - 1], vertices[currFace.GetVertexIndex(0) - 1], glm::vec3(0, 0, 0));
+			}
+		}
+	}
+
+
+
+	//DrawAsterisk();
 
 }
 

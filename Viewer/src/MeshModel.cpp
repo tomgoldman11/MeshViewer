@@ -17,6 +17,11 @@ const Face& MeshModel::GetFace(int index) const
 	return faces_[index];
 }
 
+std::vector<glm::vec3> MeshModel::getVertices() const
+{
+	return vertices_;
+}
+
 int MeshModel::GetFacesCount() const
 {
 	return faces_.size();
