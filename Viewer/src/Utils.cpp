@@ -6,7 +6,19 @@
 
 #include "Utils.h"
 
-glm::vec3 Utils::Vec3fFromStream(std::istream& issLine)
+glm::vec4 Utils::Vec4FromVec3(const glm::vec3& vector3) 
+{
+	glm::vec4 vector4;
+	vector4.x = vector3.x;
+	vector4.y = vector3.y;
+	vector4.z = vector3.z;
+	vector4.w = 0;
+	
+	return vector4;
+
+}
+
+ glm::vec3 Utils::Vec3fFromStream(std::istream& issLine)
 {
 	float x, y, z;
 	issLine >> x >> std::ws >> y >> std::ws >> z;

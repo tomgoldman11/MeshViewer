@@ -4,7 +4,7 @@
 class Camera
 {
 public:
-	Camera();
+	Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up);
 	virtual ~Camera();
 
 	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);

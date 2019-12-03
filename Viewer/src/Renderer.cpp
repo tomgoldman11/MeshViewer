@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "Renderer.h"
 #include "InitShader.h"
+#include "Utils.h"
 
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
@@ -259,24 +260,45 @@ void Renderer::Render(const Scene& scene)
 	int thickness = 15;
 
 
-	//auto& activeCamera = scene.GetActiveCamera();
+	auto& activeCamera = scene.GetActiveCamera();
 
-	//const glm::mat4x4& cameraViewMatrix = activeCamera.GetViewTransformation();
+	const glm::mat4x4& cameraViewMatrix = activeCamera.GetViewTransformation();
 
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
+		//get the M matrix (world frame) related to the mesh model
+		glm::mat4x4 M(1);
+		//get the vertices
 		std::vector<glm::vec3>& vertices = mesh.getVertices();
-
+		//set a 4X4 transform matrix for the faces T = C^(-1)*M
+		glm::mat4x4 T = cameraViewMatrix * M;
+		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
+			glm::vec3 vec1 = vertices[currFace.GetVertexIndex(0) - 1];
+			glm::vec3 vec2 = vertices[currFace.GetVertexIndex(1) - 1];
+			glm::vec3 vec3 = vertices[currFace.GetVertexIndex(2) - 1];
+		// change the 3d vectors to 4d vectors 
+			glm::vec4 vec14 = Utils::Vec4FromVec3(vec1);
+			glm::vec4 vec24 = Utils::Vec4FromVec3(vec2);
+			glm::vec4 vec34 = Utils::Vec4FromVec3(vec3);	
+		// multiple each 4d vector by the transform matrix
+			vec14 = T * vec14;
+			vec24 = T * vec24;
+			vec34 = T * vec34;
+		// divide each 4d vector by w component
+		/*	vec14 = vec14 / vec14.w;
+			vec24 = vec24 / vec24.w;
+			vec34 = vec34 / vec34.w;*/
+
+			// draw the triangle
 			if (currFace.getVerticesCount() == 3) {
-				DrawLine(vertices[currFace.GetVertexIndex(0) - 1], vertices[currFace.GetVertexIndex(1) - 1], glm::vec3(0, 0, 0));
-				DrawLine(vertices[currFace.GetVertexIndex(1) - 1], vertices[currFace.GetVertexIndex(2) - 1], glm::vec3(0, 0, 0));
-				DrawLine(vertices[currFace.GetVertexIndex(2) - 1], vertices[currFace.GetVertexIndex(0) - 1], glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec14.x, vec14.y), glm::vec2(vec24.x, vec24.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec24.x, vec24.y), glm::vec2(vec34.x, vec34.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec34.x, vec34.y), glm::vec2(vec14.x, vec14.y), glm::vec3(0, 0, 0));
 			}
 		}
 	}
-
 
 
 	//DrawAsterisk();
