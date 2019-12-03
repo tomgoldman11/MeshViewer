@@ -179,7 +179,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
 	/**
 	 * MeshViewer menu
-	 ****
+	 *****
 	 */
 	ImGui::Begin("MeshViewer Menu");
 	
