@@ -42,35 +42,36 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 
 int main(int argc, char **argv)
 {
-	glm::vec2 test1 = glm::vec2(0 , 0);
-	glm::vec2 test2 = glm::vec2(1200 , 1200);
-	glm::vec3 test3 = glm::vec3(0.5, 1, 0);
 	int windowWidth = 1280, windowHeight = 720;
+	// creating window
 	GLFWwindow* window = SetupGlfwWindow(windowWidth, windowHeight, "Mesh Viewer");
 	if (!window)
 		return 1;
-
+	// get current frame width&height from buffer
 	int frameBufferWidth, frameBufferHeight;
 	glfwMakeContextCurrent(window);
 	glfwGetFramebufferSize(window, &frameBufferWidth, &frameBufferHeight);
-
+	// creates rederer and scene
 	Renderer renderer = Renderer(frameBufferWidth, frameBufferHeight);
-	renderer.DrawLine(test1, test2, test3);
 	Scene scene = Scene();
+	// setting up ImGui
 	ImGuiIO& io = SetupDearImgui(window);
+	// handles scroll-wheel
 	glfwSetScrollCallback(window, ScrollCallback);
-	renderer.DrawLine(test1, test2, test3);
+	// adding camera to scene
+	scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ 3,3,-3 }, glm::vec3{ -3,-3,0 }, glm::vec3{ 0,1,0 }));
+	scene.SetActiveCameraIndex(0);
+	// main Loop
     while (!glfwWindowShouldClose(window))
     {
-		scene.AddCamera((std::shared_ptr<Camera>) &Camera (glm::vec3{ 3,3,-3 }, glm::vec3{ -3,-3,0 }, glm::vec3{ 0,1,0 }));
-		scene.SetActiveCameraIndex(0);
         glfwPollEvents();
 		StartFrame();
+
 		DrawImguiMenus(io, scene);
+		// renders next frame
 		RenderFrame(window, scene, renderer, io);
-		renderer.DrawLine(test1, test2, test3);
     }
-	renderer.DrawLine(test1, test2, test3);
+	// done using program
 	Cleanup(window);
     return 0;
 }
@@ -123,6 +124,7 @@ void StartFrame()
 
 void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& io)
 {
+	// renders menus
 	ImGui::Render();
 	int frameBufferWidth, frameBufferHeight;
 	glfwMakeContextCurrent(window);
@@ -151,9 +153,11 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 			// Left mouse button is down
 		}
 	}
-
+	// clears frame buffer
 	renderer.ClearColorBuffer(clear_color);
+	// Renders Scene
 	renderer.Render(scene);
+	// swap buffers
 	renderer.SwapBuffers();
 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -226,7 +230,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		static float f = 0.0f;
 		static int counter = 0;
 
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+		ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
 
 		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
 		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
