@@ -260,14 +260,14 @@ void Renderer::Render(const Scene& scene)
 	int thickness = 15;
 
 
-	auto& activeCamera = scene.GetActiveCamera();
+	auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
-	const glm::mat4x4& cameraViewMatrix = activeCamera.GetViewTransformation();
+	const glm::mat4x4& cameraViewMatrix = activeCamera.GetViewTransformation(); 
 
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
 		//get the M matrix (world frame) related to the mesh model
-		glm::mat4x4 M(1);
+		glm::mat4x4 M = mesh.getWorldTransformation();
 		//get the vertices
 		std::vector<glm::vec3>& vertices = mesh.getVertices();
 		//set a 4X4 transform matrix for the faces T = C^(-1)*M
@@ -299,7 +299,6 @@ void Renderer::Render(const Scene& scene)
 			}
 		}
 	}
-
 
 	//DrawAsterisk();
 

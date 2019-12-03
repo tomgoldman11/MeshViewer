@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 	renderer.DrawLine(test1, test2, test3);
     while (!glfwWindowShouldClose(window))
     {
-		scene.AddCamera((std::shared_ptr<Camera>) &Camera (glm::vec3{ -10,10,10 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
+		scene.AddCamera((std::shared_ptr<Camera>) &Camera (glm::vec3{ 3,3,-3 }, glm::vec3{ -3,-3,0 }, glm::vec3{ 0,1,0 }));
 		scene.SetActiveCameraIndex(0);
         glfwPollEvents();
 		StartFrame();

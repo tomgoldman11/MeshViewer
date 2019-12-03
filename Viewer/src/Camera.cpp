@@ -21,7 +21,7 @@ void Camera::SetCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const 
 		{1,0,0,0},
 		{0,1,0,0},
 		{0,0,1,0},
-		{-eye.x,-eye.y,-eye.z,1} };
+		{eye.x,eye.y,eye.z,1} }; // - or not
 
 	view_transformation_ = eyeTranslate * R;
 	//glm::mat4x4 viewMatrix(1);
