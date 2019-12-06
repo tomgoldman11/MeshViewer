@@ -260,14 +260,15 @@ void Renderer::Render(const Scene& scene)
 	//int thickness = 15;
 
 
-	auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
+	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
 	const glm::mat4x4 viewMatrix = activeCamera.GetViewTransformation();
-	const glm::mat4x4 MMMMMMM = glm::mat4x4(
-		{1,0,0,0},
-		{ 0,1,0,0 },
-		{ 0,0,1,0 },
-		{ 500,500,0,1 }
+    const glm::mat4x4 projectionMatrix = activeCamera.GetProjectionTransformation();
+	const glm::mat4x4 MMM = glm::mat4x4(
+		{500,0,0,0},
+		{ 0,500,0,0 },
+		{ 0,0,500,0 },
+		{ half_width,half_height,0,1 }
 	);
 	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[0].x, viewMatrix[0].y), glm::vec3(1, 0, 0));
 	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[1].x, viewMatrix[1].y), glm::vec3(0, 1, 0));
@@ -277,11 +278,12 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
 		//get the M matrix (world frame) related to the mesh model
-		glm::mat4x4 M = mesh.getWorldTransformation();
+		glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
+		
 		//get the vertices
 		std::vector<glm::vec3>& vertices = mesh.getVertices();
-		//set a 4X4 transform matrix for the faces T = C^(-1)*M
-		glm::mat4x4 T = MMMMMMM * viewMatrix * M;
+		//set a 4X4 transform matrix for the faces T = P*V*M
+		glm::mat4x4 transformationMatrix = MMM*projectionMatrix * viewMatrix * modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -293,19 +295,19 @@ void Renderer::Render(const Scene& scene)
 			glm::vec4 vec24 = Utils::Vec4FromVec3(vec2);
 			glm::vec4 vec34 = Utils::Vec4FromVec3(vec3);	
 		// multiple each 4d vector by the transform matrix
-			vec14 = T * vec14;
-			vec24 = T * vec24;
-			vec34 = T * vec34;
+			vec14 = transformationMatrix * vec14;
+			vec24 = transformationMatrix * vec24;
+			vec34 = transformationMatrix * vec34;
 		// divide each 4d vector by w component
-			//vec14 = vec14 / vec14.w;
-			//vec24 = vec24 / vec24.w;
-			//vec34 = vec34 / vec34.w;
+			vec14 = vec14 / vec14.w;
+			vec24 = vec24 / vec24.w;
+			vec34 = vec34 / vec34.w;
 
 			// draw the triangle
 			if (currFace.getVerticesCount() == 3) {
-				DrawLine(glm::vec2(vec14.x, vec14.y), glm::vec2(vec24.x, vec24.y), glm::vec3(0, 0, 0));
-				DrawLine(glm::vec2(vec24.x, vec24.y), glm::vec2(vec34.x, vec34.y), glm::vec3(0, 0, 0));
-				DrawLine(glm::vec2(vec34.x, vec34.y), glm::vec2(vec14.x, vec14.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec14.x, vec14.y), glm::vec2(vec24.x,  vec24.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec24.x, vec24.y), glm::vec2( vec34.x,  vec34.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec34.x, vec34.y), glm::vec2( vec14.x,  vec14.y), glm::vec3(0, 0, 0));
 			}
 		}
 	}
