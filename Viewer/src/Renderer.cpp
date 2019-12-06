@@ -257,13 +257,23 @@ void Renderer::Render(const Scene& scene)
 	// TODO: Replace this code with real scene rendering code
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
-	int thickness = 15;
+	//int thickness = 15;
 
 
 	auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
-	const glm::mat4x4& cameraViewMatrix = activeCamera.GetViewTransformation(); 
-
+	const glm::mat4x4 viewMatrix = activeCamera.GetViewTransformation();
+	const glm::mat4x4 MMMMMMM = glm::mat4x4(
+		{1,0,0,0},
+		{ 0,1,0,0 },
+		{ 0,0,1,0 },
+		{ 500,500,0,1 }
+	);
+	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[0].x, viewMatrix[0].y), glm::vec3(1, 0, 0));
+	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[1].x, viewMatrix[1].y), glm::vec3(0, 1, 0));
+	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[2].x, viewMatrix[2].y), glm::vec3(0, 0, 1));
+	//return;
+	
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
 		//get the M matrix (world frame) related to the mesh model
@@ -271,7 +281,7 @@ void Renderer::Render(const Scene& scene)
 		//get the vertices
 		std::vector<glm::vec3>& vertices = mesh.getVertices();
 		//set a 4X4 transform matrix for the faces T = C^(-1)*M
-		glm::mat4x4 T = cameraViewMatrix * M;
+		glm::mat4x4 T = MMMMMMM * viewMatrix * M;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -287,9 +297,9 @@ void Renderer::Render(const Scene& scene)
 			vec24 = T * vec24;
 			vec34 = T * vec34;
 		// divide each 4d vector by w component
-		/*	vec14 = vec14 / vec14.w;
-			vec24 = vec24 / vec24.w;
-			vec34 = vec34 / vec34.w;*/
+			//vec14 = vec14 / vec14.w;
+			//vec24 = vec24 / vec24.w;
+			//vec34 = vec34 / vec34.w;
 
 			// draw the triangle
 			if (currFace.getVerticesCount() == 3) {
@@ -337,3 +347,4 @@ int Renderer::GetViewportHeight() const
 {
 	return viewport_height_;
 }
+

@@ -59,12 +59,14 @@ int main(int argc, char **argv)
 	// handles scroll-wheel
 	glfwSetScrollCallback(window, ScrollCallback);
 	// adding camera to scene
-	scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ 3,3,-3 }, glm::vec3{ -3,-3,0 }, glm::vec3{ 0,1,0 }));
+	scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ 0,0,1 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
 	scene.SetActiveCameraIndex(0);
+
 	// main Loop
-    while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window))
     {
-        glfwPollEvents();
+
+		glfwPollEvents();
 		StartFrame();
 
 		DrawImguiMenus(io, scene);

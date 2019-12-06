@@ -263,7 +263,7 @@ void ImGui_ImplGlfw_NewFrame()
         #define MAP_ANALOG(NAV_NO, AXIS_NO, V0, V1) { float v = (axes_count > AXIS_NO) ? axes[AXIS_NO] : V0; v = (v - V0) / (V1 - V0); if (v > 1.0f) v = 1.0f; if (io.NavInputs[NAV_NO] < v) io.NavInputs[NAV_NO] = v; }
         int axes_count = 0, buttons_count = 0;
         const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axes_count);
-        const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttons_count);
+		const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttons_count);
         MAP_BUTTON(ImGuiNavInput_Activate,   0);     // Cross / A
         MAP_BUTTON(ImGuiNavInput_Cancel,     1);     // Circle / B
         MAP_BUTTON(ImGuiNavInput_Menu,       2);     // Square / X

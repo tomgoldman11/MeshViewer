@@ -12,7 +12,7 @@ glm::vec4 Utils::Vec4FromVec3(const glm::vec3& vector3)
 	vector4.x = vector3.x;
 	vector4.y = vector3.y;
 	vector4.z = vector3.z;
-	vector4.w = 0;
+	vector4.w = 1;
 	
 	return vector4;
 

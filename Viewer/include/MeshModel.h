@@ -12,7 +12,11 @@ public:
 	std::vector<glm::vec3> getVertices() const;
 	int GetFacesCount() const;
 	const std::string& GetModelName() const;
-	const glm::mat4x4& getWorldTransformation();
+	const glm::mat4x4 getWorldTransformation();
+
+	void setScale(float newScale);
+
+	void setRotate(glm::vec3 rotateVector);
 	
 
 private:
