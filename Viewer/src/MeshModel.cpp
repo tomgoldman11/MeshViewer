@@ -6,7 +6,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	normals_(normals),
 	model_name_(model_name),
 	translateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
-	scaleVector(glm::vec3(500.0f, 500.0f, 500.0f)),
+	scaleVector(glm::vec3(50.0f, 50.0f, 50.0f)),
 	rotateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
 	buttom(0),
 	top(0),

@@ -265,9 +265,9 @@ void Renderer::Render(const Scene& scene)
 	const glm::mat4x4 viewMatrix = activeCamera.getViewTransformation();
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
-		{50,0,0,0},
-		{ 0,50,0,0 },
-		{ 0,0,50,0 },
+		{1,0,0,0},
+		{ 0,1,0,0 },
+		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
 	);
 	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[0].x, viewMatrix[0].y), glm::vec3(1, 0, 0));
@@ -285,7 +285,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
 		
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		glm::mat4x4 transformationMatrix = MMM * projectionMatrix * viewMatrix * modelMatrix;
+		glm::mat4x4 transformationMatrix = MMM * modelMatrix * viewMatrix * projectionMatrix  ;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -300,7 +300,7 @@ void Renderer::Render(const Scene& scene)
 			vec14 = transformationMatrix * vec14;
 			vec24 = transformationMatrix * vec24;
 			vec34 = transformationMatrix * vec34;
-		// divide each 4d vector by w component
+			// divide each 4d vector by w component
 			vec14 = vec14 / vec14.w;
 			vec24 = vec24 / vec24.w;
 			vec34 = vec34 / vec34.w;
