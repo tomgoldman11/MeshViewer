@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <string>
+#include <algorithm>
 #include "Face.h"
 
 class MeshModel
@@ -21,9 +22,9 @@ public:
 
 private:
 	//func
-	const glm::mat4x4 getRotationMatrix();
-	const glm::mat4x4 getTranslationMatrix();
-	const glm::mat4x4 getScalingMatrix();
+	glm::mat4x4 getRotationMatrix();
+	glm::mat4x4 getTranslationMatrix();
+	glm::mat4x4 getScalingMatrix();
 
 	// default memebers
 	std::vector<Face> faces_;
@@ -40,4 +41,8 @@ private:
 	glm::vec3 scaleVector;
 	glm::vec3 rotateVector;
 
+	// model points attributes
+	glm::vec3 buttom;
+	glm::vec3 top;
+	glm::vec3 centerPoint;
 };

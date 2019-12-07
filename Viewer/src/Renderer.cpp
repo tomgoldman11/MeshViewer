@@ -262,12 +262,12 @@ void Renderer::Render(const Scene& scene)
 
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
-	const glm::mat4x4 viewMatrix = activeCamera.GetViewTransformation();
-    const glm::mat4x4 projectionMatrix = activeCamera.GetProjectionTransformation();
+	const glm::mat4x4 viewMatrix = activeCamera.getViewTransformation();
+    const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
-		{500,0,0,0},
-		{ 0,500,0,0 },
-		{ 0,0,500,0 },
+		{50,0,0,0},
+		{ 0,50,0,0 },
+		{ 0,0,50,0 },
 		{ half_width,half_height,0,1 }
 	);
 	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[0].x, viewMatrix[0].y), glm::vec3(1, 0, 0));
@@ -277,13 +277,15 @@ void Renderer::Render(const Scene& scene)
 	
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
-		//get the M matrix (world frame) related to the mesh model
-		glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
-		
+
 		//get the vertices
-		std::vector<glm::vec3>& vertices = mesh.getVertices();
+		std::vector<glm::vec3> vertices = mesh.getVertices();
+
+		//get the M matrix (world frame) related to the mesh model
+		const glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
+		
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		glm::mat4x4 transformationMatrix = MMM*projectionMatrix * viewMatrix * modelMatrix;
+		glm::mat4x4 transformationMatrix = MMM * projectionMatrix * viewMatrix * modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);

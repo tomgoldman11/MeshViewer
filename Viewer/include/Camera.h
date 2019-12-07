@@ -34,12 +34,12 @@ public:
 	Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up);
 	virtual ~Camera();
 
-	void SetCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
+	void setCameraLookAt(const glm::vec3& eye, const glm::vec3& at, const glm::vec3& up);
 
-	const glm::mat4x4& GetProjectionTransformation() const;
-	const glm::mat4x4 GetViewTransformation() const;
+	const glm::mat4x4 getProjectionTransformation() const;
+	const glm::mat4x4 getViewTransformation() const;
 
-	void SetPerspectiveProjection(const float fovy, const float aspectRatio, const float, const float);
+	void setPerspectiveProjection(const float fovy, const float aspectRatio, const float, const float);
 
 private:
 	glm::mat4x4 view_transformation_;

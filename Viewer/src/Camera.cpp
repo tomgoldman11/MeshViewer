@@ -2,11 +2,9 @@
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
 	orthoView({ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f })
-
 {
-	SetCameraLookAt(eye, at, up);
-	SetPerspectiveProjection(60.0f, 4.0f / 3.0f, 0.1f, 9.0f);
-
+	setCameraLookAt(eye, at, up);
+	setPerspectiveProjection(60.0f, 4.0f / 3.0f, 0.1f, 9.0f);
 }
 
 Camera::~Camera()
@@ -14,9 +12,9 @@ Camera::~Camera()
 
 }
 
-void Camera::SetCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up)
+void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up)
 {
-	glm::vec3 z = glm::normalize(eye-at);
+	glm::vec3 z = glm::normalize(at - eye);
 	glm::vec3 x = glm::normalize(glm::cross(up, z));
 	glm::vec3 y = glm::cross(z, x);
 	glm::mat4x4 c = { {x,0.0}, {y,0.0}, {z,0.0},{0.0,0.0,0.0,1.0} };
@@ -30,18 +28,18 @@ void Camera::SetCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const 
 
 }
 
-const glm::mat4x4& Camera::GetProjectionTransformation() const
+const glm::mat4x4 Camera::getProjectionTransformation() const
 {
 	return projection_transformation_;
 }
 
-const glm::mat4x4 Camera::GetViewTransformation() const
+const glm::mat4x4 Camera::getViewTransformation() const
 {
 	return view_transformation_;
 }
 
 
-void Camera::SetPerspectiveProjection(const float fovy, const float aspect,const float near,const float far)
+void Camera::setPerspectiveProjection(const float fovy, const float aspect,const float near,const float far)
 {
 	perspView.fovy = fovy;
 	perspView.aspect = aspect;
