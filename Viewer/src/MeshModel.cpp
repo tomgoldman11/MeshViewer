@@ -126,7 +126,7 @@ const glm::mat4x4 MeshModel::getWorldTransformation()
 	return worldTransform;
 }
 
-void MeshModel::setScale(float newScale) 
+void MeshModel::setScale(glm::vec3 newScale)
 {
 	scaleVector = glm::vec3(newScale, newScale, newScale);
 }
@@ -134,4 +134,9 @@ void MeshModel::setScale(float newScale)
 void MeshModel::setRotate(glm::vec3 newRotate)
 {
 	rotateVector = newRotate;
+}
+
+void MeshModel::setTranslate(glm::vec3 newTranslate)
+{
+	translateVector = newTranslate;
 }

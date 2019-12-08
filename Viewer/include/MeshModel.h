@@ -15,13 +15,14 @@ public:
 	const std::string& GetModelName() const;
 	const glm::mat4x4 getWorldTransformation();
 
-	void setScale(float newScale);
-
-	void setRotate(glm::vec3 rotateVector);
+	// setters
+	void setScale(glm::vec3 newScale);
+	void setRotate(glm::vec3 newRotate);
+	void setTranslate(glm::vec3 newTranslate);
 	
 
 private:
-	//func
+	// getters
 	glm::mat4x4 getRotationMatrix();
 	glm::mat4x4 getTranslationMatrix();
 	glm::mat4x4 getScalingMatrix();
