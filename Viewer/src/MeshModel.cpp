@@ -128,7 +128,7 @@ const glm::mat4x4 MeshModel::getWorldTransformation()
 
 void MeshModel::setScale(glm::vec3 newScale)
 {
-	scaleVector = glm::vec3(newScale, newScale, newScale);
+	scaleVector = glm::vec3(newScale.x, newScale.y, newScale.z);
 }
 
 void MeshModel::setRotate(glm::vec3 newRotate)

@@ -262,6 +262,9 @@ void Renderer::Render(const Scene& scene)
 
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
+	// get the projection type matrix - orthographic or perspective or neither of them
+	
+
 	const glm::mat4x4 viewMatrix = activeCamera.getViewTransformation();
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
@@ -281,7 +284,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
 		
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		glm::mat4x4 transformationMatrix = MMM * viewMatrix *modelMatrix;
+		glm::mat4x4 transformationMatrix = MMM * projectionMatrix* viewMatrix *modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);

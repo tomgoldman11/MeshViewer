@@ -39,7 +39,13 @@ public:
 	const glm::mat4x4 getProjectionTransformation() const;
 	const glm::mat4x4 getViewTransformation() const;
 
+	void setPerspectiveProjection();
+
 	void setPerspectiveProjection(const float fovy, const float aspectRatio, const float, const float);
+
+	void setOrthographicProjection();
+
+	void setOrthographicProjection(const float left, const float right, const float bottom, const float top, const float _near, const float _far);
 
 private:
 	glm::mat4x4 view_transformation_;
