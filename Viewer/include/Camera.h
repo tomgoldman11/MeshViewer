@@ -25,8 +25,8 @@ public:
 	};
 
 	struct perspective {
-		float fovy;
 		float aspect;
+		float fovy;
 		float _near;
 		float _far;
 	};

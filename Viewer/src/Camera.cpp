@@ -1,12 +1,12 @@
 #include "Camera.h"
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
-	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }),
-	perspView({ 60.0f, 4.0f / 3.0f, 0.1f, 9.0f })
+	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far
+	perspView({ 1.0f, 1.5f , 0.1f, 9.0f }) // aspect, fovy, near, far
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
-	setOrthographicProjection();
+	setPerspectiveProjection();
 }
 
 Camera::~Camera()
@@ -46,27 +46,28 @@ const glm::mat4x4 Camera::getViewTransformation() const
 
 void Camera::setPerspectiveProjection()
 {
-	setPerspectiveProjection(perspView.fovy, perspView.aspect, perspView._near, perspView._far);
+	setPerspectiveProjection(perspView.aspect,  perspView.fovy,  perspView._near, perspView._far);
 }
 
-void Camera::setPerspectiveProjection(const float fovy, const float aspect,const float near,const float far)
+void Camera::setPerspectiveProjection(const float aspect, const float fovy, const float near,const float far)
 {
-	perspView.fovy = fovy;
 	perspView.aspect = aspect;
+	perspView.fovy = fovy;
 	perspView._near = near;
 	perspView._far = far;
+	const float zRange = near - far;
 
 	float fov = fovy * 0.01745329251994329576923690768489f;
 
-	float tanHalfFovy = tan(fov / 2.0f);
+	float tanHalfFOV = tan(fov / 2.0f);
 
 	glm::mat4x4 result(1);
 
-	result[0][0] = 1.0f / (aspect * tanHalfFovy);
-	result[1][1] = 1.0f / (tanHalfFovy);
-	result[2][2] = -(far + near) / (near - far);
-	result[2][3] = -1.0f;
-	result[3][2] = (2.0f * far * near) / (near - far);
+	result[0][0] = 1.0f / (tanHalfFOV * aspect );
+	result[1][1] = 1.0f / (tanHalfFOV);
+	result[2][2] = -(far + near) / zRange;
+	result[2][3] = (2.0f * far * near) / zRange;
+	result[3][2] = -1.0f;
 
 	projection_transformation_ = result;
 }
