@@ -14,18 +14,22 @@ Camera::~Camera()
 
 void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up)
 {
-	glm::vec3 z = glm::normalize(at - eye);
-	glm::vec3 x = glm::normalize(glm::cross(up, z));
-	glm::vec3 y = glm::cross(z, x);
-	glm::mat4x4 c = { {x,0.0}, {y,0.0}, {z,0.0},{0.0,0.0,0.0,1.0} };
-	glm::mat4x4 eyeTranslate = glm::mat4x4({
+	glm::vec3 zaxis = glm::normalize(eye - at);
+	glm::vec3 xaxis = glm::normalize(glm::cross(up, zaxis));
+	glm::vec3 yaxis = glm::cross(zaxis, xaxis);
+	glm::mat4x4 c = glm::mat4x4(
+		{ xaxis.x,xaxis.y,xaxis.z,0.0},
+		{ yaxis.x,yaxis.y,yaxis.z,0.0},
+		{ zaxis.x, zaxis.y, zaxis.z ,0.0},
+		{0.0,0.0,0.0,1.0} 
+	);
+	glm::mat4x4 eyeTranslate = glm::mat4x4(
 		{1,0,0,0},
 		{0,1,0,0},
 		{0,0,1,0},
-		{-eye.x,-eye.y,-eye.z,1} }); // - or not
+		{-eye.x,-eye.y,-eye.z,1} ); // - or not
 
 	view_transformation_ = c * eyeTranslate;
-
 }
 
 const glm::mat4x4 Camera::getProjectionTransformation() const

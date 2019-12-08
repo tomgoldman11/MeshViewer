@@ -6,8 +6,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	normals_(normals),
 	model_name_(model_name),
 	translateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
-	scaleVector(glm::vec3(50.0f, 50.0f, 50.0f)),
-	rotateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
+	scaleVector(glm::vec3(1.0f, 1.0f, 1.0f)),
+	rotateVector(glm::vec3(0.0f, 0.0f, 90.0f)),
 	buttom(0),
 	top(0),
 	centerPoint(0)
@@ -71,21 +71,21 @@ glm::mat4x4 MeshModel::getRotationMatrix()
 	if (rotateVector.x != 0) {
 		angle = rotateVector.x * pi /180;
 		rotateTransform[0] = glm::vec4(1, 0, 0, 0);
-		rotateTransform[1] = glm::vec4(0, cos(angle), sin(angle), 0);
-		rotateTransform[2] = glm::vec4(0, -sin(angle), cos(angle), 0);
+		rotateTransform[1] = glm::vec4(0, cos(angle), -sin(angle), 0);
+		rotateTransform[2] = glm::vec4(0, sin(angle), cos(angle), 0);
 		rotateTransform[3] = glm::vec4(0, 0, 0, 1);
 	}
 	else if (rotateVector.y != 0) {
 		angle = rotateVector.y * pi / 180;
-		rotateTransform[0] = glm::vec4(cos(angle), 0, -sin(angle), 0);
+		rotateTransform[0] = glm::vec4(cos(angle), 0, sin(angle), 0);
 		rotateTransform[1] = glm::vec4(0, 1, 0, 0);
-		rotateTransform[2] = glm::vec4(sin(angle),0, cos(angle), 0);
+		rotateTransform[2] = glm::vec4(-sin(angle),0, cos(angle), 0);
 		rotateTransform[3] = glm::vec4(0, 0, 0, 1);
 	}
 	else if (rotateVector.z != 0) {
 		angle = rotateVector.z * pi / 180;
-		rotateTransform[0] = glm::vec4(cos(angle), sin(angle), 0, 0);
-		rotateTransform[1] = glm::vec4(-sin(angle), cos(angle), 0, 0);
+		rotateTransform[0] = glm::vec4(cos(angle), -sin(angle), 0, 0);
+		rotateTransform[1] = glm::vec4(sin(angle), cos(angle), 0, 0);
 		rotateTransform[2] = glm::vec4(0, 0, 1, 0);
 		rotateTransform[3] = glm::vec4(0, 0, 0, 1);
 	}

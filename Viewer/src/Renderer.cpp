@@ -270,11 +270,7 @@ void Renderer::Render(const Scene& scene)
 		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
 	);
-	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[0].x, viewMatrix[0].y), glm::vec3(1, 0, 0));
-	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[1].x, viewMatrix[1].y), glm::vec3(0, 1, 0));
-	//DrawLine(glm::vec2(half_width, half_height), glm::vec2(viewMatrix[2].x, viewMatrix[2].y), glm::vec3(0, 0, 1));
-	//return;
-	
+
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
 
@@ -285,7 +281,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
 		
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		glm::mat4x4 transformationMatrix = MMM * modelMatrix * viewMatrix * projectionMatrix  ;
+		glm::mat4x4 transformationMatrix = MMM * viewMatrix *modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -313,8 +309,6 @@ void Renderer::Render(const Scene& scene)
 			}
 		}
 	}
-
-	//DrawAsterisk();
 
 }
 
