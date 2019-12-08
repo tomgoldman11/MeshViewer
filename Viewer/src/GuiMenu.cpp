@@ -14,6 +14,9 @@ bool show_demo_window = false;
 bool show_scale_window = false;
 bool show_rotate_window = false;
 bool show_translate_window = false;
+bool bounding_box = false;
+bool normals_per_face = false;
+bool normals_per_vertex = false;
 
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
@@ -97,8 +100,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
 	{
-	
-
 		static int counter = 0;
 
 		ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
@@ -108,27 +109,67 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Checkbox("Rotate Model", &show_rotate_window);
 		ImGui::Checkbox("Translate Model", &show_translate_window);
 
+		ImGui::Checkbox("Bounding Box", &bounding_box);
+		ImGui::Checkbox("Normals Per Face", &normals_per_face);
+		ImGui::SameLine();
+		ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
+
+
+
 		ImGui::ColorEdit3("clear color", (float*)&clear_color1); // Edit 3 floats representing a color
 
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
+		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		//	counter++;
+		//ImGui::SameLine();
+		//ImGui::Text("counter = %d", counter);
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
 
-	// 3. Show another simple window.
 	if (show_scale_window)
 	{
-		ImGui::Begin("Scale Window", &show_scale_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		ImGui::Text("Scale Values From 0-10");
-		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 10.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		ImGui::Begin("Scale Window", &show_scale_window);  
+		ImGui::Text("Scaling Values From 0-10");
+		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 10.0f);           
+		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 10.0f);           
+		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 10.0f);            
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
 		ImGui::End();
+	}
+	if (show_rotate_window)
+	{
+		ImGui::Begin("Rotate Window", &show_rotate_window);   
+		ImGui::Text("Rotation Values From -360 to 360");
+		ImGui::SliderFloat("Rotate X", &RotateX, -360.0f, 360.0f);          
+		ImGui::SliderFloat("Rotate Y", &RotateY, -360.0f, 360.0f);            
+		ImGui::SliderFloat("Rotate Z", &RotateZ, -360.0f, 360.0f);            
+		if (ImGui::Button("Close"))
+			show_scale_window = false;
+		ImGui::End();
+	}
+	if (show_translate_window)
+	{
+		ImGui::Begin("Translate Window", &show_translate_window);
+		ImGui::Text("Translating Values From -600 to 600");
+		ImGui::SliderFloat("Translate X", &TranslateX, -600.0f, 600.0f);            
+		ImGui::SliderFloat("Translate Y", &TranslateY, -600.0f, 600.0f);
+		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f);           
+		if (ImGui::Button("Close"))
+			show_scale_window = false;
+		ImGui::End();
+	}
+	if (bounding_box)
+	{
+
+	}
+	if (normals_per_face)
+	{
+
+	}
+	if (normals_per_vertex)
+	{
+
 	}
 }
