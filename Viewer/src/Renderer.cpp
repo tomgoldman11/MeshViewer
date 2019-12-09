@@ -257,6 +257,9 @@ void Renderer::Render(const Scene& scene)
 	// TODO: Replace this code with real scene rendering code
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
+	bool normalsFaces_flag = false;
+	std::map<int, glm::vec3> verticesNormals;
+	glm::mat4x4 transformationMatrix;
 	//int thickness = 15;
 
 
@@ -287,13 +290,16 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
 		
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		glm::mat4x4 transformationMatrix = MMM * projectionMatrix* viewMatrix *modelMatrix;
+		transformationMatrix = MMM * projectionMatrix* viewMatrix *modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
-			glm::vec3 vec1 = vertices[currFace.GetVertexIndex(0) - 1];
-			glm::vec3 vec2 = vertices[currFace.GetVertexIndex(1) - 1];
-			glm::vec3 vec3 = vertices[currFace.GetVertexIndex(2) - 1];
+			int v1 = currFace.GetVertexIndex(0) - 1;
+			glm::vec3 vec1 = vertices[v1];
+			int v2 = currFace.GetVertexIndex(1) - 1;
+			glm::vec3 vec2 = vertices[v2];
+			int v3 = currFace.GetVertexIndex(2) - 1;
+			glm::vec3 vec3 = vertices[v3];
 		// change the 3d vectors to 4d vectors 
 			glm::vec4 vec14 = Utils::Vec4FromVec3(vec1);
 			glm::vec4 vec24 = Utils::Vec4FromVec3(vec2);
@@ -315,21 +321,72 @@ void Renderer::Render(const Scene& scene)
 			}
 
 			//draw face normal
-			glm::vec4 newPoint = (vec14 + vec24 + vec34) / 3.0f;
+			if (normalsFaces_flag) {
+				glm::vec4 newPoint = (vec14 + vec24 + vec34) / 3.0f;
 
-			glm::vec4 newPoint_T = transformationMatrix * newPoint;
-			newPoint_T = newPoint_T / newPoint_T.w;
+				glm::vec4 newPoint_T = transformationMatrix * newPoint;
+				newPoint_T = newPoint_T / newPoint_T.w;
 
-			glm::vec3 _normalPoint = currFace.getNormal();
-			glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
+				glm::vec3 _normalPoint = currFace.getNormal();
+				glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
 
-			glm::vec4 normal = 0.1f * normalPoint + newPoint;
+				glm::vec4 normal = 0.1f * normalPoint + newPoint;
 
-			normal = transformationMatrix * normal;
-			normal = normal / normal.w;
-			DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
+				normal = transformationMatrix * normal;
+				normal = normal / normal.w;
+				DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
+			}
 
+			std::vector<glm::vec3> normals = mesh.getNormals();
+			//float normalX1 = normals[v1].x, normalY1 = normals[v1].y, normalZ1 = normals[v1].z;
+			//float normalX2 = normals[v2].x, normalY2 = normals[v2].y, normalZ2 = normals[v2].z;
+			//float normalX3 = normals[v3].x, normalY3 = normals[v3].y, normalZ3 = normals[v3].z;
+
+			//glm::vec4 normal1 = glm::vec4(normalX1, normalY1, normalZ1, 0.0f) ;
+			//glm::vec4 normal2 =glm::vec4(normalX2, normalY2, normalZ2, 0.0f) ;
+			//glm::vec4 normal3 =  glm::vec4(normalX3, normalY3, normalZ3, 0.0f);
+
+			//glm::vec4 pixelNormal1 = transformationMatrix * normal1;
+			//pixelNormal1 = pixelNormal1 / pixelNormal1.w;
+			//glm::vec4 pixelNormal2 = transformationMatrix * normal2;
+			//pixelNormal2 = pixelNormal2 / pixelNormal2.w;
+			//glm::vec4 pixelNormal3 = transformationMatrix * normal3;
+			//pixelNormal3 = pixelNormal3 / pixelNormal3.w;
+
+			if (verticesNormals.find(v1) == verticesNormals.end()) {
+				verticesNormals[v1] = glm::vec3(0);
+			}
+			//verticesNormals[v1] += pixelNormal1;
+			verticesNormals[v1] += normals[v1];
+
+			if (verticesNormals.find(v2) == verticesNormals.end()) {
+				verticesNormals[v2] = glm::vec3(0);
+			}
+			//verticesNormals[v2] += pixelNormal2;
+			verticesNormals[v2] += normals[v2];
+
+			if (verticesNormals.find(v3) == verticesNormals.end()) {
+				verticesNormals[v3] = glm::vec3(0);
+			}
+			//verticesNormals[v3] += pixelNormal3;
+			verticesNormals[v3] += normals[v3];
 		}
+
+		//std::map<int, glm::vec3>::iterator vInd;
+		//for (vInd = verticesNormals.begin(); vInd != verticesNormals.end(); vInd++) {
+		//	glm::vec4 vVec = Utils::Vec4FromVec3(vertices[vInd->first]);
+
+		//	glm::vec4 normalsSum = 0.3f * glm::vec4({ vInd->second, 0.0f }) + vVec;
+		//	vVec = transformationMatrix * vVec;
+		//	vVec = vVec / vVec.w;
+		//	normalsSum = transformationMatrix * normalsSum;
+		//	normalsSum = normalsSum / normalsSum.w;
+		//	float facesNum = mesh.getVertexFacesSum(vInd->first);
+		//	glm::vec4 nVec = normalsSum / facesNum;
+
+		//	DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(nVec.x, nVec.y), glm::vec3(0, 1, 0));
+		//}
+
 	}
 
 }
@@ -367,27 +424,4 @@ int Renderer::GetViewportHeight() const
 {
 	return viewport_height_;
 }
-
-//void Renderer::drawNormalsPerFace(
-//	const Face& face,
-//	const glm::vec4& originalPoint1, const glm::vec2& pixelPoint1,
-//	const glm::vec4& originalPoint2, const glm::vec2& pixelPoint2,
-//	const glm::vec4& originalPoint3, const glm::vec2& pixelPoint3,
-//	const float normalLength,
-//	const glm::mat4x4& transform,
-//	const glm::vec3& color)
-//{
-//
-//	glm::vec4 newPoint = (originalPoint1 + originalPoint2 + originalPoint3) / 3.0f;
-//	glm::vec3 pixelConcentratedPoint = translatePointIndicesToPixels(newPoint, transform);
-//
-//	glm::vec3 _normalPoint = face.getFaceNormal();
-//	glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
-//
-//	glm::vec4 normal = normalLength * normalPoint + newPoint;
-//
-//	glm::vec3 pixelNormal = translatePointIndicesToPixels(normal, transform);
-//
-//	drawLine(pixelConcentratedPoint, pixelNormal, color);
-//}
 

@@ -15,11 +15,15 @@ public:
 	int GetFacesCount() const;
 	const std::string& GetModelName() const;
 	const glm::mat4x4 getWorldTransformation();
+	std::vector<glm::vec3> getNormals() const;
+	const int getVertexFacesSum(int indx) const;
 
 	// setters
 	void setScale(glm::vec3 newScale);
 	void setRotate(glm::vec3 newRotate);
 	void setTranslate(glm::vec3 newTranslate);
+
+	
 
 	void setFaceNormals();
 	
@@ -49,4 +53,5 @@ private:
 	glm::vec3 buttom;
 	glm::vec3 top;
 	glm::vec3 centerPoint;
+	std::map<int, int> verticesFaces;
 };

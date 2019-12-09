@@ -127,6 +127,11 @@ const glm::mat4x4 MeshModel::getWorldTransformation()
 	return worldTransform;
 }
 
+std::vector<glm::vec3> MeshModel::getNormals() const
+{
+	return normals_;
+}
+
 void MeshModel::setScale(glm::vec3 newScale)
 {
 	scaleVector = glm::vec3(newScale.x, newScale.y, newScale.z);
@@ -182,6 +187,33 @@ void MeshModel::setFaceNormals()
 		forCalculate[v1].push_back(_normalPoint);
 		forCalculate[v2].push_back(_normalPoint);
 		forCalculate[v3].push_back(_normalPoint);
+
+		if (verticesFaces.find(v1) == verticesFaces.end())
+		{
+			verticesFaces[v1] = 0;
+		}
+		
+		verticesFaces[v1] = verticesFaces.at(v1) + 1;
+
+		if (verticesFaces.find(v2) == verticesFaces.end())
+		{
+			verticesFaces[v2] = 0;
+		}
+
+		verticesFaces[v2] = verticesFaces.at(v2) + 1;
+
+		if (verticesFaces.find(v3) == verticesFaces.end())
+		{
+			verticesFaces[v3] = 0;
+		}
+
+		verticesFaces[v3] = verticesFaces.at(v3) + 1;
 	}
 
+
 }
+
+const int MeshModel::getVertexFacesSum(int indx) const {
+	return verticesFaces.at(indx);
+}
+
