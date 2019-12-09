@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include "Face.h"
+#include <map>
 
 class MeshModel
 {
@@ -19,6 +20,8 @@ public:
 	void setScale(glm::vec3 newScale);
 	void setRotate(glm::vec3 newRotate);
 	void setTranslate(glm::vec3 newTranslate);
+
+	void setFaceNormals();
 	
 
 private:

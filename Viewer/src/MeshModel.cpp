@@ -6,7 +6,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	normals_(normals),
 	model_name_(model_name),
 	translateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
-	scaleVector(glm::vec3(5.0f, 5.0f, 5.0f)),
+	scaleVector(glm::vec3(1.0f, 1.0f, 1.0f)),
 	rotateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
 	buttom(0),
 	top(0),
@@ -139,4 +139,48 @@ void MeshModel::setRotate(glm::vec3 newRotate)
 void MeshModel::setTranslate(glm::vec3 newTranslate)
 {
 	translateVector = newTranslate;
+}
+
+
+void MeshModel::setFaceNormals()
+{
+	std::map<int, std::vector<glm::vec3>> forCalculate;
+	const int facesSize = faces_.size();
+
+	for (int i = 0; i < facesSize; i++)
+	{
+		Face currFace = faces_[i];
+
+		int v1 = currFace.GetVertexIndex(0) - 1;
+		float x1 = vertices_[v1].x, y1 = vertices_[v1].y, z1 = vertices_[v1].z;
+		int v2 = currFace.GetVertexIndex(1) - 1;
+		float x2 = vertices_[v2].x, y2 = vertices_[v2].y, z2 = vertices_[v2].z;
+		int v3 = currFace.GetVertexIndex(2) - 1;
+		float x3 = vertices_[v3].x, y3 = vertices_[v3].y, z3 = vertices_[v3].z;
+		
+
+		glm::vec4 originalPoint1 = glm::vec4(x1, y1, z1, 1.0f);
+		glm::vec4 originalPoint2 = glm::vec4(x2, y2, z2, 1.0f);
+		glm::vec4 originalPoint3 = glm::vec4(x3, y3, z3, 1.0f);
+
+		glm::vec4 vector1 = (originalPoint2 - originalPoint1);
+		glm::vec4 vector2 = (originalPoint3 - originalPoint1);
+		glm::vec4 vector3 = (originalPoint3 - originalPoint2);
+
+		glm::vec3 a = glm::vec3(vector1.x, vector1.y, vector1.z);
+		glm::vec3 b = glm::vec3(vector2.x, vector2.y, vector2.z);
+		glm::vec3 c = glm::vec3(vector3.x, vector3.y, vector3.z);
+
+		glm::vec3 normalHelper1 = glm::cross(a, b);
+		glm::vec3 normalHelper2 = glm::cross(-a, c);
+		glm::vec3 normalHelper3 = glm::cross(-b, -c);
+		glm::vec3 _normalPoint = (normalHelper1 + normalHelper2 + normalHelper3) / 3.0f;
+
+		faces_[i].setNormal(_normalPoint);
+
+		forCalculate[v1].push_back(_normalPoint);
+		forCalculate[v2].push_back(_normalPoint);
+		forCalculate[v3].push_back(_normalPoint);
+	}
+
 }

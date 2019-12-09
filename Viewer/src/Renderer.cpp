@@ -277,6 +277,9 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
 
+		// init face normals
+		mesh.setFaceNormals();
+
 		//get the vertices
 		std::vector<glm::vec3> vertices = mesh.getVertices();
 
@@ -296,20 +299,36 @@ void Renderer::Render(const Scene& scene)
 			glm::vec4 vec24 = Utils::Vec4FromVec3(vec2);
 			glm::vec4 vec34 = Utils::Vec4FromVec3(vec3);	
 		// multiple each 4d vector by the transform matrix
-			vec14 = transformationMatrix * vec14;
-			vec24 = transformationMatrix * vec24;
-			vec34 = transformationMatrix * vec34;
+			glm::vec4 vec14_T = transformationMatrix * vec14;
+			glm::vec4 vec24_T = transformationMatrix * vec24;
+			glm::vec4 vec34_T = transformationMatrix * vec34;
 			// divide each 4d vector by w component
-			vec14 = vec14 / vec14.w;
-			vec24 = vec24 / vec24.w;
-			vec34 = vec34 / vec34.w;
+			vec14_T = vec14_T / vec14_T.w;
+			vec24_T = vec24_T / vec24_T.w;
+			vec34_T = vec34_T / vec34_T.w;
 
 			// draw the triangle
 			if (currFace.getVerticesCount() == 3) {
-				DrawLine(glm::vec2(vec14.x, vec14.y), glm::vec2(vec24.x,  vec24.y), glm::vec3(0, 0, 0));
-				DrawLine(glm::vec2(vec24.x, vec24.y), glm::vec2( vec34.x,  vec34.y), glm::vec3(0, 0, 0));
-				DrawLine(glm::vec2(vec34.x, vec34.y), glm::vec2( vec14.x,  vec14.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec14_T.x, vec14_T.y), glm::vec2(vec24_T.x, vec24_T.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec24_T.x, vec24_T.y), glm::vec2(vec34_T.x, vec34_T.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec34_T.x, vec34_T.y), glm::vec2(vec14_T.x, vec14_T.y), glm::vec3(0, 0, 0));
 			}
+
+			//draw face normal
+			glm::vec4 newPoint = (vec14 + vec24 + vec34) / 3.0f;
+
+			glm::vec4 newPoint_T = transformationMatrix * newPoint;
+			newPoint_T = newPoint_T / newPoint_T.w;
+
+			glm::vec3 _normalPoint = currFace.getNormal();
+			glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
+
+			glm::vec4 normal = 0.1f * normalPoint + newPoint;
+
+			normal = transformationMatrix * normal;
+			normal = normal / normal.w;
+			DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
+
 		}
 	}
 
@@ -348,4 +367,27 @@ int Renderer::GetViewportHeight() const
 {
 	return viewport_height_;
 }
+
+//void Renderer::drawNormalsPerFace(
+//	const Face& face,
+//	const glm::vec4& originalPoint1, const glm::vec2& pixelPoint1,
+//	const glm::vec4& originalPoint2, const glm::vec2& pixelPoint2,
+//	const glm::vec4& originalPoint3, const glm::vec2& pixelPoint3,
+//	const float normalLength,
+//	const glm::mat4x4& transform,
+//	const glm::vec3& color)
+//{
+//
+//	glm::vec4 newPoint = (originalPoint1 + originalPoint2 + originalPoint3) / 3.0f;
+//	glm::vec3 pixelConcentratedPoint = translatePointIndicesToPixels(newPoint, transform);
+//
+//	glm::vec3 _normalPoint = face.getFaceNormal();
+//	glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
+//
+//	glm::vec4 normal = normalLength * normalPoint + newPoint;
+//
+//	glm::vec3 pixelNormal = translatePointIndicesToPixels(normal, transform);
+//
+//	drawLine(pixelConcentratedPoint, pixelNormal, color);
+//}
 

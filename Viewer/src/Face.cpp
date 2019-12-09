@@ -53,3 +53,13 @@ int Face::getVerticesCount() const
 {
 	return vertex_indices_.size();
 }
+
+void Face::setNormal(glm::vec3 _normal)
+{
+	normal = _normal;
+}
+
+glm::vec3 Face::getNormal() const
+{
+	return normal;
+}
