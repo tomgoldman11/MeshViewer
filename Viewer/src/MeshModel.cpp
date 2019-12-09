@@ -10,6 +10,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	rotateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
 	buttom(0),
 	top(0),
+
 	centerPoint(0)
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
