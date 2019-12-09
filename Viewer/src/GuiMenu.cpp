@@ -110,35 +110,28 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
 
-	{
-
-
-		static int counter = 0;
-
-		ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
+	static int counter = 0;
+	ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
 
 																// CODE FOR CONNECTIONNN !r!@r!#@t#gejvdsiinvesingwep
-		if (scene.GetModelCount() == 0)
-		{
-			ImGui::Text("No models loaded yet");
-			ImGui::End();
-			return;
-		}
-
-		
-	
-		ImGui::Checkbox("Scale Model", &show_scale_window);
-		ImGui::Checkbox("Rotate Model", &show_rotate_window);
-		ImGui::Checkbox("Translate Model", &show_translate_window);
-
-		ImGui::Checkbox("Bounding Box", &bounding_box);
-		ImGui::Checkbox("Normals Per Face", &normals_per_face);
-		ImGui::SameLine();
-		ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
+	if (scene.GetModelCount() == 0)
+	{
+		ImGui::Text("No models loaded yet");
+		ImGui::End();
+		return;
+	}
 
 
+	ImGui::Checkbox("Scale Model", &show_scale_window);
+	ImGui::Checkbox("Rotate Model", &show_rotate_window);
+	ImGui::Checkbox("Translate Model", &show_translate_window);
 
-		ImGui::ColorEdit3("clear color", (float*)&clear_color1); // Edit 3 floats representing a color
+	ImGui::Checkbox("Bounding Box", &bounding_box);
+	ImGui::Checkbox("Normals Per Face", &normals_per_face);
+	ImGui::SameLine();
+	ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
+
+	ImGui::ColorEdit3("clear color", (float*)&clear_color1); // Edit 3 floats representing a color
 
 		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 		//	counter++;
@@ -147,17 +140,17 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
-	}
+
+		static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
 
 	if (show_scale_window)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
 		ImGui::Text("Scaling Values From 0-10");
-		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 10.0f);           
-		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 10.0f);           
-		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 10.0f); 
+		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 20.0f);           
+		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 20.0f);           
+		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 20.0f); 
 
-		auto& activeModel = scene.GetActiveModel(); // getting active model to operate on
 		activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
 
 		if (ImGui::Button("Close"))
@@ -170,7 +163,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Rotation Values From -360 to 360");
 		ImGui::SliderFloat("Rotate X", &RotateX, -360.0f, 360.0f);          
 		ImGui::SliderFloat("Rotate Y", &RotateY, -360.0f, 360.0f);            
-		ImGui::SliderFloat("Rotate Z", &RotateZ, -360.0f, 360.0f);            
+		ImGui::SliderFloat("Rotate Z", &RotateZ, -360.0f, 360.0f);     
+
+		activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
+
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
 		ImGui::End();
@@ -181,7 +177,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Translating Values From -600 to 600");
 		ImGui::SliderFloat("Translate X", &TranslateX, -600.0f, 600.0f);            
 		ImGui::SliderFloat("Translate Y", &TranslateY, -600.0f, 600.0f);
-		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f);           
+		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f);        
+
+		activeModel.setTranslate(glm::vec3(TranslateX, TranslateY, TranslateZ));
+
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
 		ImGui::End();
