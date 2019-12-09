@@ -5,6 +5,7 @@
 #include <nfd.h>
 #include "Scene.h"
 #include "Utils.h"
+#include "MeshModel.h"
 
 /**
  * Fields
@@ -18,12 +19,13 @@ bool bounding_box = false;
 bool normals_per_face = false;
 bool normals_per_vertex = false;
 
+
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
 
-static float ScaleX = 1.0f;
-static float ScaleY = 1.0f;
-static float ScaleZ = 1.0f;
+ static float ScaleX = 1.0f;
+ static float ScaleY = 1.0f;
+ static float ScaleZ = 1.0f;
 
 static float RotateX = 0.0f;
 static float RotateY = 0.0f;
@@ -37,6 +39,12 @@ static float TranslateZ = 0.0f;
  * Function implementation
  */
 
+const glm::vec4& GetClearColor()
+{
+	return clear_color1;
+}
+
+
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 30), ImGuiCond_Once);
@@ -45,6 +53,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	 *
 	 */
 	ImGui::Begin("MeshViewer Menu");
+
+
 
 	// Menu Bar
 	if (ImGui::BeginMainMenuBar())
@@ -99,11 +109,23 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_demo_window)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
+
 	{
+
+
 		static int counter = 0;
 
 		ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
 
+																// CODE FOR CONNECTIONNN !r!@r!#@t#gejvdsiinvesingwep
+		if (scene.GetModelCount() == 0)
+		{
+			ImGui::Text("No models loaded yet");
+			ImGui::End();
+			return;
+		}
+
+		
 	
 		ImGui::Checkbox("Scale Model", &show_scale_window);
 		ImGui::Checkbox("Rotate Model", &show_rotate_window);
@@ -133,7 +155,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Scaling Values From 0-10");
 		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 10.0f);           
 		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 10.0f);           
-		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 10.0f);            
+		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 10.0f); 
+
+		auto& activeModel = scene.GetActiveModel(); // getting active model to operate on
+		activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
+
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
 		ImGui::End();
