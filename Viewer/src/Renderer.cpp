@@ -257,8 +257,7 @@ void Renderer::Render(const Scene& scene)
 	// TODO: Replace this code with real scene rendering code
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
-	bool normalsFaces_flag = false;
-	std::map<int, glm::vec3> verticesNormals;
+	std::map<int, std::vector<int>> verticesNormals;
 	glm::mat4x4 transformationMatrix;
 	//int thickness = 15;
 
@@ -321,7 +320,7 @@ void Renderer::Render(const Scene& scene)
 			}
 
 			//draw face normal
-			if (normalsFaces_flag) {
+			if (scene.getFacesNormalsStatus()) {
 				glm::vec4 newPoint = (vec14 + vec24 + vec34) / 3.0f;
 
 				glm::vec4 newPoint_T = transformationMatrix * newPoint;
@@ -337,55 +336,38 @@ void Renderer::Render(const Scene& scene)
 				DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
 			}
 
-			std::vector<glm::vec3> normals = mesh.getNormals();
-			//float normalX1 = normals[v1].x, normalY1 = normals[v1].y, normalZ1 = normals[v1].z;
-			//float normalX2 = normals[v2].x, normalY2 = normals[v2].y, normalZ2 = normals[v2].z;
-			//float normalX3 = normals[v3].x, normalY3 = normals[v3].y, normalZ3 = normals[v3].z;
-
-			//glm::vec4 normal1 = glm::vec4(normalX1, normalY1, normalZ1, 0.0f) ;
-			//glm::vec4 normal2 =glm::vec4(normalX2, normalY2, normalZ2, 0.0f) ;
-			//glm::vec4 normal3 =  glm::vec4(normalX3, normalY3, normalZ3, 0.0f);
-
-			//glm::vec4 pixelNormal1 = transformationMatrix * normal1;
-			//pixelNormal1 = pixelNormal1 / pixelNormal1.w;
-			//glm::vec4 pixelNormal2 = transformationMatrix * normal2;
-			//pixelNormal2 = pixelNormal2 / pixelNormal2.w;
-			//glm::vec4 pixelNormal3 = transformationMatrix * normal3;
-			//pixelNormal3 = pixelNormal3 / pixelNormal3.w;
-
-			if (verticesNormals.find(v1) == verticesNormals.end()) {
-				verticesNormals[v1] = glm::vec3(0);
-			}
-			//verticesNormals[v1] += pixelNormal1;
-			verticesNormals[v1] += normals[v1];
-
-			if (verticesNormals.find(v2) == verticesNormals.end()) {
-				verticesNormals[v2] = glm::vec3(0);
-			}
-			//verticesNormals[v2] += pixelNormal2;
-			verticesNormals[v2] += normals[v2];
-
-			if (verticesNormals.find(v3) == verticesNormals.end()) {
-				verticesNormals[v3] = glm::vec3(0);
-			}
-			//verticesNormals[v3] += pixelNormal3;
-			verticesNormals[v3] += normals[v3];
+			verticesNormals[v1].insert(verticesNormals[v1].begin(), currFace.GetNormalIndex(0)-1);
+			verticesNormals[v2].insert (verticesNormals[v2].begin(), currFace.GetNormalIndex(1)-1);
+			verticesNormals[v3].insert(verticesNormals[v3].begin(), currFace.GetNormalIndex(2)-1);
 		}
 
-		//std::map<int, glm::vec3>::iterator vInd;
-		//for (vInd = verticesNormals.begin(); vInd != verticesNormals.end(); vInd++) {
-		//	glm::vec4 vVec = Utils::Vec4FromVec3(vertices[vInd->first]);
+		if (scene.getVerticesNormalsStatus())
+		{
+			std::vector<glm::vec3> normals = mesh.getNormals();
+			std::map<int, std::vector<int>>::iterator vInd;
 
-		//	glm::vec4 normalsSum = 0.3f * glm::vec4({ vInd->second, 0.0f }) + vVec;
-		//	vVec = transformationMatrix * vVec;
-		//	vVec = vVec / vVec.w;
-		//	normalsSum = transformationMatrix * normalsSum;
-		//	normalsSum = normalsSum / normalsSum.w;
-		//	float facesNum = mesh.getVertexFacesSum(vInd->first);
-		//	glm::vec4 nVec = normalsSum / facesNum;
+			for (vInd = verticesNormals.begin(); vInd != verticesNormals.end(); vInd++) {
+				glm::vec3 sumNormals(0);
+				std::vector<int> listNormals = vInd->second;
 
-		//	DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(nVec.x, nVec.y), glm::vec3(0, 1, 0));
-		//}
+				for (int i = 0; i < listNormals.size(); ++i)
+				{
+					sumNormals += normals[listNormals[i]];
+				}
+				sumNormals = sumNormals / (float)listNormals.size();
+
+				glm::vec4 vVec = Utils::Vec4FromVec3(vertices[vInd->first]);
+
+				glm::vec4 sumNormals4 = 30.0f * glm::vec4({ sumNormals, 0.0f }) + vVec;
+				vVec = transformationMatrix * vVec;
+				vVec = vVec / vVec.w;
+				sumNormals4 = transformationMatrix * sumNormals4;
+				sumNormals4 = sumNormals4 / sumNormals4.w;
+
+				DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(sumNormals4.x, sumNormals4.y), glm::vec3(0, 1, 0));
+
+			}
+		}
 
 	}
 

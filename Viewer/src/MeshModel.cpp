@@ -188,26 +188,6 @@ void MeshModel::setFaceNormals()
 		forCalculate[v2].push_back(_normalPoint);
 		forCalculate[v3].push_back(_normalPoint);
 
-		if (verticesFaces.find(v1) == verticesFaces.end())
-		{
-			verticesFaces[v1] = 0;
-		}
-		
-		verticesFaces[v1] = verticesFaces.at(v1) + 1;
-
-		if (verticesFaces.find(v2) == verticesFaces.end())
-		{
-			verticesFaces[v2] = 0;
-		}
-
-		verticesFaces[v2] = verticesFaces.at(v2) + 1;
-
-		if (verticesFaces.find(v3) == verticesFaces.end())
-		{
-			verticesFaces[v3] = 0;
-		}
-
-		verticesFaces[v3] = verticesFaces.at(v3) + 1;
 	}
 
 

@@ -4,7 +4,9 @@
 
 Scene::Scene() :
 	active_camera_index_(0),
-	active_model_index_(0)
+	active_model_index_(0),
+	activeFacesNormals(false),
+	activeVerticesNormals(true)
 {
 
 }
@@ -67,4 +69,24 @@ void Scene::SetActiveModelIndex(int index)
 int Scene::GetActiveModelIndex() const
 {
 	return active_model_index_;
+}
+
+void Scene::changeFacesNormalsMode()
+{
+	activeFacesNormals = !activeFacesNormals;
+}
+
+void Scene::changeVerticesNormalsMode()
+{
+	activeVerticesNormals = !activeVerticesNormals;
+}
+
+bool Scene::getFacesNormalsStatus() const
+{
+	return activeFacesNormals;
+}
+
+bool Scene::getVerticesNormalsStatus() const
+{
+	return activeVerticesNormals;
 }
