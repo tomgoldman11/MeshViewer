@@ -17,6 +17,7 @@ public:
 	const glm::mat4x4 getWorldTransformation();
 	std::vector<glm::vec3> getNormals() const;
 	const int getVertexFacesSum(int indx) const;
+	glm::vec3 getRotateVector() const;
 
 	// setters
 	void setScale(glm::vec3 newScale);
@@ -33,6 +34,7 @@ private:
 	glm::mat4x4 getRotationMatrix();
 	glm::mat4x4 getTranslationMatrix();
 	glm::mat4x4 getScalingMatrix();
+
 
 	// default memebers
 	std::vector<Face> faces_;

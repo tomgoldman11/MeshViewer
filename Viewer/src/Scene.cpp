@@ -6,7 +6,7 @@ Scene::Scene() :
 	active_camera_index_(0),
 	active_model_index_(0),
 	activeFacesNormals(false),
-	activeVerticesNormals(true)
+	activeVerticesNormals(false)
 {
 
 }

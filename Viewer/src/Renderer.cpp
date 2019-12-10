@@ -261,7 +261,6 @@ void Renderer::Render(const Scene& scene)
 	glm::mat4x4 transformationMatrix;
 	//int thickness = 15;
 
-
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
 	// get the projection type matrix - orthographic or perspective or neither of them
@@ -275,6 +274,7 @@ void Renderer::Render(const Scene& scene)
 		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
 	);
+	drawAxis(projectionMatrix, viewMatrix);
 
 	for (int i = 0; i < scene.GetModelCount(); i++) {
 		MeshModel mesh = scene.GetModel(i);
@@ -405,5 +405,42 @@ int Renderer::GetViewportWidth() const
 int Renderer::GetViewportHeight() const
 {
 	return viewport_height_;
+}
+
+void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & viewMatrix)
+{
+	int half_width = viewport_width_ / 2;
+	int half_height = viewport_height_ / 2;
+	glm::mat4x4 rotateMat(1);
+
+	rotateMat[0] = glm::vec4(0.704416037, -0.0744262338, -0.705874503, 0);
+	rotateMat[1] = glm::vec4(-0.704416037, -0.195418477, -0.682355940, 0);
+	rotateMat[2] = glm::vec4(-0.0871557444, 0.977891803, -0.190082937, 0);
+	rotateMat[3] = glm::vec4(0, 0, 0, 1);
+
+	glm::vec4 xAxis(300.0, 0.0, 0.0, 1.0);
+	glm::vec4 yAxis(0.0,300.0, 0.0, 1.0);
+	glm::vec4 zAxis(0.0, 0.0, 300.0, 1.0);
+	glm::vec4 center(0.0, 0.0, 0.0, 1.0);
+	const glm::mat4x4 MMM = glm::mat4x4(
+		{ 1,0,0,0 },
+		{ 0,1,0,0 },
+		{ 0,0,1,0 },
+		{ half_width,half_height,0,1 }
+	);
+	glm::mat4 transformMat = MMM * projectionMatrix * viewMatrix * rotateMat;
+
+	glm::vec4 centerT = transformMat * center;
+	centerT = centerT / center.w;
+	glm::vec4 xAxisT = transformMat * xAxis;
+	xAxisT = xAxisT / xAxisT.w;
+	glm::vec4 yAxisT = transformMat * yAxis;
+	yAxisT = yAxisT / yAxisT.w;
+	glm::vec4 zAxisT = transformMat * zAxis;
+	zAxisT = zAxisT / zAxisT.w;
+
+	DrawLine(glm::vec2(centerT.x, centerT.y), glm::vec2(xAxisT.x, xAxisT.y), glm::vec3(1, 0, 0));
+	DrawLine(glm::vec2(centerT.x, centerT.y), glm::vec2(yAxisT.x, yAxisT.y), glm::vec3(0, 1, 0));
+	DrawLine(glm::vec2(centerT.x, centerT.y), glm::vec2(zAxisT.x, zAxisT.y), glm::vec3(0, 0, 1));
 }
 
