@@ -155,9 +155,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Scaling Values From 0-20");
-		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 20.0f);           
-		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 20.0f);           
+		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 20.0f);      
+		ImGui::SameLine();
+		if (ImGui::Button("Reset X"))
+			ScaleX = 1.0f;
+		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 20.0f);  
+		ImGui::SameLine();
+		if (ImGui::Button("Reset Y"))
+			ScaleY = 5.0f;
 		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 20.0f); 
+		ImGui::SameLine();
+		if (ImGui::Button("Reset Z"))
+			ScaleZ = -45.0f;
 
 		activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
 
@@ -170,9 +179,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Begin("Rotate Window", &show_rotate_window);   
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Rotation Values From -180 to 180"); // yellow
 		//ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "Rotation Values From -180 to 180"); // purple
-		ImGui::SliderFloat("Rotate X", &RotateX, -180.0f, 180.0f);          
-		ImGui::SliderFloat("Rotate Y", &RotateY, -180.0f, 180.0f);            
-		ImGui::SliderFloat("Rotate Z", &RotateZ, -180.0f, 180.0f);     
+		ImGui::SliderFloat("Rotate X", &RotateX, -180.0f, 180.0f);   
+		ImGui::SameLine();
+		if (ImGui::Button("Reset X"))
+			RotateX = 101.0f;
+		ImGui::SliderFloat("Rotate Y", &RotateY, -180.0f, 180.0f);           
+		ImGui::SameLine();
+		if (ImGui::Button("Reset Y"))
+			RotateY = 1.0f;
+		ImGui::SliderFloat("Rotate Z", &RotateZ, -180.0f, 180.0f);  
+		ImGui::SameLine();
+		if (ImGui::Button("Reset Z"))
+			RotateZ = 1.0f;
 
 		activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
 
@@ -184,9 +202,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 		ImGui::Begin("Translate Window", &show_translate_window);
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Translating Values From -600 to 600");
-		ImGui::SliderFloat("Translate X", &TranslateX, -600.0f, 600.0f);            
+		ImGui::SliderFloat("Translate X", &TranslateX, -600.0f, 600.0f);   
+		ImGui::SameLine();
+		if (ImGui::Button("Reset X"))
+			TranslateX = 1.0f;
 		ImGui::SliderFloat("Translate Y", &TranslateY, -600.0f, 600.0f);
-		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f);        
+		ImGui::SameLine();
+		if (ImGui::Button("Reset Y"))
+			TranslateY = 1.0f;
+		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f); 
+		ImGui::SameLine();
+		if (ImGui::Button("Reset Z"))
+			TranslateZ = 1.0f;
 
 		activeModel.setTranslate(glm::vec3(TranslateX, TranslateY, TranslateZ));
 
