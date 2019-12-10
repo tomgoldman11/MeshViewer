@@ -10,8 +10,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	rotateVector(glm::vec3(101.0f, 5.0f, -45.0f)),
 	buttom(0),
 	top(0),
-
 	centerPoint(0)
+
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{
@@ -131,6 +131,11 @@ const glm::mat4x4 MeshModel::getWorldTransformation()
 std::vector<glm::vec3> MeshModel::getNormals() const
 {
 	return normals_;
+}
+
+void MeshModel::setScale(float newScale)
+{
+	setScale(glm::vec3(newScale, newScale, newScale));
 }
 
 void MeshModel::setScale(glm::vec3 newScale)

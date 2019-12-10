@@ -319,7 +319,7 @@ void Renderer::Render(const Scene& scene)
 				DrawLine(glm::vec2(vec34_T.x, vec34_T.y), glm::vec2(vec14_T.x, vec14_T.y), glm::vec3(0, 0, 0));
 			}
 
-			//draw face normal
+			//draw faces normals
 			if (scene.getFacesNormalsStatus()) {
 				glm::vec4 newPoint = (vec14 + vec24 + vec34) / 3.0f;
 
@@ -341,6 +341,7 @@ void Renderer::Render(const Scene& scene)
 			verticesNormals[v3].insert(verticesNormals[v3].begin(), currFace.GetNormalIndex(2)-1);
 		}
 
+		//draw vertices normals
 		if (scene.getVerticesNormalsStatus())
 		{
 			std::vector<glm::vec3> normals = mesh.getNormals();

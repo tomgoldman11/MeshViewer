@@ -16,6 +16,7 @@ public:
 	const std::string& GetModelName() const;
 	const glm::mat4x4 getWorldTransformation();
 	std::vector<glm::vec3> getNormals() const;
+	void setScale(float newScale);
 	const int getVertexFacesSum(int indx) const;
 	glm::vec3 getRotateVector() const;
 
