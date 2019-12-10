@@ -7,19 +7,18 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	model_name_(model_name),
 	translateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
 	scaleVector(glm::vec3(1.0f, 1.0f, 1.0f)),
-	rotateVector(glm::vec3(101.0f, 5.0f, -45.0f)),
-	buttom(0),
+	rotateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
+	bottom(2000),
 	top(0),
 	centerPoint(0)
-
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{
-		buttom.x = std::min(buttom.x, iterator->x);
-		buttom.y = std::min(buttom.y, iterator->y);
-		buttom.z = std::min(buttom.z, iterator->z);
+		bottom.x = std::min(bottom.x, iterator->x);
+		bottom.y = std::min(bottom.y, iterator->y);
+		bottom.z = std::min(bottom.z, iterator->z);
 
-		top.y = std::max(top.y, iterator->y);
+		top.x = std::max(top.x, iterator->x);
 		top.y = std::max(top.y, iterator->y);
 		top.z = std::max(top.z, iterator->z);
 
@@ -32,6 +31,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	centerPoint.y = centerPoint.y / vertices.size();
 	centerPoint.z = centerPoint.z / vertices.size();
 
+	setModelBoxVetrtices();
 }
 
 MeshModel::~MeshModel()
@@ -207,4 +207,30 @@ glm::vec3 MeshModel::getRotateVector() const
 {
 	return rotateVector;
 }
+
+void MeshModel::getModelBoxVetrtices(glm::vec3 & XnYZ, glm::vec3 & XnYnZ, glm::vec3 & nXnYnZ, glm::vec3 & nXnYZ, glm::vec3 & XYZ, glm::vec3 & XYnZ, glm::vec3 & nXYnZ, glm::vec3 & nXYZ) const
+{
+	XnYZ = boxAttr.XnYZ;
+	XnYnZ = boxAttr.XnYnZ;
+	nXnYnZ = boxAttr.nXnYnZ;
+	nXnYZ = boxAttr.nXnYZ;
+	XYZ = boxAttr.XYZ;
+	XYnZ = boxAttr.XYnZ;
+	nXYnZ = boxAttr.nXYnZ;
+	nXYZ = boxAttr.nXYZ;
+}
+
+void MeshModel::setModelBoxVetrtices() 
+{
+	boxAttr.XnYZ = glm::vec3(top.x, bottom.y, top.z);
+	boxAttr.XnYnZ = glm::vec3(top.x, bottom.y, bottom.z);
+	boxAttr.nXnYnZ = glm::vec3(bottom.x, bottom.y, bottom.z);
+	boxAttr.nXnYZ = glm::vec3(bottom.x, bottom.y, top.z);
+	boxAttr.XYZ = glm::vec3(top.x, top.y, top.z);
+	boxAttr.XYnZ = glm::vec3(top.x, top.y, bottom.z);
+	boxAttr.nXYnZ = glm::vec3(bottom.x, top.y, bottom.z);
+	boxAttr.nXYZ = glm::vec3(bottom.x, top.y, top.z);
+}
+
+
 

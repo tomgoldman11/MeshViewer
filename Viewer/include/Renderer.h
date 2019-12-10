@@ -28,4 +28,5 @@ private:
 	int viewport_height_;
 	GLuint gl_screen_tex_;
 	GLuint gl_screen_vtc_;
+	const glm::vec4 trasformVec3(const glm::mat4& transformationMatrix, const glm::vec3 vector);
 };

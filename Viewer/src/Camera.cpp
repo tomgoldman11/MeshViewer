@@ -16,7 +16,7 @@ Camera::~Camera()
 
 void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up)
 {
-	glm::vec3 zaxis = glm::normalize(at -eye);
+	glm::vec3 zaxis = glm::normalize(eye - at);
 	glm::vec3 xaxis = glm::normalize(glm::cross(up, zaxis));
 	glm::vec3 yaxis = glm::cross(zaxis, xaxis);
 	glm::mat4x4 c = glm::mat4x4(

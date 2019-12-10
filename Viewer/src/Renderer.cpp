@@ -207,6 +207,13 @@ void Renderer::InitOpenGLRendering()
 	glUniform1i(glGetUniformLocation(program, "texture"), 0);
 }
 
+const glm::vec4 Renderer::trasformVec3(const glm::mat4& transformationMatrix, glm::vec3 vector)
+{
+	glm::vec4 newPoint = transformationMatrix * Utils::Vec4FromVec3(vector);
+	newPoint = newPoint / newPoint.w;
+	return newPoint;
+}
+
 void Renderer::CreateOpenGLBuffer()
 {
 	// Makes GL_TEXTURE0 the current active texture unit
@@ -258,8 +265,7 @@ void Renderer::Render(const Scene& scene)
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	std::map<int, std::vector<int>> verticesNormals;
-	glm::mat4x4 transformationMatrix;
-	//int thickness = 15;
+	glm::mat4 transformationMatrix;
 
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
@@ -370,6 +376,38 @@ void Renderer::Render(const Scene& scene)
 			}
 		}
 
+		// draw bound box
+		glm::vec3 XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ;
+		// get corners vectors
+		mesh.getModelBoxVetrtices(XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ);
+
+		// transform points
+		XnYZ = trasformVec3(transformationMatrix, XnYZ); //1
+		XnYnZ = trasformVec3(transformationMatrix, XnYnZ); //2
+		nXnYnZ = trasformVec3(transformationMatrix, nXnYnZ); //3
+		nXnYZ = trasformVec3(transformationMatrix, nXnYZ); //4
+		XYZ = trasformVec3(transformationMatrix, XYZ); //5
+		XYnZ = trasformVec3(transformationMatrix, XYnZ); //6
+		nXYnZ = trasformVec3(transformationMatrix, nXYnZ); //7
+		nXYZ = trasformVec3(transformationMatrix, nXYZ); //8
+
+		// draw
+		DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
+		DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec3(0, 0, 1));
+		DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
+		
+		DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXYZ.x, nXYZ.y), glm::vec3(0, 0, 1));
+		DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
+		DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
+		
+		DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
+		DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
+		
+		DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
+		DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
+
+		DrawLine(glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
+		DrawLine(glm::vec2(XYnZ.x, XYnZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
 	}
 
 }
@@ -414,10 +452,10 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 	int half_height = viewport_height_ / 2;
 	glm::mat4x4 rotateMat(1);
 
-	rotateMat[0] = glm::vec4(0.704416037, -0.0744262338, -0.705874503, 0);
-	rotateMat[1] = glm::vec4(-0.704416037, -0.195418477, -0.682355940, 0);
-	rotateMat[2] = glm::vec4(-0.0871557444, 0.977891803, -0.190082937, 0);
-	rotateMat[3] = glm::vec4(0, 0, 0, 1);
+	//rotateMat[0] = glm::vec4(0.704416037, -0.0744262338, -0.705874503, 0);
+	//rotateMat[1] = glm::vec4(-0.704416037, -0.195418477, -0.682355940, 0);
+	//rotateMat[2] = glm::vec4(-0.0871557444, 0.977891803, -0.190082937, 0);
+	//rotateMat[3] = glm::vec4(0, 0, 0, 1);
 
 	glm::vec4 xAxis(300.0, 0.0, 0.0, 1.0);
 	glm::vec4 yAxis(0.0,300.0, 0.0, 1.0);
