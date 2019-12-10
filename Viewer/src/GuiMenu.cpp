@@ -162,11 +162,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 20.0f);  
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
-			ScaleY = 5.0f;
+			ScaleY = 1.0f;
 		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 20.0f); 
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
-			ScaleZ = -45.0f;
+			ScaleZ = 1.0f;
 
 		activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
 
@@ -186,11 +186,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("Rotate Y", &RotateY, -180.0f, 180.0f);           
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
-			RotateY = 1.0f;
+			RotateY = 5.0f;
 		ImGui::SliderFloat("Rotate Z", &RotateZ, -180.0f, 180.0f);  
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
-			RotateZ = 1.0f;
+			RotateZ = -45.0f;
 
 		activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
 
@@ -205,15 +205,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("Translate X", &TranslateX, -600.0f, 600.0f);   
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
-			TranslateX = 1.0f;
+			TranslateX = 0.0f;
 		ImGui::SliderFloat("Translate Y", &TranslateY, -600.0f, 600.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
-			TranslateY = 1.0f;
+			TranslateY = 0.0f;
 		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f); 
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
-			TranslateZ = 1.0f;
+			TranslateZ = 0.0f;
 
 		activeModel.setTranslate(glm::vec3(TranslateX, TranslateY, TranslateZ));
 
