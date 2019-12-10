@@ -27,9 +27,9 @@ glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
  static float ScaleY = 1.0f;
  static float ScaleZ = 1.0f;
 
-static float RotateX = 0.0f;
-static float RotateY = 0.0f;
-static float RotateZ = 0.0f;
+ static float RotateX = 101.0f;
+ static float RotateY = 5.0f;
+ static float RotateZ = -45.0f;
 
 static float TranslateX = 0.0f;
 static float TranslateY = 0.0f;
@@ -141,12 +141,20 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 
+		ImGui::Begin("Camera Control"); // camera window.
+
+
+
+
+
+		ImGui::End(); // camera window end.
+
 		static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
 
 	if (show_scale_window)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
-		ImGui::Text("Scaling Values From 0-10");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Scaling Values From 0-20");
 		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 20.0f);           
 		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 20.0f);           
 		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 20.0f); 
@@ -160,10 +168,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_rotate_window)
 	{
 		ImGui::Begin("Rotate Window", &show_rotate_window);   
-		ImGui::Text("Rotation Values From -360 to 360");
-		ImGui::SliderFloat("Rotate X", &RotateX, -360.0f, 360.0f);          
-		ImGui::SliderFloat("Rotate Y", &RotateY, -360.0f, 360.0f);            
-		ImGui::SliderFloat("Rotate Z", &RotateZ, -360.0f, 360.0f);     
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Rotation Values From -180 to 180"); // yellow
+		//ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "Rotation Values From -180 to 180"); // purple
+		ImGui::SliderFloat("Rotate X", &RotateX, -180.0f, 180.0f);          
+		ImGui::SliderFloat("Rotate Y", &RotateY, -180.0f, 180.0f);            
+		ImGui::SliderFloat("Rotate Z", &RotateZ, -180.0f, 180.0f);     
 
 		activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
 
@@ -174,7 +183,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_translate_window)
 	{
 		ImGui::Begin("Translate Window", &show_translate_window);
-		ImGui::Text("Translating Values From -600 to 600");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Translating Values From -600 to 600");
 		ImGui::SliderFloat("Translate X", &TranslateX, -600.0f, 600.0f);            
 		ImGui::SliderFloat("Translate Y", &TranslateY, -600.0f, 600.0f);
 		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f);        
