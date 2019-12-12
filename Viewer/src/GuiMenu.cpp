@@ -150,6 +150,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::End(); // camera window end.
 
 		static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
+		
 
 	if (show_scale_window)
 	{
@@ -227,10 +228,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 	if (normals_per_face)
 	{
-
+		scene.activeFacesNormals = true;
+	}
+	else
+	{
+		scene.activeFacesNormals = false;
 	}
 	if (normals_per_vertex)
 	{
-
+		scene.activeVerticesNormals = true;
+	}
+	else
+	{
+		scene.activeVerticesNormals = false;
 	}
 }

@@ -40,6 +40,7 @@ public:
 	void setFaceNormals();
 
 private:
+
 	void setModelBoxVetrtices();
 	// getters
 	glm::mat4x4 getRotationMatrix();
