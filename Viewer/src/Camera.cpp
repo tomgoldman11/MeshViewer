@@ -6,7 +6,8 @@ Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
-	setOrthographicProjection();
+	setPerspectiveProjection();
+	//setOrthographicProjection();
 }
 
 Camera::~Camera()
@@ -86,4 +87,29 @@ void Camera::setOrthographicProjection(const float left, const float right, cons
 		{ -(right + left) / (right - left) , -(bottom + top) / (top - bottom) , -(_far + _near) / (_far - _near),1}
 	);
 }
+
+void Camera::setFOVY(const float _fovy)
+{
+	perspView.fovy = _fovy;
+	setPerspectiveProjection();
+}
+
+void Camera::setAspectRatio(const float _aspectRatio)
+{
+	perspView.aspect = _aspectRatio;
+	setPerspectiveProjection();
+}
+
+void Camera::setNear(const float _near)
+{
+	perspView._near = _near;
+	setPerspectiveProjection();
+}
+
+void Camera::setFar(const float _far)
+{
+	perspView._far = _far;
+	setPerspectiveProjection();
+}
+
 

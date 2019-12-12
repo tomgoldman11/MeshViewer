@@ -199,6 +199,7 @@ void MeshModel::setFaceNormals()
 
 }
 
+
 const int MeshModel::getVertexFacesSum(int indx) const {
 	return verticesFaces.at(indx);
 }

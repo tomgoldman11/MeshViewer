@@ -35,10 +35,17 @@ public:
 	bool activeFacesNormals;
     bool activeVerticesNormals;
 
+	void setBoudBox();
+
+	bool getBoundBoxStatus() const;
+	bool activeBoundBox;
+
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
 	std::vector<std::shared_ptr<Camera>> cameras_;
 
 	int active_camera_index_;
 	int active_model_index_;
+
+
 };

@@ -318,27 +318,28 @@ void Renderer::Render(const Scene& scene)
 			vec24_T = vec24_T / vec24_T.w;
 			vec34_T = vec34_T / vec34_T.w;
 
+			glm::vec3 vec1T = trasformVec3(transformationMatrix, vec1);
+			glm::vec3 vec2T = trasformVec3(transformationMatrix, vec2);
+			glm::vec3 vec3T = trasformVec3(transformationMatrix, vec3);
+
 			// draw the triangle
 			if (currFace.getVerticesCount() == 3) {
-				DrawLine(glm::vec2(vec14_T.x, vec14_T.y), glm::vec2(vec24_T.x, vec24_T.y), glm::vec3(0, 0, 0));
-				DrawLine(glm::vec2(vec24_T.x, vec24_T.y), glm::vec2(vec34_T.x, vec34_T.y), glm::vec3(0, 0, 0));
-				DrawLine(glm::vec2(vec34_T.x, vec34_T.y), glm::vec2(vec14_T.x, vec14_T.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec1T.x, vec1T.y), glm::vec2(vec2T.x, vec2T.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec2T.x, vec2T.y), glm::vec2(vec3T.x, vec3T.y), glm::vec3(0, 0, 0));
+				DrawLine(glm::vec2(vec3T.x, vec3T.y), glm::vec2(vec1T.x, vec1T.y), glm::vec3(0, 0, 0));
 			}
 
 			//draw faces normals
 			if (scene.getFacesNormalsStatus()) {
-				glm::vec4 newPoint = (vec14 + vec24 + vec34) / 3.0f;
+				glm::vec3 newPoint = (vec1 + vec2 + vec3) / 3.0f;
 
-				glm::vec4 newPoint_T = transformationMatrix * newPoint;
-				newPoint_T = newPoint_T / newPoint_T.w;
+				glm::vec3 newPoint_T = trasformVec3(transformationMatrix, newPoint);
 
 				glm::vec3 _normalPoint = currFace.getNormal();
 				glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
 
-				glm::vec4 normal = 0.1f * normalPoint + newPoint;
-
-				normal = transformationMatrix * normal;
-				normal = normal / normal.w;
+				glm::vec3 normal = 0.1f * _normalPoint + newPoint;
+				normal = trasformVec3(transformationMatrix, normal);
 				DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
 			}
 
@@ -363,51 +364,59 @@ void Renderer::Render(const Scene& scene)
 				}
 				sumNormals = sumNormals / (float)listNormals.size();
 
-				glm::vec4 vVec = Utils::Vec4FromVec3(vertices[vInd->first]);
+				glm::vec3 vVec = vertices[vInd->first];
+				glm::vec3 sumNormals3 = 30.0f * sumNormals + vVec;
+				vVec = trasformVec3(transformationMatrix, vVec);
+				sumNormals3 = trasformVec3(transformationMatrix, sumNormals3);
 
-				glm::vec4 sumNormals4 = 30.0f * glm::vec4({ sumNormals, 0.0f }) + vVec;
-				vVec = transformationMatrix * vVec;
-				vVec = vVec / vVec.w;
-				sumNormals4 = transformationMatrix * sumNormals4;
-				sumNormals4 = sumNormals4 / sumNormals4.w;
+				//glm::vec4 vVec = Utils::Vec4FromVec3(vertices[vInd->first]);
 
-				DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(sumNormals4.x, sumNormals4.y), glm::vec3(0, 1, 0));
+				//glm::vec4 sumNormals4 = 30.0f * glm::vec4({ sumNormals, 0.0f }) + vVec;
+				//vVec = transformationMatrix * vVec;
+				//vVec = vVec / vVec.w;
+				//sumNormals4 = transformationMatrix * sumNormals4;
+				//sumNormals4 = sumNormals4 / sumNormals4.w;
 
+				//DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(sumNormals4.x, sumNormals4.y), glm::vec3(0, 1, 0));
+				DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(sumNormals3.x, sumNormals3.y), glm::vec3(0, 1, 0));
 			}
 		}
 
 		// draw bound box
-		glm::vec3 XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ;
-		// get corners vectors
-		mesh.getModelBoxVetrtices(XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ);
+		if (scene.getBoundBoxStatus())
+		{
+			glm::vec3 XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ;
+			// get corners vectors
+			mesh.getModelBoxVetrtices(XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ);
 
-		// transform points
-		XnYZ = trasformVec3(transformationMatrix, XnYZ); //1
-		XnYnZ = trasformVec3(transformationMatrix, XnYnZ); //2
-		nXnYnZ = trasformVec3(transformationMatrix, nXnYnZ); //3
-		nXnYZ = trasformVec3(transformationMatrix, nXnYZ); //4
-		XYZ = trasformVec3(transformationMatrix, XYZ); //5
-		XYnZ = trasformVec3(transformationMatrix, XYnZ); //6
-		nXYnZ = trasformVec3(transformationMatrix, nXYnZ); //7
-		nXYZ = trasformVec3(transformationMatrix, nXYZ); //8
+			// transform points
+			XnYZ = trasformVec3(transformationMatrix, XnYZ); //1
+			XnYnZ = trasformVec3(transformationMatrix, XnYnZ); //2
+			nXnYnZ = trasformVec3(transformationMatrix, nXnYnZ); //3
+			nXnYZ = trasformVec3(transformationMatrix, nXnYZ); //4
+			XYZ = trasformVec3(transformationMatrix, XYZ); //5
+			XYnZ = trasformVec3(transformationMatrix, XYnZ); //6
+			nXYnZ = trasformVec3(transformationMatrix, nXYnZ); //7
+			nXYZ = trasformVec3(transformationMatrix, nXYZ); //8
 
-		// draw
-		DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
-		DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec3(0, 0, 1));
-		DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
-		
-		DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXYZ.x, nXYZ.y), glm::vec3(0, 0, 1));
-		DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
-		DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
-		
-		DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
-		DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
-		
-		DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
-		DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
+			// draw
+			DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
 
-		DrawLine(glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
-		DrawLine(glm::vec2(XYnZ.x, XYnZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXYZ.x, nXYZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
+
+			DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
+
+			DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
+
+			DrawLine(glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
+			DrawLine(glm::vec2(XYnZ.x, XYnZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
+		}
 	}
 
 }

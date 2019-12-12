@@ -39,6 +39,7 @@ public:
 	void setTranslate(glm::vec3 newTranslate);
 	void setFaceNormals();
 
+
 private:
 
 	void setModelBoxVetrtices();
@@ -69,4 +70,5 @@ private:
 	glm::vec3 centerPoint;
 	std::map<int, int> verticesFaces;
 	box boxAttr;
+
 };

@@ -6,7 +6,8 @@ Scene::Scene() :
 	active_camera_index_(0),
 	active_model_index_(0),
 	activeFacesNormals(false),
-	activeVerticesNormals(false)
+	activeVerticesNormals(true),
+	activeBoundBox(false)
 {
 
 }
@@ -89,4 +90,14 @@ bool Scene::getFacesNormalsStatus() const
 bool Scene::getVerticesNormalsStatus() const
 {
 	return activeVerticesNormals;
+}
+
+void Scene::setBoudBox()
+{
+	activeBoundBox = !activeBoundBox;
+}
+
+bool Scene::getBoundBoxStatus() const
+{
+	return activeBoundBox;
 }

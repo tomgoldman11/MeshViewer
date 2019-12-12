@@ -224,7 +224,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 	if (bounding_box)
 	{
-
+		scene.activeBoundBox = true;
+	}
+	else
+	{
+		scene.activeBoundBox = false;
 	}
 	if (normals_per_face)
 	{
