@@ -52,7 +52,6 @@ public:
 	void setNear(const float _near);
 	void setFar(const float _far);
 
-
 private:
 	glm::mat4x4 view_transformation_;
 	glm::mat4x4 projection_transformation_;

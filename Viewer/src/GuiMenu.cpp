@@ -29,9 +29,9 @@ glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
  static float ScaleY = 1.0f;
  static float ScaleZ = 1.0f;
 
- static float RotateX = 101.0f;
- static float RotateY = 5.0f;
- static float RotateZ = -45.0f;
+ static float RotateX = 0.0f;
+ static float RotateY = 0.0f;
+ static float RotateZ = 0.0f;
 
 static float TranslateX = 0.0f;
 static float TranslateY = 0.0f;
@@ -183,15 +183,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Scaling Values From 0-20");
-		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 20.0f);      
+		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 120.0f);      
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
 			ScaleX = 1.0f;
-		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 20.0f);  
+		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 120.0f);  
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
 			ScaleY = 1.0f;
-		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 20.0f); 
+		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 120.0f); 
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			ScaleZ = 1.0f;
