@@ -459,13 +459,7 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 {
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
-	glm::mat4x4 rotateMat(1);
-
-	//rotateMat[0] = glm::vec4(0.704416037, -0.0744262338, -0.705874503, 0);
-	//rotateMat[1] = glm::vec4(-0.704416037, -0.195418477, -0.682355940, 0);
-	//rotateMat[2] = glm::vec4(-0.0871557444, 0.977891803, -0.190082937, 0);
-	//rotateMat[3] = glm::vec4(0, 0, 0, 1);
-
+	
 	glm::vec4 xAxis(300.0, 0.0, 0.0, 1.0);
 	glm::vec4 yAxis(0.0,300.0, 0.0, 1.0);
 	glm::vec4 zAxis(0.0, 0.0, 300.0, 1.0);
@@ -476,7 +470,7 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
 	);
-	glm::mat4 transformMat = MMM * projectionMatrix * viewMatrix * rotateMat;
+	glm::mat4 transformMat = MMM * projectionMatrix * viewMatrix ;
 
 	glm::vec4 centerT = transformMat * center;
 	centerT = centerT / center.w;

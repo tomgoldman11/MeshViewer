@@ -2,12 +2,13 @@
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
 	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far
-	perspView({ 1.0f, 1.5f , 0.1f, 9.0f }) // aspect, fovy, near, far
+	perspView({ 1.0f, 27.0f , 0.1f, 100.0f }) // aspect, fovy, near, far
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
+	
 	setPerspectiveProjection();
-	//setOrthographicProjection();
+	setOrthographicProjection();
 }
 
 Camera::~Camera()
@@ -20,6 +21,7 @@ void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const 
 	glm::vec3 zaxis = glm::normalize(eye - at);
 	glm::vec3 xaxis = glm::normalize(glm::cross(up, zaxis));
 	glm::vec3 yaxis = glm::cross(zaxis, xaxis);
+
 	glm::mat4x4 c = glm::mat4x4(
 		{ xaxis.x,xaxis.y,xaxis.z,0.0},
 		{ yaxis.x,yaxis.y,yaxis.z,0.0},
@@ -32,7 +34,7 @@ void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const 
 		{0,0,1,0},
 		{-eye.x,-eye.y,-eye.z,1} ); // - or not
 
-	view_transformation_ = c * eyeTranslate;
+	view_transformation_ = glm::transpose(c) * eyeTranslate;
 }
 
 const glm::mat4x4 Camera::getProjectionTransformation() const
@@ -57,20 +59,59 @@ void Camera::setPerspectiveProjection(const float aspect, const float fovy, cons
 	perspView._near = near;
 	perspView._far = far;
 	const float zRange = near - far;
+	//const float zRange = far - near;
 
 	float fov = fovy * 0.01745329251994329576923690768489f;
 
 	float tanHalfFOV = tan(fov / 2.0f);
 
-	glm::mat4x4 result(1);
+	glm::mat4x4 result(0);
 
-	result[0][0] = 1.0f / (tanHalfFOV * aspect );
+	result[0][0] = 1.0f / (tanHalfFOV * aspect);
 	result[1][1] = 1.0f / (tanHalfFOV);
 	result[2][2] = -(far + near) / zRange;
-	result[2][3] = (2.0f * far * near) / zRange;
-	result[3][2] = -1.0f;
-
+	result[3][2] = -(2.0f * far * near) / zRange;
+	result[2][3] = -1.0f;
 	projection_transformation_ = result;
+
+	//float height = near*(tan(fov / 2.0f));
+	//float width = aspect * height;
+
+	//result[0][0] = 1.0f/width;
+	//result[1][1] = 1.0f / height;
+	//result[2][2] = -(far + near) / zRange;
+	//result[3][2] = -(2.0f * far * near) / zRange ;
+	//result[2][3] = -1.0f;
+
+	//projection_transformation_ = glm::transpose(result);
+
+	//float scale = tan(fovy * 0.5 * 0.01745329251994329576923690768489f) * near;
+	//float _projRight = aspect * scale;
+	//float _projLeft = -_projRight;
+	//float _projTop = scale, _projBottom = -_projTop;
+
+	//glm::mat4x4 M;
+	//M[0][0] = 2 * near / (_projRight - _projLeft);
+	//M[0][1] = 0;
+	//M[0][2] = 0;
+	//M[0][3] = 0;
+
+	//M[1][0] = 0;
+	//M[1][1] = 2 * near / (_projTop - _projBottom);
+	//M[1][2] = 0;
+	//M[1][3] = 0;
+
+	//M[2][0] = (_projRight + _projLeft) / (_projRight - _projLeft);
+	//M[2][1] = (_projTop + _projBottom) / (_projTop - _projBottom);
+	//M[2][2] = -(far + near) / (far - near);
+	//M[2][3] = -1;
+
+	//M[3][0] = 0;
+	//M[3][1] = 0;
+	//M[3][2] = -2 * far * near / (far - near);
+	//M[3][3] = 0;
+
+	//projection_transformation_ = M;
 }
 
 void Camera::setOrthographicProjection()
@@ -111,5 +152,3 @@ void Camera::setFar(const float _far)
 	perspView._far = _far;
 	setPerspectiveProjection();
 }
-
-
