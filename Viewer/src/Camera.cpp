@@ -6,9 +6,9 @@ Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
-	projection_transformation_ = glm::perspective(perspView.fovy, perspView.aspect, perspView._near, perspView._far);
+	//projection_transformation_ = glm::perspective(perspView.fovy, perspView.aspect, perspView._near, perspView._far);
 	//setPerspectiveProjection();
-	//setOrthographicProjection();
+	setOrthographicProjection();
 }
 
 Camera::~Camera()

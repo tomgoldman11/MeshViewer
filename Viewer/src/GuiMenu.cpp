@@ -18,6 +18,8 @@ bool show_translate_window = false;
 bool bounding_box = false;
 bool normals_per_face = false;
 bool normals_per_vertex = false;
+bool ortho = false;
+bool pers = false;
 
 
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
@@ -34,6 +36,11 @@ glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
 static float TranslateX = 0.0f;
 static float TranslateY = 0.0f;
 static float TranslateZ = 0.0f;
+
+static float camX = 0.0f;
+static float camY = 0.0f;
+static float disZ = -1.0f;
+
 
 /**
  * Function implementation
@@ -80,6 +87,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("Add"))
+		{
+			if (ImGui::MenuItem("add camera", "CTRL+A"))
+			{
+				scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ 0,0,1 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::BeginMenu("Edit"))
 		{
 			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
@@ -113,7 +128,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	static int counter = 0;
 	ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
 
-																// CODE FOR CONNECTIONNN !r!@r!#@t#gejvdsiinvesingwep
+															
 	if (scene.GetModelCount() == 0)
 	{
 		ImGui::Text("No models loaded yet");
@@ -141,15 +156,27 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 
+		static Camera& activeCamera = scene.GetActiveCamera();
+
 		ImGui::Begin("Camera Control"); // camera window.
 
+		ImGui::Checkbox("orthographic", &ortho);
+		ImGui::SameLine();
+		ImGui::Checkbox("perspective", &pers);
 
+		ImGui::SliderFloat("Cam X", &camX, -6.0f, 6.0f);
+		ImGui::SliderFloat("Cam Y", &camY, -6.0f, 6.0f);
+		ImGui::SliderFloat("Distance", &disZ, -1.0f, 1.0f);
 
+		activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
+		
 
 
 		ImGui::End(); // camera window end.
 
 		static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
+	
 		
 
 	if (show_scale_window)
@@ -245,5 +272,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	else
 	{
 		scene.activeVerticesNormals = false;
+	}
+	if (ortho)
+	{
+
+	}
+	if (pers)
+	{
+
 	}
 }
