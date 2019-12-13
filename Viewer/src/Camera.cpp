@@ -2,19 +2,13 @@
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
 	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far
-	perspView({ 1.0f, 27.0f , 0.1f, 100.0f }) // aspect, fovy, near, far
+	perspView({ 1.0f, 27.0f , 0.1f, 10.0f }) // aspect, fovy, near, far
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
-<<<<<<< HEAD
-	
+	//projection_transformation_ = glm::transpose(glm::perspective(perspView.fovy, perspView.aspect, perspView._near, perspView._far));
 	setPerspectiveProjection();
-	setOrthographicProjection();
-=======
-	projection_transformation_ = glm::perspective(perspView.fovy, perspView.aspect, perspView._near, perspView._far);
-	//setPerspectiveProjection();
 	//setOrthographicProjection();
->>>>>>> 1fb53e091ba7bf13e2da81292cfcf9c852df4a9e
 }
 
 Camera::~Camera()
@@ -64,32 +58,32 @@ void Camera::setPerspectiveProjection(const float aspect, const float fovy, cons
 	perspView.fovy = fovy;
 	perspView._near = near;
 	perspView._far = far;
-	const float zRange = near - far;
+	const float zRange = far -near;
 	//const float zRange = far - near;
 
-	float fov = fovy * 0.01745329251994329576923690768489f;
+	const float fov = fovy * 0.01745329251994329576923690768489f;
 
 	float tanHalfFOV = tan(fov / 2.0f);
 
 	glm::mat4x4 result(0);
 
-	result[0][0] = 1.0f / (tanHalfFOV * aspect);
-	result[1][1] = 1.0f / (tanHalfFOV);
-	result[2][2] = -(far + near) / zRange;
-	result[3][2] = -(2.0f * far * near) / zRange;
-	result[2][3] = -1.0f;
-	projection_transformation_ = result;
-
-	//float height = near*(tan(fov / 2.0f));
-	//float width = aspect * height;
-
-	//result[0][0] = 1.0f/width;
-	//result[1][1] = 1.0f / height;
+	//result[0][0] = 1.0f / (tanHalfFOV * aspect);
+	//result[1][1] = 1.0f / (tanHalfFOV);
 	//result[2][2] = -(far + near) / zRange;
-	//result[3][2] = -(2.0f * far * near) / zRange ;
+	//result[3][2] = -(2.0f * far * near) / zRange;
 	//result[2][3] = -1.0f;
+	//projection_transformation_ = result;
 
-	//projection_transformation_ = glm::transpose(result);
+	const float height = near*(tan(fov / 2.0f));
+	const float width = aspect * height;
+
+	result[0][0] = near/width;
+	result[1][1] = near / height;
+	result[2][2] = -(far + near) / zRange;
+	result[3][2] = -(2.0f * far * near) / zRange ;
+	result[2][3] = -1.0f;
+
+	projection_transformation_ = glm::transpose(result);
 
 	//float scale = tan(fovy * 0.5 * 0.01745329251994329576923690768489f) * near;
 	//float _projRight = aspect * scale;
