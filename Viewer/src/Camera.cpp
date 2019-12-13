@@ -2,14 +2,14 @@
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
 	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far
-	perspView({ 1.0f, 27.0f , 0.1f, 10.0f }) // aspect, fovy, near, far
+	perspView({ 1.0f, 60.0f , 0.1f, 10.0f }) // aspect, fovy, near, far
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
 
-	//projection_transformation_ = glm::transpose(glm::perspective(perspView.fovy, perspView.aspect, perspView._near, perspView._far));
-	setPerspectiveProjection();
-	//setOrthographicProjection();
+	//projection_transformation_ = glm::perspective(perspView.fovy * 0.01745329251994329576923690768489f, perspView.aspect, perspView._near, perspView._far);
+	//setPerspectiveProjection();
+	setOrthographicProjection();
 }
 
 Camera::~Camera()
@@ -60,9 +60,8 @@ void Camera::setPerspectiveProjection(const float aspect, const float fovy, cons
 	perspView._near = near;
 	perspView._far = far;
 	const float zRange = far -near;
-	//const float zRange = far - near;
 
-	const float fov = fovy * 0.01745329251994329576923690768489f;
+	const float fov = fovy * 0.01745329251994329576923690768489f / zoom;
 
 	float tanHalfFOV = tan(fov / 2.0f);
 
@@ -152,4 +151,9 @@ void Camera::setFar(const float _far)
 {
 	perspView._far = _far;
 	setPerspectiveProjection();
+}
+
+void Camera::setZoom(const float _zoom)
+{
+	zoom = zoom;
 }

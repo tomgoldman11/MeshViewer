@@ -101,3 +101,8 @@ bool Scene::getBoundBoxStatus() const
 {
 	return activeBoundBox;
 }
+
+void Scene::setZoomForCam(float zoom, int index)
+{
+	cameras_[index]->setZoom(zoom);
+}

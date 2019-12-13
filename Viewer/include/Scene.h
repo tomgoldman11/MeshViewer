@@ -38,7 +38,9 @@ public:
 	void setBoudBox();
 
 	bool getBoundBoxStatus() const;
+	void setZoomForCam(float zoom, int index);
 	bool activeBoundBox;
+
 
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;

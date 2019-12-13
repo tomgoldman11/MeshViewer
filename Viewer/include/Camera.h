@@ -51,10 +51,12 @@ public:
 	void setAspectRatio(const float _aspectRatio);
 	void setNear(const float _near);
 	void setFar(const float _far);
+	void setZoom(const float _zoom);
 
 private:
 	glm::mat4x4 view_transformation_;
 	glm::mat4x4 projection_transformation_;
 	ortho orthoView;
 	perspective perspView;
+	float zoom;
 };

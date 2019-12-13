@@ -34,6 +34,18 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 	color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
 }
 
+void Renderer::setViewPort(const int _viewportWidth, const int _viewportHeight)
+{
+	// NEED TO CHECK!!!!!!
+	viewport_height_ = _viewportHeight;
+	viewport_width_ = _viewportWidth;
+	InitOpenGLRendering();
+	CreateBuffers(viewport_width_, viewport_height_);
+
+	DrawLine(glm::vec2(0, 0), glm::vec2(1000, 1000), glm::vec3(0, 0, 0));
+
+}
+
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
 	int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
