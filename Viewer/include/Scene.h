@@ -17,7 +17,7 @@ public:
 	
 	void AddCamera(const std::shared_ptr<Camera>& camera);
 	int GetCameraCount() const;
-	Camera& GetCamera(int index);
+	Camera& GetCamera(int index) const;
 	Camera & GetActiveCamera() const;
 
 	void SetActiveCameraIndex(int index);
@@ -48,6 +48,5 @@ private:
 
 	int active_camera_index_;
 	int active_model_index_;
-
 
 };

@@ -31,6 +31,11 @@ public:
 		float _far;
 	};
 
+	struct position {
+		glm::vec3 eye;
+		glm::vec3 at;
+		glm::vec3 up;
+	};
 	Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up);
 	virtual ~Camera();
 
@@ -52,11 +57,16 @@ public:
 	void setNear(const float _near);
 	void setFar(const float _far);
 	void setZoom(const float _zoom);
+	void set_current_position(const glm::vec3 eye, const glm::vec3 at, const glm::vec3 up);
+	glm::vec3 getEye()const;
+	glm::vec3 getAt()const;
+	glm::vec3 getUp()const;
 
 private:
 	glm::mat4x4 view_transformation_;
 	glm::mat4x4 projection_transformation_;
 	ortho orthoView;
 	perspective perspView;
+	position curPos;
 	float zoom;
 };

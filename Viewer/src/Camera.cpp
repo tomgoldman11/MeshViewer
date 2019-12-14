@@ -1,6 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
+	curPos({eye,at,up}),
 	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far
 	perspView({ 1.0f, 60.0f , 0.1f, 10.0f }) // aspect, fovy, near, far
 {
@@ -33,7 +34,7 @@ void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const 
 		{1,0,0,0},
 		{0,1,0,0},
 		{0,0,1,0},
-		{-eye.x,-eye.y,-eye.z,1} ); // - or not
+		{-eye.x,-eye.y,-eye.z,1} );
 
 	view_transformation_ = glm::transpose(c) * eyeTranslate;
 }
@@ -156,4 +157,26 @@ void Camera::setFar(const float _far)
 void Camera::setZoom(const float _zoom)
 {
 	zoom = zoom;
+}
+
+void Camera::set_current_position(const glm::vec3 _eye, const glm::vec3 _at, const glm::vec3 _up)
+{
+	curPos.eye = _eye;
+	curPos.at = _at;
+	curPos.up = _up;
+}
+
+glm::vec3 Camera::getEye() const
+{
+	return curPos.eye;
+}
+
+glm::vec3 Camera::getAt() const
+{
+	return curPos.at;
+}
+
+glm::vec3 Camera::getUp() const
+{
+	return curPos.up;
 }

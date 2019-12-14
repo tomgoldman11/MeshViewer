@@ -30,4 +30,9 @@ private:
 	GLuint gl_screen_tex_;
 	GLuint gl_screen_vtc_;
 	const glm::vec4 trasformVec3(const glm::mat4& transformationMatrix, const glm::vec3 vector);
+
+	void drawFacesNormals(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace);
+	void drawVerticesNormals(const MeshModel & mesh, const std::map<int, std::vector<int>>& verticesNormals, const std::vector<glm::vec3>& vertices, const glm::mat4x4 & transformationMatrix);
+	void drawBoundBox(const MeshModel mesh, const glm::mat4x4 & transformationMatrix);
+	void drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace);
 };
