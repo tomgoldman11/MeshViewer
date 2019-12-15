@@ -21,9 +21,10 @@ Camera::~Camera()
 
 void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up)
 {
+	curPos.eye = eye; curPos.at = at;
 	glm::vec3 zaxis = glm::normalize(eye - at);
 	glm::vec3 xaxis = glm::normalize(glm::cross(up, zaxis));
-	glm::vec3 yaxis = glm::cross(zaxis, xaxis);
+	glm::vec3 yaxis = glm::normalize(glm::cross(zaxis, xaxis));
 
 	glm::mat4x4 c = glm::mat4x4(
 		{ xaxis.x,xaxis.y,xaxis.z,0.0},
@@ -123,10 +124,10 @@ void Camera::setPerspectiveProjection_Alter()
 void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float fovy, const float near, const float far)
 {
 	float scale = tan(fovy * 0.5 * 0.01745329251994329576923690768489f) * near;
-	float _projRight = aspectRatio * scale;
-	float _projLeft = -_projRight;
-	float _projTop = scale, _projBottom = -_projTop;
-	float _projNear = near, _projFar = far;
+	//float _projRight = aspectRatio * scale;
+	//float _projLeft = -_projRight;
+	//float _projTop = scale, _projBottom = -_projTop;
+	//float _projNear = near, _projFar = far;
 	frustumView.right = aspectRatio * scale;
 	frustumView.left = -frustumView.right;
 	frustumView.top = scale, frustumView.bottom = -frustumView.top;

@@ -448,9 +448,10 @@ void Renderer::Render(const Scene& scene)
 		//get the M matrix (world frame) related to the mesh model
 		const glm::mat4x4 modelMatrix = cameraModel->getLocalTransformation();
 		const glm::mat4x4 worldlMatrix = cameraModel->getWorldTransformation();
+		const glm::mat4 inverseLookAt = glm::inverse(cameraObj.getViewTransformation());
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix = MMM * projectionMatrix* viewMatrix * worldlMatrix * modelMatrix;
+		transformationMatrix = MMM * projectionMatrix* viewMatrix * inverseLookAt;
 
 		for (int j = 0; j < cameraModel->GetFacesCount(); j++) {
 			Face currFace = cameraModel->GetFace(j);

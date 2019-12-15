@@ -148,12 +148,24 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::End();
 		return;
 	}
+	// multiple models
+	static int currmod = 0;
+	ImGui::InputInt("ActiveModel", &currmod);
+	if (currmod < 0) currmod = 0;
+	if (currmod >= scene.GetModelCount()) currmod = scene.GetModelCount() - 1;
+	scene.SetActiveModelIndex(currmod);
+
 	MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
 	Camera& activeCamera = scene.GetActiveCamera(); // getting the active camera. 
+	glm::vec3 currEye = activeCamera.getEye();
+	glm::vec3 currAt = activeCamera.getAt();
+	camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
+	atX = currAt.x; atY = currAt.y; atZ = currAt.z;
 	
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s" , stringToCharSeq(activeModel.GetModelName())); // purple
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
+
 	
 	if (ImGui::RadioButton("World", &WorldLocal, 0))
 	{
@@ -204,7 +216,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
 		static int currcam = 0;
+
 		ImGui::InputInt("ActiveCam", &currcam);
+		if (currcam < 0) currcam = 0;
+		if (currcam >= scene.GetCameraCount()) currcam = scene.GetCameraCount() - 1;
 		scene.SetActiveCameraIndex(currcam);
 
 		ImGui::RadioButton("orthographic", &pers, 0);
@@ -219,7 +234,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset camY"))
 			camY = 0.0f;
-		ImGui::SliderFloat("Dis", &disZ, -1.0f, 1.0f);
+		ImGui::SliderFloat("Dis", &disZ, -6.0f, 6.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset dist"))
 			disZ = 1.0f;
@@ -242,7 +257,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::End(); // camera window end.
 
 		//static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
-	
+
 	if (show_scale_window)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
