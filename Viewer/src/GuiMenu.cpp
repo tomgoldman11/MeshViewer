@@ -166,11 +166,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::RadioButton("Local", &WorldLocal, 1);
 
 
-	if (WorldLocal = 0)
-	{
+	//if (WorldLocal = 0)
+	//{
 
 
-	}
+	//}
 
 	ImGui::Checkbox("Scale Model", &show_scale_window);
 	ImGui::Checkbox("Rotate Model", &show_rotate_window);
