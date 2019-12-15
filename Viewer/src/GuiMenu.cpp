@@ -201,6 +201,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Camera # : %d" , scene.GetActiveCameraIndex());
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
+		static int currcam = 0;
+		ImGui::InputInt("ActiveCam", &currcam);
+		//scene.SetActiveCameraIndex(currcam);
 
 		ImGui::RadioButton("orthographic", &pers, 0);
 		ImGui::SameLine();
