@@ -209,25 +209,25 @@ void Camera::setOrthographicProjection(const float left, const float right, cons
 void Camera::setFOVY(const float _fovy)
 {
 	perspView.fovy = _fovy;
-	setPerspectiveProjection();
+	//setPerspectiveProjection();
 }
 
 void Camera::setAspectRatio(const float _aspectRatio)
 {
 	perspView.aspect = _aspectRatio;
-	setPerspectiveProjection();
+	//setPerspectiveProjection();
 }
 
 void Camera::setNear(const float _near)
 {
 	perspView._near = _near;
-	setPerspectiveProjection();
+	//setPerspectiveProjection();
 }
 
 void Camera::setFar(const float _far)
 {
 	perspView._far = _far;
-	setPerspectiveProjection();
+	//setPerspectiveProjection();
 }
 
 void Camera::setZoom(const float _zoom)

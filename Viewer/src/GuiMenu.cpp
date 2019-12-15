@@ -107,7 +107,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		{
 			if (ImGui::MenuItem("add camera", "CTRL+A"))
 			{
-				scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ -1,0,0.5 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
+				scene.AddCamera(Utils::LoadCamera(glm::vec3{ 1,0,1 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
 			}
 			ImGui::EndMenu();
 		}
@@ -205,7 +205,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
 		static int currcam = 0;
 		ImGui::InputInt("ActiveCam", &currcam);
-		//scene.SetActiveCameraIndex(currcam);
+		if (currcam != 0) {
+			scene.SetActiveCameraIndex(currcam);
+		}
+		scene.SetActiveCameraIndex(currcam);
 
 		ImGui::RadioButton("orthographic", &pers, 0);
 		ImGui::SameLine();

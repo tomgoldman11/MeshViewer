@@ -35,16 +35,14 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 	color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
 }
 
-void Renderer::setViewPort(const int _viewportWidth, const int _viewportHeight)
+void Renderer::SetViewportHeight(const int _viewport_height)
 {
-	// NEED TO CHECK!!!!!!
-	viewport_height_ = _viewportHeight;
-	viewport_width_ = _viewportWidth;
-	InitOpenGLRendering();
-	CreateBuffers(viewport_width_, viewport_height_);
+	viewport_height_ = _viewport_height;
+}
 
-	DrawLine(glm::vec2(0, 0), glm::vec2(1000, 1000), glm::vec3(0, 0, 0));
-
+void Renderer::SetViewportWidth(const int _viewport_width)
+{
+	viewport_width_ = _viewport_width;
 }
 
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
@@ -370,7 +368,10 @@ void Renderer::Render(const Scene& scene)
 	int half_height = viewport_height_ / 2;
 	std::map<int, std::vector<int>> verticesNormals;
 	glm::mat4 transformationMatrix;
-
+	if (scene.GetActiveCameraIndex() != 0)
+	{
+		int x;
+	}
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
 	const glm::mat4x4 viewMatrix = activeCamera.getViewTransformation();

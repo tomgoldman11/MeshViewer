@@ -82,6 +82,14 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 	return std::make_shared<MeshModel>(faces, vertices, normals, Utils::GetFileName(filePath));
 }
 
+
+std::shared_ptr<Camera> Utils::LoadCamera(const glm::vec3 eye, const glm::vec3 at, const glm::vec3 up) {
+	glm::vec3 eye_ = eye;
+	glm::vec3 at_ = at;
+	glm::vec3 up_ = up;
+	return std::make_shared<Camera>(eye_, at_, up_);
+}
+
 std::string Utils::GetFileName(const std::string& filePath)
 {
 	if (filePath.empty()) {
