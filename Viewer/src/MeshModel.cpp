@@ -27,14 +27,18 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 		top.y = std::max(top.y, iterator->y);
 		top.z = std::max(top.z, iterator->z);
 
-		centerPoint.x += iterator->x;
-		centerPoint.y += iterator->y;
-		centerPoint.z += iterator->z;
+		//centerPoint.x += iterator->x;
+		//centerPoint.y += iterator->y;
+		//centerPoint.z += iterator->z;
 	}
 
-	centerPoint.x = centerPoint.x / vertices.size();
-	centerPoint.y = centerPoint.y / vertices.size();
-	centerPoint.z = centerPoint.z / vertices.size();
+	//centerPoint.x = centerPoint.x / vertices.size();
+	//centerPoint.y = centerPoint.y / vertices.size();
+	//centerPoint.z = centerPoint.z / vertices.size();
+
+	centerPoint.x = (top.x +bottom.x)/2;
+	centerPoint.y = (top.y + bottom.y) / 2;
+	centerPoint.z = (top.z + bottom.z) / 2;
 
 	setModelBoxVetrtices();
 }
@@ -154,7 +158,7 @@ glm::mat4x4 MeshModel::getRotationMatrix_local()
 	}
 
 	rotateTransform_local = rotateTransformX * rotateTransformY * rotateTransformZ;
-	return (translateToCenter) * rotateTransform_local * -translateToCenter;
+	return (-translateToCenter) * rotateTransform_local * translateToCenter;
 }
 
 glm::mat4x4 MeshModel::getTranslationMatrix_local()
@@ -224,49 +228,41 @@ std::vector<glm::vec3> MeshModel::getNormals() const
 void MeshModel::setScale(const float newScale)
 {
 	setScale(glm::vec3(newScale, newScale, newScale));
-	worldUpdateFlag = true;
 }
 
 void MeshModel::setScale(const glm::vec3 newScale)
 {
 	scaleVector = glm::vec3(newScale.x, newScale.y, newScale.z);
-	worldUpdateFlag = true;
 }
 
 void MeshModel::setRotate(const glm::vec3 newRotate)
 {
 	rotateVector = newRotate;
-	worldUpdateFlag = true;
 }
 
 void MeshModel::setTranslate(const glm::vec3 newTranslate)
 {
 	translateVector = newTranslate;
-	localUpdateFlag = true;
 }
 
 void MeshModel::setScale_local(const float newScale)
 {
 	setScale_local(glm::vec3(newScale, newScale, newScale));
-	localUpdateFlag = true;
 }
 
 void MeshModel::setScale_local(const glm::vec3 newScale)
 {
 	scaleVector_local = glm::vec3(newScale.x, newScale.y, newScale.z);
-	localUpdateFlag = true;
 }
 
 void MeshModel::setRotate_local(const glm::vec3 newRotate)
 {
 	rotateVector_local = newRotate;
-	localUpdateFlag = true;
 }
 
 void MeshModel::setTranslate_local(const glm::vec3 newTranslate)
 {
 	translateVector_local = newTranslate;
-	localUpdateFlag = true;
 }
 
 void MeshModel::setFaceNormals()
@@ -371,6 +367,3 @@ void MeshModel::setModelBoxVetrtices()
 	boxAttr.nXYnZ = glm::vec3(bottom.x, top.y, bottom.z);
 	boxAttr.nXYZ = glm::vec3(bottom.x, top.y, top.z);
 }
-
-
-

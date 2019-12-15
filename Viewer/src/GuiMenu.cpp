@@ -110,7 +110,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		{
 			if (ImGui::MenuItem("add camera", "CTRL+A"))
 			{
-				scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ 0,0,1 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
+				scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ 0,0,0 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
 			}
 			ImGui::EndMenu();
 		}
@@ -254,12 +254,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (WorldLocal == 0)
 		{
 			activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
-			//activeModel.setScale(ScaleU);
+			if (ScaleU != 1)
+			{
+				activeModel.setScale(ScaleU);
+			}
 		}
 		else if (WorldLocal == 1)
 		{
 			activeModel.setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
-		//	activeModel.setScale_local(ScaleU);
+			if (ScaleU != 1) 
+			{
+				activeModel.setScale_local(ScaleU);
+			}
 		}
 
 		if (ImGui::Button("Close"))
