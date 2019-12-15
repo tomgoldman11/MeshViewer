@@ -30,6 +30,7 @@ glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
  static float ScaleX = 1.0f;
  static float ScaleY = 1.0f;
  static float ScaleZ = 1.0f;
+ static float ScaleU = 1.0f;
 
  static float RotateX = 0.0f;
  static float RotateY = 0.0f;
@@ -186,9 +187,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset camY"))
 			camY = 0.0f;
-		ImGui::SliderFloat("Distance", &disZ, -1.0f, 1.0f);
+		ImGui::SliderFloat("Dis", &disZ, -1.0f, 1.0f);
 		ImGui::SameLine();
-		if (ImGui::Button("Reset dis"))
+		if (ImGui::Button("Reset dist"))
 			disZ = 1.0f;
 
 		ImGui::SliderFloat("AT X", &atX, -5.0f, 5.0f );
@@ -226,13 +227,20 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			ScaleZ = 1.0f;
+		ImGui::SliderFloat("Scale U", &ScaleU, 0.0f, 120.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset U"))
+			ScaleU = 1.0f;
+
 		if (WorldLocal == 0)
 		{
 			activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
+			activeModel.setScale(ScaleU);
 		}
 		else if (WorldLocal == 1)
 		{
 			activeModel.setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
+			activeModel.setScale_local(ScaleU);
 		}
 
 		if (ImGui::Button("Close"))
