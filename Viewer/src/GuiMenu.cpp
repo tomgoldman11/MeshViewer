@@ -49,7 +49,6 @@ static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
 
-
 /**
  * Function implementation
  */
@@ -79,8 +78,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	 *
 	 */
 	ImGui::Begin("MeshViewer Menu");
-
-
 
 	// Menu Bar
 	if (ImGui::BeginMainMenuBar())
@@ -129,7 +126,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::MenuItem("Show Demo Menu")) { show_demo_window = true; }
 			ImGui::EndMenu();
 		}
-
 		// TODO: Add more menubar items (if you want to)
 		ImGui::EndMainMenuBar();
 	}
@@ -143,11 +139,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_demo_window)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
-
 	static int counter = 0;
 	ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
-
-															
+										
 	if (scene.GetModelCount() == 0)
 	{
 		ImGui::Text("No models loaded yet");
@@ -155,27 +149,41 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		return;
 	}
 	static MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
-	static Camera& activeCamera = scene.GetActiveCamera(); // getting the active camera. //stringToCharSeq
+	static Camera& activeCamera = scene.GetActiveCamera(); // getting the active camera. 
 	
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s" , stringToCharSeq(activeModel.GetModelName())); // purple
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
 	
-	ImGui::RadioButton("World", &WorldLocal, 0);
+	if (ImGui::RadioButton("World", &WorldLocal, 0))
+	{
+			ScaleX = activeModel.getScaleVector_world().x;
+			ScaleY = activeModel.getScaleVector_world().y;
+			ScaleZ = activeModel.getScaleVector_world().z;
+			RotateX = activeModel.getRotateVector_world().x;
+			RotateY = activeModel.getRotateVector_world().y;
+			RotateZ = activeModel.getRotateVector_world().z;
+			TranslateX = activeModel.getTranslateVector_world().x;
+			TranslateY = activeModel.getTranslateVector_world().y;
+			TranslateZ = activeModel.getTranslateVector_world().z;
+	}
 	ImGui::SameLine();
-	ImGui::RadioButton("Local", &WorldLocal, 1);
-
-
-	//if (WorldLocal = 0)
-	//{
-
-
-	//}
+	if (ImGui::RadioButton("Local", &WorldLocal, 1))
+	{
+			ScaleX = activeModel.getScaleVector_local().x;
+			ScaleY = activeModel.getScaleVector_local().y;
+			ScaleZ = activeModel.getScaleVector_local().z;
+			RotateX = activeModel.getRotateVector_local().x;
+			RotateY = activeModel.getRotateVector_local().y;
+			RotateZ = activeModel.getRotateVector_local().z;
+			TranslateX = activeModel.getTranslateVector_local().x;
+			TranslateY = activeModel.getTranslateVector_local().y;
+			TranslateZ = activeModel.getTranslateVector_local().z;
+	}
 
 	ImGui::Checkbox("Scale Model", &show_scale_window);
 	ImGui::Checkbox("Rotate Model", &show_rotate_window);
 	ImGui::Checkbox("Translate Model", &show_translate_window);
-
 	ImGui::Checkbox("Bounding Box", &bounding_box);
 	ImGui::Checkbox("Normals Per Face", &normals_per_face);
 	ImGui::SameLine();
@@ -251,16 +259,22 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button("Reset U"))
 			ScaleU = 1.0f;
 
-		if (WorldLocal == 0)
+		if (WorldLocal == 0) // world
 		{
+		/*	ScaleX = activeModel.getScaleVector_world().x;
+			ScaleY = activeModel.getScaleVector_world().y;
+			ScaleZ = activeModel.getScaleVector_world().z;*/
 			activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
 			if (ScaleU != 1)
 			{
 				activeModel.setScale(ScaleU);
 			}
 		}
-		else if (WorldLocal == 1)
+		else if (WorldLocal == 1) // local
 		{
+	/*		ScaleX = activeModel.getScaleVector_local().x;
+			ScaleY = activeModel.getScaleVector_local().y;
+			ScaleZ = activeModel.getScaleVector_local().z;*/
 			activeModel.setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
 			if (ScaleU != 1) 
 			{
