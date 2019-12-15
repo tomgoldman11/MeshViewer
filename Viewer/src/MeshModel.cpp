@@ -154,7 +154,7 @@ glm::mat4x4 MeshModel::getRotationMatrix_local()
 	}
 
 	rotateTransform_local = rotateTransformX * rotateTransformY * rotateTransformZ;
-	return glm::inverse(translateToCenter) * rotateTransform_local * translateToCenter;
+	return (translateToCenter) * rotateTransform_local * -translateToCenter;
 }
 
 glm::mat4x4 MeshModel::getTranslationMatrix_local()
@@ -314,13 +314,38 @@ void MeshModel::setFaceNormals()
 
 }
 
-const int MeshModel::getVertexFacesSum(int indx) const {
-	return verticesFaces.at(indx);
-}
-
-glm::vec3 MeshModel::getRotateVector() const
+glm::vec3 MeshModel::getRotateVector_world() const
 {
 	return rotateVector;
+}
+
+glm::vec3 MeshModel::getScaleVector_world() const
+{
+	return scaleVector;
+}
+
+glm::vec3 MeshModel::getTranslateVector_world() const
+{
+	return translateVector;
+}
+
+glm::vec3 MeshModel::getRotateVector_local() const
+{
+	return rotateVector_local;
+}
+
+glm::vec3 MeshModel::getScaleVector_local() const
+{
+	return scaleVector_local;
+}
+
+glm::vec3 MeshModel::getTranslateVector_local() const
+{
+	return translateVector_local;
+}
+
+const int MeshModel::getVertexFacesSum(int indx) const {
+	return verticesFaces.at(indx);
 }
 
 void MeshModel::getModelBoxVetrtices(glm::vec3 & XnYZ, glm::vec3 & XnYnZ, glm::vec3 & nXnYnZ, glm::vec3 & nXnYZ, glm::vec3 & XYZ, glm::vec3 & XYnZ, glm::vec3 & nXYnZ, glm::vec3 & nXYZ) const

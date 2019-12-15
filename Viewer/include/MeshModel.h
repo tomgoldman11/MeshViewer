@@ -27,14 +27,13 @@ public:
 	const glm::mat4x4 getWorldTransformation();
 	const glm::mat4x4 getLocalTransformation();
 	std::vector<glm::vec3> getNormals() const;
-	void setScale(float newScale);
 	const int getVertexFacesSum(int indx) const;
-	glm::vec3 getRotateVector() const;
 	void getModelBoxVetrtices(glm::vec3& XnYZ, glm::vec3& XnYnZ, glm::vec3& nXnYnZ, glm::vec3& nXnYZ, glm::vec3& XYZ, glm::vec3& XYnZ, glm::vec3& nXYnZ, glm::vec3& nXYZ) const;
 
 	
 
 	// setters
+	void setScale(float newScale);
 	void setScale(const glm::vec3 newScale);
 	void setRotate(const glm::vec3 newRotate);
 	void setTranslate(const glm::vec3 newTranslate);
@@ -44,6 +43,13 @@ public:
 	void setTranslate_local(const glm::vec3 newTranslate);
 	void setFaceNormals();
 
+	// getters
+	glm::vec3 getRotateVector_world() const;
+	glm::vec3 getScaleVector_world() const;
+	glm::vec3 getTranslateVector_world() const;
+	glm::vec3 getRotateVector_local() const;
+	glm::vec3 getScaleVector_local() const;
+	glm::vec3 getTranslateVector_local() const;
 
 private:
 
