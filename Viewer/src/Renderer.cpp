@@ -373,9 +373,6 @@ void Renderer::Render(const Scene& scene)
 
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
-	// get the projection type matrix - orthographic or perspective or neither of them
-	
-
 	const glm::mat4x4 viewMatrix = activeCamera.getViewTransformation();
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
@@ -411,43 +408,10 @@ void Renderer::Render(const Scene& scene)
 			int v3 = currFace.GetVertexIndex(2) - 1;
 			glm::vec3 vec3 = vertices[v3];
 			drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace);
-		//// change the 3d vectors to 4d vectors 
-		//	glm::vec4 vec14 = Utils::Vec4FromVec3(vec1);
-		//	glm::vec4 vec24 = Utils::Vec4FromVec3(vec2);
-		//	glm::vec4 vec34 = Utils::Vec4FromVec3(vec3);	
-		//// multiple each 4d vector by the transform matrix
-		//	glm::vec4 vec14_T = transformationMatrix * vec14;
-		//	glm::vec4 vec24_T = transformationMatrix * vec24;
-		//	glm::vec4 vec34_T = transformationMatrix * vec34;
-		//	// divide each 4d vector by w component
-		//	vec14_T = vec14_T / vec14_T.w;
-		//	vec24_T = vec24_T / vec24_T.w;
-		//	vec34_T = vec34_T / vec34_T.w;
-
-			//glm::vec3 vec1T = trasformVec3(transformationMatrix, vec1);
-			//glm::vec3 vec2T = trasformVec3(transformationMatrix, vec2);
-			//glm::vec3 vec3T = trasformVec3(transformationMatrix, vec3);
-
-			//// draw the triangle
-			//if (currFace.getVerticesCount() == 3) {
-			//	DrawLine(glm::vec2(vec1T.x, vec1T.y), glm::vec2(vec2T.x, vec2T.y), glm::vec3(0, 0, 0));
-			//	DrawLine(glm::vec2(vec2T.x, vec2T.y), glm::vec2(vec3T.x, vec3T.y), glm::vec3(0, 0, 0));
-			//	DrawLine(glm::vec2(vec3T.x, vec3T.y), glm::vec2(vec1T.x, vec1T.y), glm::vec3(0, 0, 0));
-			//}
 
 			//draw faces normals
 			if (scene.getFacesNormalsStatus()) {
 				drawFacesNormals(vec1, vec2, vec3, transformationMatrix, currFace);
-				//glm::vec3 newPoint = (vec1 + vec2 + vec3) / 3.0f;
-
-				//glm::vec3 newPoint_T = trasformVec3(transformationMatrix, newPoint);
-
-				//glm::vec3 _normalPoint = currFace.getNormal();
-				//glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
-
-				//glm::vec3 normal = 0.1f * _normalPoint + newPoint;
-				//normal = trasformVec3(transformationMatrix, normal);
-				//DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
 			}
 			verticesNormals[v1].insert(verticesNormals[v1].begin(), currFace.GetNormalIndex(0)-1);
 			verticesNormals[v2].insert (verticesNormals[v2].begin(), currFace.GetNormalIndex(1)-1);
@@ -458,82 +422,26 @@ void Renderer::Render(const Scene& scene)
 		if (scene.getVerticesNormalsStatus())
 		{
 			drawVerticesNormals(mesh, verticesNormals, vertices, transformationMatrix);
-			//std::vector<glm::vec3> normals = mesh.getNormals();
-			//std::map<int, std::vector<int>>::iterator vInd;
-
-			//for (vInd = verticesNormals.begin(); vInd != verticesNormals.end(); vInd++) {
-			//	glm::vec3 sumNormals(0);
-			//	std::vector<int> listNormals = vInd->second;
-
-			//	for (int i = 0; i < listNormals.size(); ++i)
-			//	{
-			//		sumNormals += normals[listNormals[i]];
-			//	}
-			//	sumNormals = sumNormals / (float)listNormals.size();
-
-			//	glm::vec3 vVec = vertices[vInd->first];
-			//	glm::vec3 sumNormals3 = 30.0f * sumNormals + vVec;
-			//	vVec = trasformVec3(transformationMatrix, vVec);
-			//	sumNormals3 = trasformVec3(transformationMatrix, sumNormals3);
-
-			//	//glm::vec4 vVec = Utils::Vec4FromVec3(vertices[vInd->first]);
-
-			//	//glm::vec4 sumNormals4 = 30.0f * glm::vec4({ sumNormals, 0.0f }) + vVec;
-			//	//vVec = transformationMatrix * vVec;
-			//	//vVec = vVec / vVec.w;
-			//	//sumNormals4 = transformationMatrix * sumNormals4;
-			//	//sumNormals4 = sumNormals4 / sumNormals4.w;
-
-			//	//DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(sumNormals4.x, sumNormals4.y), glm::vec3(0, 1, 0));
-			//	DrawLine(glm::vec2(vVec.x, vVec.y), glm::vec2(sumNormals3.x, sumNormals3.y), glm::vec3(0, 1, 0));
-			//}
 		}
 
 		// draw bound box
 		if (scene.getBoundBoxStatus())
 		{
 			drawBoundBox(mesh, transformationMatrix);
-			//glm::vec3 XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ;
-			//// get corners vectors
-			//mesh.getModelBoxVetrtices(XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ);
-
-			//// transform points
-			//XnYZ = trasformVec3(transformationMatrix, XnYZ); //1
-			//XnYnZ = trasformVec3(transformationMatrix, XnYnZ); //2
-			//nXnYnZ = trasformVec3(transformationMatrix, nXnYnZ); //3
-			//nXnYZ = trasformVec3(transformationMatrix, nXnYZ); //4
-			//XYZ = trasformVec3(transformationMatrix, XYZ); //5
-			//XYnZ = trasformVec3(transformationMatrix, XYnZ); //6
-			//nXYnZ = trasformVec3(transformationMatrix, nXYnZ); //7
-			//nXYZ = trasformVec3(transformationMatrix, nXYZ); //8
-
-			//// draw
-			//DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
-			//DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec3(0, 0, 1));
-			//DrawLine(glm::vec2(XnYZ.x, XnYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
-
-			//DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXYZ.x, nXYZ.y), glm::vec3(0, 0, 1));
-			//DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
-			//DrawLine(glm::vec2(nXYnZ.x, nXYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
-
-			//DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec3(0, 0, 1));
-			//DrawLine(glm::vec2(XnYnZ.x, XnYnZ.y), glm::vec2(XYnZ.x, XYnZ.y), glm::vec3(0, 0, 1));
-
-			//DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
-			//DrawLine(glm::vec2(nXYZ.x, nXYZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
-
-			//DrawLine(glm::vec2(nXnYnZ.x, nXnYnZ.y), glm::vec2(nXnYZ.x, nXnYZ.y), glm::vec3(0, 0, 1));
-			//DrawLine(glm::vec2(XYnZ.x, XYnZ.y), glm::vec2(XYZ.x, XYZ.y), glm::vec3(0, 0, 1));
 		}
 	}
 
-	for (int i = 0;  i!= scene.GetActiveCameraIndex() &&  i < scene.GetCameraCount(); ++i)
+	for (int i = 0;  i < scene.GetCameraCount(); ++i)
 	{
-		Camera cameraObj = scene.GetCamera(i);
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel(".\..\..\Data\Camera.obj");
-		cameraModel->setTranslate(cameraObj.getEye());
+		if (i == scene.GetActiveCameraIndex())
+		{
+			continue;
+		}
+		Camera&  cameraObj = scene.GetCamera(i);
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
+		cameraModel->setTranslate_local(cameraObj.getEye());
 
 		//get the M matrix (world frame) related to the mesh model
 		const glm::mat4x4 modelMatrix = cameraModel->getLocalTransformation();
@@ -541,6 +449,7 @@ void Renderer::Render(const Scene& scene)
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
 		transformationMatrix = MMM * projectionMatrix* viewMatrix * worldlMatrix * modelMatrix;
+
 		for (int j = 0; j < cameraModel->GetFacesCount(); j++) {
 			Face currFace = cameraModel->GetFace(j);
 			int v1 = currFace.GetVertexIndex(0) - 1;
@@ -550,29 +459,6 @@ void Renderer::Render(const Scene& scene)
 			int v3 = currFace.GetVertexIndex(2) - 1;
 			glm::vec3 vec3 = vertices[v3];
 			drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace);
-			//// change the 3d vectors to 4d vectors 
-			//glm::vec4 vec14 = Utils::Vec4FromVec3(vec1);
-			//glm::vec4 vec24 = Utils::Vec4FromVec3(vec2);
-			//glm::vec4 vec34 = Utils::Vec4FromVec3(vec3);
-			//// multiple each 4d vector by the transform matrix
-			//glm::vec4 vec14_T = transformationMatrix * vec14;
-			//glm::vec4 vec24_T = transformationMatrix * vec24;
-			//glm::vec4 vec34_T = transformationMatrix * vec34;
-			//// divide each 4d vector by w component
-			//vec14_T = vec14_T / vec14_T.w;
-			//vec24_T = vec24_T / vec24_T.w;
-			//vec34_T = vec34_T / vec34_T.w;
-
-			//glm::vec3 vec1T = trasformVec3(transformationMatrix, vec1);
-			//glm::vec3 vec2T = trasformVec3(transformationMatrix, vec2);
-			//glm::vec3 vec3T = trasformVec3(transformationMatrix, vec3);
-
-			//// draw the triangle
-			//if (currFace.getVerticesCount() == 3) {
-			//	DrawLine(glm::vec2(vec1T.x, vec1T.y), glm::vec2(vec2T.x, vec2T.y), glm::vec3(0, 0, 0));
-			//	DrawLine(glm::vec2(vec2T.x, vec2T.y), glm::vec2(vec3T.x, vec3T.y), glm::vec3(0, 0, 0));
-			//	DrawLine(glm::vec2(vec3T.x, vec3T.y), glm::vec2(vec1T.x, vec1T.y), glm::vec3(0, 0, 0));
-			//}
 		}
 	}
 

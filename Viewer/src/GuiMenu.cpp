@@ -110,7 +110,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		{
 			if (ImGui::MenuItem("add camera", "CTRL+A"))
 			{
-				scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ 0,0,0 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
+				scene.AddCamera((std::shared_ptr<Camera>) &Camera(glm::vec3{ -1,0,0.5 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
 			}
 			ImGui::EndMenu();
 		}
