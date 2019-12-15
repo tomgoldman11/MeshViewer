@@ -160,6 +160,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			ScaleX = activeModel.getScaleVector_world().x;
 			ScaleY = activeModel.getScaleVector_world().y;
 			ScaleZ = activeModel.getScaleVector_world().z;
+			ScaleU = activeModel.getScaleVector_world().x;
 			RotateX = activeModel.getRotateVector_world().x;
 			RotateY = activeModel.getRotateVector_world().y;
 			RotateZ = activeModel.getRotateVector_world().z;
@@ -173,6 +174,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			ScaleX = activeModel.getScaleVector_local().x;
 			ScaleY = activeModel.getScaleVector_local().y;
 			ScaleZ = activeModel.getScaleVector_local().z;
+			ScaleU = activeModel.getScaleVector_local().x;
 			RotateX = activeModel.getRotateVector_local().x;
 			RotateY = activeModel.getRotateVector_local().y;
 			RotateZ = activeModel.getRotateVector_local().z;
