@@ -20,6 +20,7 @@ bool normals_per_face = false;
 bool normals_per_vertex = false;
 bool ortho = false;
 static int pers = 0; // 0 for ortho , 1 for perspective
+static int WorldLocal = 0; // 0 for world , 1 for local
 
 
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
@@ -144,6 +145,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "# of models : %d", scene.GetModelCount() );
 
+	ImGui::RadioButton("World", &WorldLocal, 0);
+	ImGui::SameLine();
+	ImGui::RadioButton("Local", &WorldLocal, 1);
+
 	ImGui::Checkbox("Scale Model", &show_scale_window);
 	ImGui::Checkbox("Rotate Model", &show_rotate_window);
 	ImGui::Checkbox("Translate Model", &show_translate_window);
@@ -221,8 +226,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			ScaleZ = 1.0f;
-
-		activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
+		if (WorldLocal == 0)
+		{
+			activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
+		}
+		else if (WorldLocal == 1)
+		{
+			activeModel.setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
+		}
 
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
@@ -245,8 +256,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			RotateZ = 0.0f;
-
-		activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
+		if (WorldLocal == 0)
+		{
+			activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
+		}
+		else if (WorldLocal == 1)
+		{
+			activeModel.setRotate_local(glm::vec3(RotateX, RotateY, RotateZ));
+		}
 
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
@@ -268,8 +285,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			TranslateZ = 0.0f;
-
-		activeModel.setTranslate(glm::vec3(TranslateX, TranslateY, TranslateZ));
+		if (WorldLocal == 0)
+		{
+			activeModel.setTranslate(glm::vec3(TranslateX, TranslateY, TranslateZ));
+		}
+		else if (WorldLocal == 1)
+		{
+			activeModel.setTranslate_local(glm::vec3(TranslateX, TranslateY, TranslateZ));
+		}
 
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
