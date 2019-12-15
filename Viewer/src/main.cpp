@@ -63,7 +63,6 @@ int main(int argc, char **argv)
 	// main Loop
 	while (!glfwWindowShouldClose(window))
     {
-
 		glfwPollEvents();
 		StartFrame();
 		// creating the User Interface

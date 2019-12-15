@@ -41,6 +41,14 @@ static float camX = 0.0f;
 static float camY = 0.0f;
 static float disZ = 1.0f;
 
+static float atX = 0.0f;
+static float atY = 0.0f;
+static float atZ = 0.0f;
+
+static float upX = 0.0f;
+static float upY = 1.0f;
+static float upZ = 0.0f;
+
 
 /**
  * Function implementation
@@ -160,6 +168,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::Begin("Camera Control"); // camera window.
 
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Camera # : %d" , scene.GetActiveCameraIndex());
+
 		ImGui::RadioButton("orthographic", &pers, 0);
 		ImGui::SameLine();
 		ImGui::RadioButton("perspective", &pers, 1);
@@ -168,7 +178,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("Cam Y", &camY, -6.0f, 6.0f);
 		ImGui::SliderFloat("Distance", &disZ, -1.0f, 1.0f);
 
-		activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		ImGui::SliderFloat("AT X", &atX, -5.0f, 5.0f );
+		ImGui::SliderFloat("AT Y", &atY, -5.0f, 5.0f);
+		ImGui::SliderFloat("AT Z", &atZ, -5.0f, 5.0f);
+
+		activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(atX, atY, atZ), glm::vec3(0, 1, 0));
 
 		ImGui::End(); // camera window end.
 
@@ -270,11 +284,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 		scene.activeVerticesNormals = false;
 	}
-	if (pers == 0)
+	if (pers == 0) // orthographic
 	{
 		activeCamera.setOrthographicProjection();
 	}
-	else if(pers == 1) // pers == 1
+	else if(pers == 1) // perspective
 	{
 		activeCamera.setPerspectiveProjection_Alter();
 	}

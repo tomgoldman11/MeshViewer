@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include "MeshModel.h"
-#define NORMALS_LENGHT 0.5
+
 
 class Utils
 {

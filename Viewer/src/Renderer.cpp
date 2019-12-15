@@ -4,7 +4,8 @@
 #include "Renderer.h"
 #include "InitShader.h"
 #include "Utils.h"
-
+#define NORMALS_LENGHTV 30.0
+#define NORMALS_LENGHTF 0.2
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
 
@@ -235,7 +236,7 @@ void Renderer::drawFacesNormals(const glm::vec3& vec1, const glm::vec3& vec2, co
 	glm::vec3 _normalPoint = currFace.getNormal();
 	glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
 
-	glm::vec3 normal = (float)NORMALS_LENGHT * _normalPoint + newPoint;
+	glm::vec3 normal = (float)NORMALS_LENGHTF * _normalPoint + newPoint;
 	normal = trasformVec3(transformationMatrix, normal);
 	DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
 
