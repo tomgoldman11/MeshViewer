@@ -396,10 +396,11 @@ void Renderer::Render(const Scene& scene)
 		std::vector<glm::vec3> vertices = mesh.getVertices();
 
 		//get the M matrix (world frame) related to the mesh model
-		const glm::mat4x4 modelMatrix = mesh.getWorldTransformation();
-		
+		const glm::mat4x4 modelMatrix = mesh.getLocalTransformation();
+		const glm::mat4x4 worldlMatrix = mesh.getWorldTransformation();
+
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix = MMM * projectionMatrix* viewMatrix *modelMatrix;
+		transformationMatrix = MMM * projectionMatrix* viewMatrix * worldlMatrix * modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -535,10 +536,11 @@ void Renderer::Render(const Scene& scene)
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 
 		//get the M matrix (world frame) related to the mesh model
-		const glm::mat4x4 modelMatrix = cameraModel->getWorldTransformation();
+		const glm::mat4x4 modelMatrix = cameraModel->getLocalTransformation();
+		const glm::mat4x4 worldlMatrix = cameraModel->getWorldTransformation();
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix = MMM * projectionMatrix* viewMatrix *modelMatrix;
+		transformationMatrix = MMM * projectionMatrix* viewMatrix * worldlMatrix * modelMatrix;
 		for (int j = 0; j < cameraModel->GetFacesCount(); j++) {
 			Face currFace = cameraModel->GetFace(j);
 			int v1 = currFace.GetVertexIndex(0) - 1;

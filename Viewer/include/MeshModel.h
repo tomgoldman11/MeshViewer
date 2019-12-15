@@ -25,6 +25,7 @@ public:
 	int GetFacesCount() const;
 	const std::string& GetModelName() const;
 	const glm::mat4x4 getWorldTransformation();
+	const glm::mat4x4 getLocalTransformation();
 	std::vector<glm::vec3> getNormals() const;
 	void setScale(float newScale);
 	const int getVertexFacesSum(int indx) const;
@@ -34,9 +35,12 @@ public:
 	
 
 	// setters
-	void setScale(glm::vec3 newScale);
-	void setRotate(glm::vec3 newRotate);
-	void setTranslate(glm::vec3 newTranslate);
+	void setScale(const glm::vec3 newScale);
+	void setRotate(const glm::vec3 newRotate);
+	void setTranslate(const glm::vec3 newTranslate);
+	void setScale_local(const glm::vec3 newScale);
+	void setRotate_local(const glm::vec3 newRotate);
+	void setTranslate_local(const glm::vec3 newTranslate);
 	void setFaceNormals();
 
 
@@ -48,6 +52,12 @@ private:
 	glm::mat4x4 getTranslationMatrix();
 	glm::mat4x4 getScalingMatrix();
 
+	glm::mat4x4 getRotationMatrix_local();
+
+	glm::mat4x4 getTranslationMatrix_local();
+
+	glm::mat4x4 getScalingMatrix_local();
+
 
 	// default memebers
 	std::vector<Face> faces_;
@@ -57,12 +67,18 @@ private:
 	
 	// matrices
 	glm::mat4x4 worldTransform;
+	glm::mat4x4 localTransform;
 	glm::mat4x4 rotateTransform;
+	glm::mat4x4 rotateTransform_local;
 
 	// vecs
 	glm::vec3 translateVector;
 	glm::vec3 scaleVector;
 	glm::vec3 rotateVector;
+
+	glm::vec3 translateVector_local;
+	glm::vec3 scaleVector_local;
+	glm::vec3 rotateVector_local;
 
 	// model points attributes
 	glm::vec3 bottom;
