@@ -13,7 +13,9 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	rotateVector_local(glm::vec3(0.0f, 0.0f, 0.0f)),
 	bottom(2000),
 	top(0),
-	centerPoint(0)
+	centerPoint(0),
+	worldUpdateFlag(true),
+	localUpdateFlag(true)
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{
@@ -189,21 +191,28 @@ glm::mat4x4 MeshModel::getScalingMatrix_local()
 
 const glm::mat4x4 MeshModel::getWorldTransformation()
 {
-	glm::mat4x4 translate = getTranslationMatrix();
-	glm::mat4x4 rotate = getRotationMatrix();
-	rotateVector = glm::vec3(0.0f);
-	glm::mat4x4 scale = getScalingMatrix();
-	worldTransform = translate * rotate * scale;
+	if (worldUpdateFlag) {
+		glm::mat4x4 translate = getTranslationMatrix();
+		glm::mat4x4 rotate = getRotationMatrix();
+		rotateVector = glm::vec3(0.0f);
+		glm::mat4x4 scale = getScalingMatrix();
+		worldTransform = translate * rotate * scale;
+		worldUpdateFlag = false;
+	}
 	return worldTransform;
 }
 
 const glm::mat4x4 MeshModel::getLocalTransformation()
 {
-	glm::mat4x4 translate = getTranslationMatrix_local();
-	glm::mat4x4 rotate = getRotationMatrix_local();
-	rotateVector_local = glm::vec3(0.0f);
-	glm::mat4x4 scale = getScalingMatrix_local();
-	localTransform = translate * rotate * scale;
+	if (localUpdateFlag)
+	{
+		glm::mat4x4 translate = getTranslationMatrix_local();
+		glm::mat4x4 rotate = getRotationMatrix_local();
+		rotateVector_local = glm::vec3(0.0f);
+		glm::mat4x4 scale = getScalingMatrix_local();
+		localTransform = translate * rotate * scale;
+		localUpdateFlag = false;
+	}
 	return localTransform;
 }
 
@@ -215,40 +224,50 @@ std::vector<glm::vec3> MeshModel::getNormals() const
 void MeshModel::setScale(const float newScale)
 {
 	setScale(glm::vec3(newScale, newScale, newScale));
+	worldUpdateFlag = true;
 }
 
 void MeshModel::setScale(const glm::vec3 newScale)
 {
 	scaleVector = glm::vec3(newScale.x, newScale.y, newScale.z);
+	worldUpdateFlag = true;
 }
 
 void MeshModel::setRotate(const glm::vec3 newRotate)
 {
 	rotateVector = newRotate;
+	worldUpdateFlag = true;
 }
 
 void MeshModel::setTranslate(const glm::vec3 newTranslate)
 {
 	translateVector = newTranslate;
+	localUpdateFlag = true;
+}
+
+void MeshModel::setScale_local(const float newScale)
+{
+	setScale_local(glm::vec3(newScale, newScale, newScale));
+	localUpdateFlag = true;
 }
 
 void MeshModel::setScale_local(const glm::vec3 newScale)
 {
 	scaleVector_local = glm::vec3(newScale.x, newScale.y, newScale.z);
-
+	localUpdateFlag = true;
 }
 
 void MeshModel::setRotate_local(const glm::vec3 newRotate)
 {
 	rotateVector_local = newRotate;
+	localUpdateFlag = true;
 }
 
 void MeshModel::setTranslate_local(const glm::vec3 newTranslate)
 {
 	translateVector_local = newTranslate;
+	localUpdateFlag = true;
 }
-
-
 
 void MeshModel::setFaceNormals()
 {
@@ -294,7 +313,6 @@ void MeshModel::setFaceNormals()
 
 
 }
-
 
 const int MeshModel::getVertexFacesSum(int indx) const {
 	return verticesFaces.at(indx);

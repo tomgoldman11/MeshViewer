@@ -38,6 +38,7 @@ public:
 	void setScale(const glm::vec3 newScale);
 	void setRotate(const glm::vec3 newRotate);
 	void setTranslate(const glm::vec3 newTranslate);
+	void setScale_local(const float newScale);
 	void setScale_local(const glm::vec3 newScale);
 	void setRotate_local(const glm::vec3 newRotate);
 	void setTranslate_local(const glm::vec3 newTranslate);
@@ -86,5 +87,7 @@ private:
 	glm::vec3 centerPoint;
 	std::map<int, int> verticesFaces;
 	box boxAttr;
+	bool worldUpdateFlag;
+	bool localUpdateFlag;
 
 };
