@@ -159,6 +159,7 @@ void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float
 	//M[3][1] = 0;
 	//M[3][2] = -(2 * _projFar * _projNear) / (_projFar - _projNear);
 	//M[3][3] = 0;
+
 	glm::mat4 normalization = glm::mat4(
 		{ (-2 / (frustumView.right - frustumView.left)),0,0,0 },
 		{ 0,(2 / (frustumView.top - frustumView.bottom)),0,0 },

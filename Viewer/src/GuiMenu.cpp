@@ -19,7 +19,7 @@ bool bounding_box = false;
 bool normals_per_face = false;
 bool normals_per_vertex = false;
 bool ortho = false;
-bool pers = false;
+static int pers = 0; // 0 for ortho , 1 for perspective
 
 
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
@@ -39,7 +39,7 @@ static float TranslateZ = 0.0f;
 
 static float camX = 0.0f;
 static float camY = 0.0f;
-static float disZ = -1.0f;
+static float disZ = 1.0f;
 
 
 /**
@@ -160,18 +160,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::Begin("Camera Control"); // camera window.
 
-		ImGui::Checkbox("orthographic", &ortho);
+		ImGui::RadioButton("orthographic", &pers, 0);
 		ImGui::SameLine();
-		ImGui::Checkbox("perspective", &pers);
+		ImGui::RadioButton("perspective", &pers, 1);
 
 		ImGui::SliderFloat("Cam X", &camX, -6.0f, 6.0f);
 		ImGui::SliderFloat("Cam Y", &camY, -6.0f, 6.0f);
 		ImGui::SliderFloat("Distance", &disZ, -1.0f, 1.0f);
 
 		activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-
-		
-
 
 		ImGui::End(); // camera window end.
 
@@ -273,12 +270,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 		scene.activeVerticesNormals = false;
 	}
-	if (ortho)
+	if (pers == 0)
 	{
-
+		activeCamera.setOrthographicProjection();
 	}
-	if (pers)
+	else if(pers == 1) // pers == 1
 	{
-
+		activeCamera.setPerspectiveProjection_Alter();
 	}
 }
