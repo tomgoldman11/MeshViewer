@@ -59,6 +59,17 @@ const glm::vec4& GetClearColor()
 	return clear_color1;
 }
 
+char* const stringToCharSeq(const std::string& str)
+{
+	int len = (int)str.length() + 1;
+	char** seq = new char*[1];
+	seq[0] = new char[len];
+	for (int i = 0; i < len; ++i)
+	{
+		seq[0][i] = str[i];
+	}
+	return seq[0];
+}
 
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
@@ -143,12 +154,23 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::End();
 		return;
 	}
-
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "# of models : %d", scene.GetModelCount() );
-
+	static MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
+	static Camera& activeCamera = scene.GetActiveCamera(); // getting the active camera. //stringToCharSeq
+	
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s" , stringToCharSeq(activeModel.GetModelName())); // purple
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
+	
 	ImGui::RadioButton("World", &WorldLocal, 0);
 	ImGui::SameLine();
 	ImGui::RadioButton("Local", &WorldLocal, 1);
+
+
+	if (WorldLocal = 0)
+	{
+
+
+	}
 
 	ImGui::Checkbox("Scale Model", &show_scale_window);
 	ImGui::Checkbox("Rotate Model", &show_rotate_window);
@@ -161,19 +183,16 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	ImGui::ColorEdit3("clear color", (float*)&clear_color1); // Edit 3 floats representing a color
 
-		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-		//	counter++;
-		//ImGui::SameLine();
-		//ImGui::Text("counter = %d", counter);
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 
-		static Camera& activeCamera = scene.GetActiveCamera();
 
 		ImGui::Begin("Camera Control"); // camera window.
 
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Camera # : %d" , scene.GetActiveCameraIndex());
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
 
 		ImGui::RadioButton("orthographic", &pers, 0);
 		ImGui::SameLine();
@@ -209,12 +228,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::End(); // camera window end.
 
-		static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
+		//static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
 	
 	if (show_scale_window)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Scaling Values From 0-20");
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Scaling Values From 0-120");
 		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 120.0f);      
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
@@ -235,12 +254,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (WorldLocal == 0)
 		{
 			activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
-			activeModel.setScale(ScaleU);
+			//activeModel.setScale(ScaleU);
 		}
 		else if (WorldLocal == 1)
 		{
 			activeModel.setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
-			activeModel.setScale_local(ScaleU);
+		//	activeModel.setScale_local(ScaleU);
 		}
 
 		if (ImGui::Button("Close"))
