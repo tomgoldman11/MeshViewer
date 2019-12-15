@@ -46,7 +46,11 @@ public:
 
 	void setPerspectiveProjection();
 
-	void setPerspectiveProjection(const float fovy, const float aspectRatio, const float near, const float far);
+	void setPerspectiveProjection(const float aspectRatio,  const float fovy, const float near, const float far);
+
+	void setPerspectiveProjection_Alter();
+
+	void setPerspectiveProjection_Alter(const float aspectRatio, const float fovy, const float near, const float far);
 
 	void setOrthographicProjection();
 
@@ -67,6 +71,7 @@ private:
 	glm::mat4x4 projection_transformation_;
 	ortho orthoView;
 	perspective perspView;
+	frustum frustumView;
 	position curPos;
 	float zoom;
 };
