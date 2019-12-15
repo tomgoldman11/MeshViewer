@@ -444,6 +444,7 @@ void Renderer::Render(const Scene& scene)
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
 
+
 		//get the M matrix (world frame) related to the mesh model
 		const glm::mat4x4 modelMatrix = cameraModel->getLocalTransformation();
 		const glm::mat4x4 worldlMatrix = cameraModel->getWorldTransformation();
@@ -530,3 +531,9 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 	DrawLine(glm::vec2(centerT.x, centerT.y), glm::vec2(zAxisT.x, zAxisT.y), glm::vec3(0, 0, 1));
 }
 
+void Renderer::SetViewport(int width, int height)
+{
+	viewport_width_ = width;
+	viewport_height_ = height;
+	CreateBuffers(viewport_width_, viewport_height_);
+}

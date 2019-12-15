@@ -148,8 +148,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::End();
 		return;
 	}
-	static MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
-	static Camera& activeCamera = scene.GetActiveCamera(); // getting the active camera. 
+	MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
+	Camera& activeCamera = scene.GetActiveCamera(); // getting the active camera. 
 	
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s" , stringToCharSeq(activeModel.GetModelName())); // purple
 	ImGui::SameLine();
@@ -205,9 +205,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
 		static int currcam = 0;
 		ImGui::InputInt("ActiveCam", &currcam);
-		if (currcam != 0) {
-			scene.SetActiveCameraIndex(currcam);
-		}
 		scene.SetActiveCameraIndex(currcam);
 
 		ImGui::RadioButton("orthographic", &pers, 0);

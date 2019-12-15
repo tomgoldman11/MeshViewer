@@ -12,6 +12,7 @@ public:
 	void Render(const Scene& scene);
 	void SwapBuffers();
 	void ClearColorBuffer(const glm::vec3& color);
+	void SetViewport(int width, int height);
 	void DrawAsterisk();
 	int GetViewportWidth() const;
 	int GetViewportHeight() const;
