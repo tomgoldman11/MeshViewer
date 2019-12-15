@@ -7,7 +7,10 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	model_name_(model_name),
 	translateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
 	scaleVector(glm::vec3(1.0f, 1.0f, 1.0f)),
-	rotateVector(glm::vec3(0.0f, 0.0f, 0.0f)),
+	rotateVector(glm::vec3(0.0f, 0.0f, 0.0f)), 
+	translateVector_local(glm::vec3(0.0f, 0.0f, 0.0f)),
+	scaleVector_local(glm::vec3(1.0f, 1.0f, 1.0f)),
+	rotateVector_local(glm::vec3(0.0f, 0.0f, 0.0f)),
 	bottom(2000),
 	top(0),
 	centerPoint(0)
@@ -65,11 +68,6 @@ glm::mat4x4 MeshModel::getRotationMatrix()
 	glm::mat4x4 rotateTransformX(1);
 	glm::mat4x4 rotateTransformY(1);
 	glm::mat4x4 rotateTransformZ(1);
-	glm::mat4x4 translateToCenter(1);
-
-	translateToCenter[3].x = -centerPoint.x;
-	translateToCenter[3].y = -centerPoint.y;
-	translateToCenter[3].z = -centerPoint.z;
 
 	if (rotateVector.x != 0) {
 		angle = rotateVector.x * pi /180;
@@ -94,7 +92,7 @@ glm::mat4x4 MeshModel::getRotationMatrix()
 	}
 
 	rotateTransform = rotateTransformX * rotateTransformY * rotateTransformZ;
-	return glm::inverse(translateToCenter) * rotateTransform * translateToCenter;
+	return rotateTransform ;
 }
 
 glm::mat4x4 MeshModel::getTranslationMatrix()
@@ -118,6 +116,77 @@ glm::mat4x4 MeshModel::getScalingMatrix()
 	return scaleMat;
 }
 
+glm::mat4x4 MeshModel::getRotationMatrix_local()
+{
+	float angle;
+	float pi = atan(1) * 4;
+	glm::mat4x4 rotateTransformX(1);
+	glm::mat4x4 rotateTransformY(1);
+	glm::mat4x4 rotateTransformZ(1);
+	glm::mat4x4 translateToCenter(1);
+
+	translateToCenter[3].x = -centerPoint.x;
+	translateToCenter[3].y = -centerPoint.y;
+	translateToCenter[3].z = -centerPoint.z;
+
+	if (rotateVector_local.x != 0) {
+		angle = rotateVector_local.x * pi / 180;
+		rotateTransformX[0] = glm::vec4(1, 0, 0, 0);
+		rotateTransformX[1] = glm::vec4(0, cos(angle), -sin(angle), 0);
+		rotateTransformX[2] = glm::vec4(0, sin(angle), cos(angle), 0);
+		rotateTransformX[3] = glm::vec4(0, 0, 0, 1);
+	}
+	if (rotateVector_local.y != 0) {
+		angle = rotateVector_local.y * pi / 180;
+		rotateTransformY[0] = glm::vec4(cos(angle), 0, sin(angle), 0);
+		rotateTransformY[1] = glm::vec4(0, 1, 0, 0);
+		rotateTransformY[2] = glm::vec4(-sin(angle), 0, cos(angle), 0);
+		rotateTransformY[3] = glm::vec4(0, 0, 0, 1);
+	}
+	if (rotateVector_local.z != 0) {
+		angle = rotateVector_local.z * pi / 180;
+		rotateTransformZ[0] = glm::vec4(cos(angle), -sin(angle), 0, 0);
+		rotateTransformZ[1] = glm::vec4(sin(angle), cos(angle), 0, 0);
+		rotateTransformZ[2] = glm::vec4(0, 0, 1, 0);
+		rotateTransformZ[3] = glm::vec4(0, 0, 0, 1);
+	}
+
+	rotateTransform_local = rotateTransformX * rotateTransformY * rotateTransformZ;
+	return glm::inverse(translateToCenter) * rotateTransform_local * translateToCenter;
+}
+
+glm::mat4x4 MeshModel::getTranslationMatrix_local()
+{
+	glm::mat4x4 transmat(1);
+	glm::mat4x4 translateToCenter(1);
+
+	translateToCenter[3].x = -centerPoint.x;
+	translateToCenter[3].y = -centerPoint.y;
+	translateToCenter[3].z = -centerPoint.z;
+
+	transmat[3].x = translateVector_local.x;
+	transmat[3].y = translateVector_local.y;
+	transmat[3].z = translateVector_local.z;
+
+	return (-translateToCenter) * transmat * translateToCenter;
+}
+
+glm::mat4x4 MeshModel::getScalingMatrix_local()
+{
+	glm::mat4x4 scaleMat(1);
+	glm::mat4x4 translateToCenter(1);
+
+	translateToCenter[3].x = -centerPoint.x;
+	translateToCenter[3].y = -centerPoint.y;
+	translateToCenter[3].z = -centerPoint.z;
+
+	scaleMat[0].x *= scaleVector_local.x;
+	scaleMat[1].y *= scaleVector_local.y;
+	scaleMat[2].z *= scaleVector_local.z;
+
+	return (-translateToCenter) * scaleMat * translateToCenter;
+}
+
 const glm::mat4x4 MeshModel::getWorldTransformation()
 {
 	glm::mat4x4 translate = getTranslationMatrix();
@@ -128,30 +197,57 @@ const glm::mat4x4 MeshModel::getWorldTransformation()
 	return worldTransform;
 }
 
+const glm::mat4x4 MeshModel::getLocalTransformation()
+{
+	glm::mat4x4 translate = getTranslationMatrix_local();
+	glm::mat4x4 rotate = getRotationMatrix_local();
+	rotateVector = glm::vec3(0.0f);
+	glm::mat4x4 scale = getScalingMatrix_local();
+	localTransform = translate * rotate * scale;
+	return localTransform;
+}
+
 std::vector<glm::vec3> MeshModel::getNormals() const
 {
 	return normals_;
 }
 
-void MeshModel::setScale(float newScale)
+void MeshModel::setScale(const float newScale)
 {
 	setScale(glm::vec3(newScale, newScale, newScale));
 }
 
-void MeshModel::setScale(glm::vec3 newScale)
+void MeshModel::setScale(const glm::vec3 newScale)
 {
 	scaleVector = glm::vec3(newScale.x, newScale.y, newScale.z);
 }
 
-void MeshModel::setRotate(glm::vec3 newRotate)
+void MeshModel::setRotate(const glm::vec3 newRotate)
 {
 	rotateVector = newRotate;
 }
 
-void MeshModel::setTranslate(glm::vec3 newTranslate)
+void MeshModel::setTranslate(const glm::vec3 newTranslate)
 {
 	translateVector = newTranslate;
 }
+
+void MeshModel::setScale_local(const glm::vec3 newScale)
+{
+	scaleVector_local = glm::vec3(newScale.x, newScale.y, newScale.z);
+
+}
+
+void MeshModel::setRotate_local(const glm::vec3 newRotate)
+{
+	rotateVector_local = newRotate;
+}
+
+void MeshModel::setTranslate_local(const glm::vec3 newTranslate)
+{
+	translateVector_local = newTranslate;
+}
+
 
 
 void MeshModel::setFaceNormals()
