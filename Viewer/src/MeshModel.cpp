@@ -201,7 +201,7 @@ const glm::mat4x4 MeshModel::getLocalTransformation()
 {
 	glm::mat4x4 translate = getTranslationMatrix_local();
 	glm::mat4x4 rotate = getRotationMatrix_local();
-	rotateVector = glm::vec3(0.0f);
+	rotateVector_local = glm::vec3(0.0f);
 	glm::mat4x4 scale = getScalingMatrix_local();
 	localTransform = translate * rotate * scale;
 	return localTransform;

@@ -25,6 +25,7 @@ static int pers = 0; // 0 for ortho , 1 for perspective
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
 
+// model tranform
  static float ScaleX = 1.0f;
  static float ScaleY = 1.0f;
  static float ScaleZ = 1.0f;
@@ -37,17 +38,14 @@ static float TranslateX = 0.0f;
 static float TranslateY = 0.0f;
 static float TranslateZ = 0.0f;
 
-static float camX = 0.0f;
+// camera transform
+static float camX = 0.0f; // eye parameters
 static float camY = 0.0f;
 static float disZ = 1.0f;
 
 static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
-
-static float upX = 0.0f;
-static float upY = 1.0f;
-static float upZ = 0.0f;
 
 
 /**
@@ -144,6 +142,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		return;
 	}
 
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "# of models : %d", scene.GetModelCount() );
 
 	ImGui::Checkbox("Scale Model", &show_scale_window);
 	ImGui::Checkbox("Rotate Model", &show_rotate_window);
@@ -175,12 +174,30 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::RadioButton("perspective", &pers, 1);
 
 		ImGui::SliderFloat("Cam X", &camX, -6.0f, 6.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset camX"))
+			camX = 0.0f;
 		ImGui::SliderFloat("Cam Y", &camY, -6.0f, 6.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset camY"))
+			camY = 0.0f;
 		ImGui::SliderFloat("Distance", &disZ, -1.0f, 1.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset dis"))
+			disZ = 1.0f;
 
 		ImGui::SliderFloat("AT X", &atX, -5.0f, 5.0f );
+		ImGui::SameLine();
+		if (ImGui::Button("Reset atX"))
+			atX = 0.0f;
 		ImGui::SliderFloat("AT Y", &atY, -5.0f, 5.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset atY"))
+			atY = 0.0f;
 		ImGui::SliderFloat("AT Z", &atZ, -5.0f, 5.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset atZ"))
+			atZ = 0.0f;
 
 		activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(atX, atY, atZ), glm::vec3(0, 1, 0));
 
@@ -188,8 +205,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
 	
-		
-
 	if (show_scale_window)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
@@ -221,15 +236,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("Rotate X", &RotateX, -180.0f, 180.0f);   
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
-			RotateX = 101.0f;
+			RotateX = 0.0f;
 		ImGui::SliderFloat("Rotate Y", &RotateY, -180.0f, 180.0f);           
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
-			RotateY = 5.0f;
+			RotateY = 0.0f;
 		ImGui::SliderFloat("Rotate Z", &RotateZ, -180.0f, 180.0f);  
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
-			RotateZ = -45.0f;
+			RotateZ = 0.0f;
 
 		activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
 
