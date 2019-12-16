@@ -3,7 +3,8 @@
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
 	curPos({eye,at,up}),
 	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far
-	perspView({ 1.0f, 100.0f , 0.001f, 10.0f }) // aspect, fovy, near, far
+	perspView({ 1.0f, 100.0f , 0.01f, 10.0f }), // aspect, fovy, near, far
+	zoom(2.0f)
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
@@ -123,10 +124,10 @@ void Camera::setPerspectiveProjection_Alter()
 }
 void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float fovy, const float near, const float far)
 {
-	float scale = tan(fovy * 0.5 * 0.01745329251994329576923690768489f) * near;
-	frustumView.right = aspectRatio * scale;
+	float scale = tan(fovy * 0.5 * M_PI / 180);
+	frustumView.top = near * scale, frustumView.bottom = -frustumView.top;
+	frustumView.right = frustumView.top * aspectRatio;
 	frustumView.left = -frustumView.right;
-	frustumView.top = scale, frustumView.bottom = -frustumView.top;
 	frustumView._near = near, frustumView._far = far;
 
 	glm::mat4 normalization = glm::mat4(
@@ -160,6 +161,7 @@ void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float
 	projection_transformation_ = M * normalization;
 }
 
+
 void Camera::setOrthographicProjection()
 {
 	setOrthographicProjection(orthoView.left, orthoView.right, orthoView.bottom, orthoView.top, orthoView._near, orthoView._far);
@@ -179,6 +181,11 @@ void Camera::setFOVY(const float _fovy)
 {
 	perspView.fovy = _fovy;
 	//setPerspectiveProjection();
+}
+
+float Camera::getFOVY() const
+{
+	return perspView.fovy;
 }
 
 void Camera::setAspectRatio(const float _aspectRatio)
@@ -201,7 +208,16 @@ void Camera::setFar(const float _far)
 
 void Camera::setZoom(const float _zoom)
 {
-	zoom = zoom;
+	zoom = _zoom;
+	orthoView.left = orthoView.left / zoom;
+	orthoView.right = orthoView.right / zoom;
+	orthoView.bottom = orthoView.bottom / zoom;
+	orthoView.top = orthoView.top / zoom;
+}
+
+float Camera::getZoom() const
+{
+	return zoom;
 }
 
 void Camera::set_current_position(const glm::vec3 _eye, const glm::vec3 _at, const glm::vec3 _up)

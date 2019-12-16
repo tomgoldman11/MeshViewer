@@ -1,6 +1,8 @@
 #pragma once
+#define _USE_MATH_DEFINES
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
+#include <math.h>
 
 
 class Camera
@@ -57,10 +59,12 @@ public:
 	void setOrthographicProjection(const float left, const float right, const float bottom, const float top, const float _near, const float _far);
 
 	void setFOVY(const float _fovy);
+	float getFOVY() const;
 	void setAspectRatio(const float _aspectRatio);
 	void setNear(const float _near);
 	void setFar(const float _far);
 	void setZoom(const float _zoom);
+	float getZoom() const;
 	void set_current_position(const glm::vec3 eye, const glm::vec3 at, const glm::vec3 up);
 	glm::vec3 getEye()const;
 	glm::vec3 getAt()const;

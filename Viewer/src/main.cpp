@@ -132,9 +132,9 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	if (frameBufferWidth != renderer.GetViewportWidth() || frameBufferHeight != renderer.GetViewportHeight())
 	{
 		// TODO: Set new aspect ratio
-		if (frameBufferHeight != 0) {
-			scene.GetActiveCamera().setAspectRatio(frameBufferWidth / frameBufferHeight);
-		}
+		//if (frameBufferHeight != 0) {
+		//	scene.GetActiveCamera().setAspectRatio(frameBufferWidth / frameBufferHeight);
+		//}
 		renderer.SetViewport(frameBufferWidth, frameBufferHeight);
 	}
 
