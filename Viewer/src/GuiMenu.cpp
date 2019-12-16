@@ -152,50 +152,77 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 	// multiple models
 	static int currmod = 0;
-	MeshModel& activeModel=scene.GetActiveModel();// getting the active model
-	ImGui::RadioButton("World", &WorldLocal, 0);
-	ImGui::SameLine();
-	ImGui::RadioButton("Local", &WorldLocal, 1);
-
-	while (WorldLocal == 0 && oneTime == false)
-	{
-		ScaleX = activeModel.getScaleVector_world().x;
-		ScaleY = activeModel.getScaleVector_world().y;
-		ScaleZ = activeModel.getScaleVector_world().z;
-		ScaleU = activeModel.getScaleVector_world().x;
-		RotateX = activeModel.getRotateVector_world().x;
-		RotateY = activeModel.getRotateVector_world().y;
-		RotateZ = activeModel.getRotateVector_world().z;
-		TranslateX = activeModel.getTranslateVector_world().x;
-		TranslateY = activeModel.getTranslateVector_world().y;
-		TranslateZ = activeModel.getTranslateVector_world().z;
-		oneTime = true;
-	}
-	while (WorldLocal == 1 && oneTime2 == false)
-	{
-		ScaleX = activeModel.getScaleVector_local().x;
-		ScaleY = activeModel.getScaleVector_local().y;
-		ScaleZ = activeModel.getScaleVector_local().z;
-		ScaleU = activeModel.getScaleVector_local().x;
-		RotateX = activeModel.getRotateVector_local().x;
-		RotateY = activeModel.getRotateVector_local().y;
-		RotateZ = activeModel.getRotateVector_local().z;
-		TranslateX = activeModel.getTranslateVector_local().x;
-		TranslateY = activeModel.getTranslateVector_local().y;
-		TranslateZ = activeModel.getTranslateVector_local().z;
-		oneTime2 = true;
-	}
+	MeshModel* activeModel=&(scene.GetActiveModel());// getting the active model
+	//ImGui::RadioButton("World", &WorldLocal, 0);
+	//ImGui::SameLine();
+	//ImGui::RadioButton("Local", &WorldLocal, 1);
 
 	if (ImGui::InputInt("ActiveModel", &currmod))
 	{
 		if (currmod < 0) currmod = 0;
 		if (currmod >= scene.GetModelCount()) currmod = scene.GetModelCount() - 1;
 		scene.SetActiveModelIndex(currmod);
-		activeModel = scene.GetActiveModel(); 
+		activeModel = &(scene.GetActiveModel());
+		if (WorldLocal == 0)
+		{
+			ScaleX = activeModel->getScaleVector_world().x;
+			ScaleY = activeModel->getScaleVector_world().y;
+			ScaleZ = activeModel->getScaleVector_world().z;
+			ScaleU = activeModel->getScaleVector_world().x;
+			RotateX = activeModel->getRotateVector_world().x;
+			RotateY = activeModel->getRotateVector_world().y;
+			RotateZ = activeModel->getRotateVector_world().z;
+			TranslateX = activeModel->getTranslateVector_world().x;
+			TranslateY = activeModel->getTranslateVector_world().y;
+			TranslateZ = activeModel->getTranslateVector_world().z;
+		}
+		else if (WorldLocal ==1)
+		{
+			ScaleX = activeModel->getScaleVector_local().x;
+			ScaleY = activeModel->getScaleVector_local().y;
+			ScaleZ = activeModel->getScaleVector_local().z;
+			ScaleU = activeModel->getScaleVector_local().x;
+			RotateX = activeModel->getRotateVector_local().x;
+			RotateY = activeModel->getRotateVector_local().y;
+			RotateZ = activeModel->getRotateVector_local().z;
+			TranslateX = activeModel->getTranslateVector_local().x;
+			TranslateY = activeModel->getTranslateVector_local().y;
+			TranslateZ = activeModel->getTranslateVector_local().z;
+		}
+
+	}
+
+	if (ImGui::RadioButton("World", &WorldLocal, 0))
+	{
+		ScaleX = activeModel->getScaleVector_world().x;
+		ScaleY = activeModel->getScaleVector_world().y;
+		ScaleZ = activeModel->getScaleVector_world().z;
+		ScaleU = activeModel->getScaleVector_world().x;
+		RotateX = activeModel->getRotateVector_world().x;
+		RotateY = activeModel->getRotateVector_world().y;
+		RotateZ = activeModel->getRotateVector_world().z;
+		TranslateX = activeModel->getTranslateVector_world().x;
+		TranslateY = activeModel->getTranslateVector_world().y;
+		TranslateZ = activeModel->getTranslateVector_world().z;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Local", &WorldLocal, 1))
+	{
+		ScaleX = activeModel->getScaleVector_local().x;
+		ScaleY = activeModel->getScaleVector_local().y;
+		ScaleZ = activeModel->getScaleVector_local().z;
+		ScaleU = activeModel->getScaleVector_local().x;
+		RotateX = activeModel->getRotateVector_local().x;
+		RotateY = activeModel->getRotateVector_local().y;
+		RotateZ = activeModel->getRotateVector_local().z;
+		TranslateX = activeModel->getTranslateVector_local().x;
+		TranslateY = activeModel->getTranslateVector_local().y;
+		TranslateZ = activeModel->getTranslateVector_local().z;
 	}
 
 
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s", stringToCharSeq(activeModel.GetModelName())); // purple
+
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s", stringToCharSeq(activeModel->GetModelName())); // purple
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
 
@@ -289,26 +316,28 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button("Reset U"))
 			ScaleU = 1.0f;
 
-		if (WorldLocal == 0 && (activeModel.getScaleVector_world() != glm::vec3(ScaleX, ScaleY, ScaleZ) || activeModel.getScaleVector_world() != glm::vec3(ScaleU, ScaleU, ScaleU))) // world
+		if (WorldLocal == 0 && (activeModel->getScaleVector_world() != glm::vec3(ScaleX, ScaleY, ScaleZ) || activeModel->getScaleVector_world() != glm::vec3(ScaleU, ScaleU, ScaleU))) // world
 		{
-		/*	ScaleX = activeModel.getScaleVector_world().x;
-			ScaleY = activeModel.getScaleVector_world().y;
-			ScaleZ = activeModel.getScaleVector_world().z;*/
-			activeModel.setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
+		/*	ScaleX = activeModel->getScaleVector_world().x;
+			ScaleY = activeModel->getScaleVector_world().y;
+			ScaleZ = activeModel->getScaleVector_world().z;*/
+			activeModel->setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
 			if (ScaleU != 1)
 			{
-				activeModel.setScale(ScaleU);
+				ScaleX = ScaleY = ScaleZ = ScaleU;
+				activeModel->setScale(ScaleU);
 			}
 		}
-		else if (WorldLocal == 1 && (activeModel.getScaleVector_local() != glm::vec3(ScaleX, ScaleY, ScaleZ) || activeModel.getScaleVector_world() != glm::vec3(ScaleU, ScaleU, ScaleU))) // local
+		else if (WorldLocal == 1 && (activeModel->getScaleVector_local() != glm::vec3(ScaleX, ScaleY, ScaleZ) || activeModel->getScaleVector_local() != glm::vec3(ScaleU, ScaleU, ScaleU))) // local
 		{
-	/*		ScaleX = activeModel.getScaleVector_local().x;
-			ScaleY = activeModel.getScaleVector_local().y;
-			ScaleZ = activeModel.getScaleVector_local().z;*/
-			activeModel.setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
+	/*		ScaleX = activeModel->getScaleVector_local().x;
+			ScaleY = activeModel->getScaleVector_local().y;
+			ScaleZ = activeModel->getScaleVector_local().z;*/
+			activeModel->setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
 			if (ScaleU != 1)
 			{
-				activeModel.setScale_local(ScaleU);
+				ScaleX = ScaleY = ScaleZ = ScaleU;
+				activeModel->setScale_local(ScaleU);
 			}
 		}
 		if (ImGui::Button("Close"))
@@ -332,13 +361,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button("Reset Z"))
 			RotateZ = 0.0f;
 
-		if (WorldLocal == 0 && activeModel.getRotateVector_world() != glm::vec3(RotateX, RotateY, RotateZ))
+		if (WorldLocal == 0 && activeModel->getRotateVector_world() != glm::vec3(RotateX, RotateY, RotateZ))
 		{
-			activeModel.setRotate(glm::vec3(RotateX, RotateY, RotateZ));
+			activeModel->setRotate(glm::vec3(RotateX, RotateY, RotateZ));
 		}
-		else if (WorldLocal == 1 && activeModel.getRotateVector_local() != glm::vec3(RotateX, RotateY, RotateZ))
+		else if (WorldLocal == 1 && activeModel->getRotateVector_local() != glm::vec3(RotateX, RotateY, RotateZ))
 		{
-			activeModel.setRotate_local(glm::vec3(RotateX, RotateY, RotateZ));
+			activeModel->setRotate_local(glm::vec3(RotateX, RotateY, RotateZ));
 		}
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
@@ -360,13 +389,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			TranslateZ = 0.0f;
-		if (WorldLocal == 0 && activeModel.getTranslateVector_world() != glm::vec3(TranslateX, TranslateY, TranslateZ))
+		if (WorldLocal == 0 && activeModel->getTranslateVector_world() != glm::vec3(TranslateX, TranslateY, TranslateZ))
 		{
-			activeModel.setTranslate(glm::vec3(TranslateX, TranslateY, TranslateZ));
+			activeModel->setTranslate(glm::vec3(TranslateX, TranslateY, TranslateZ));
 		}
-		else if (WorldLocal == 1 && activeModel.getTranslateVector_local() != glm::vec3(TranslateX, TranslateY, TranslateZ))
+		else if (WorldLocal == 1 && activeModel->getTranslateVector_local() != glm::vec3(TranslateX, TranslateY, TranslateZ))
 		{
-			activeModel.setTranslate_local(glm::vec3(TranslateX, TranslateY, TranslateZ));
+			activeModel->setTranslate_local(glm::vec3(TranslateX, TranslateY, TranslateZ));
 		}
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
