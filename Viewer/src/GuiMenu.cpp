@@ -49,6 +49,9 @@ static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
 
+bool oneTime = false;
+bool oneTime2 = false;
+
 /**
  * Function implementation
  */
@@ -114,7 +117,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::BeginMenu("Edit"))
 		{
 			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disable item
 			ImGui::Separator();
 			if (ImGui::MenuItem("Cut", "CTRL+X")) {}
 			if (ImGui::MenuItem("Copy", "CTRL+C")) {}
@@ -139,7 +142,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_demo_window)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
-	static int counter = 0;
 	ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
 										
 	if (scene.GetModelCount() == 0)
@@ -155,15 +157,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	ImGui::RadioButton("Local", &WorldLocal, 1);
 
-	if (ImGui::InputInt("ActiveModel", &currmod))
-	{
-		if (currmod < 0) currmod = 0;
-		if (currmod >= scene.GetModelCount()) currmod = scene.GetModelCount() - 1;
-		scene.SetActiveModelIndex(currmod);
-		activeModel = scene.GetActiveModel(); 
-
-	}
-	if (WorldLocal == 0)
+	while (WorldLocal == 0 && oneTime == false)
 	{
 		ScaleX = activeModel.getScaleVector_world().x;
 		ScaleY = activeModel.getScaleVector_world().y;
@@ -175,8 +169,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		TranslateX = activeModel.getTranslateVector_world().x;
 		TranslateY = activeModel.getTranslateVector_world().y;
 		TranslateZ = activeModel.getTranslateVector_world().z;
+		oneTime = true;
 	}
-	else
+	while (WorldLocal == 1 && oneTime2 == false)
 	{
 		ScaleX = activeModel.getScaleVector_local().x;
 		ScaleY = activeModel.getScaleVector_local().y;
@@ -188,7 +183,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		TranslateX = activeModel.getTranslateVector_local().x;
 		TranslateY = activeModel.getTranslateVector_local().y;
 		TranslateZ = activeModel.getTranslateVector_local().z;
+		oneTime2 = true;
 	}
+
+	if (ImGui::InputInt("ActiveModel", &currmod))
+	{
+		if (currmod < 0) currmod = 0;
+		if (currmod >= scene.GetModelCount()) currmod = scene.GetModelCount() - 1;
+		scene.SetActiveModelIndex(currmod);
+		activeModel = scene.GetActiveModel(); 
+
+	}
+
 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s", stringToCharSeq(activeModel.GetModelName())); // purple
 	ImGui::SameLine();
@@ -244,9 +250,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	ImGui::ColorEdit3("clear color", (float*)&clear_color1); // Edit 3 floats representing a color
 
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End();
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::End();
 
 
 		ImGui::Begin("Camera Control"); // camera window.
@@ -304,8 +309,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 		ImGui::End(); // camera window end.
 
-		//static MeshModel& activeModel = scene.GetActiveModel(); // getting the current model.
-
 	if (show_scale_window)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
@@ -349,16 +352,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				activeModel.setScale_local(ScaleU);
 			}
 		}
-
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
 		ImGui::End();
-	}
+	} // end show scale window
 	if (show_rotate_window)
 	{
 		ImGui::Begin("Rotate Window", &show_rotate_window);   
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Rotation Values From -180 to 180"); // yellow
-		//ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "Rotation Values From -180 to 180"); // purple
 		ImGui::SliderFloat("Rotate X", &RotateX, -180.0f, 180.0f);   
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
@@ -380,11 +381,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		{
 			activeModel.setRotate_local(glm::vec3(RotateX, RotateY, RotateZ));
 		}
-
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
 		ImGui::End();
-	}
+	} // end show rotate window
 	if (show_translate_window)
 	{
 		ImGui::Begin("Translate Window", &show_translate_window);
@@ -409,11 +409,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		{
 			activeModel.setTranslate_local(glm::vec3(TranslateX, TranslateY, TranslateZ));
 		}
-
 		if (ImGui::Button("Close"))
 			show_scale_window = false;
 		ImGui::End();
-	}
+	} // end show translate window
+
 	if (bounding_box)
 	{
 		scene.activeBoundBox = true;
