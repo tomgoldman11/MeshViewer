@@ -124,42 +124,10 @@ void Camera::setPerspectiveProjection_Alter()
 void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float fovy, const float near, const float far)
 {
 	float scale = tan(fovy * 0.5 * 0.01745329251994329576923690768489f) * near;
-	//float _projRight = aspectRatio * scale;
-	//float _projLeft = -_projRight;
-	//float _projTop = scale, _projBottom = -_projTop;
-	//float _projNear = near, _projFar = far;
 	frustumView.right = aspectRatio * scale;
 	frustumView.left = -frustumView.right;
 	frustumView.top = scale, frustumView.bottom = -frustumView.top;
 	frustumView._near = near, frustumView._far = far;
-
-	//glm::mat4 normalization = glm::mat4(
-	//	{ (-2 / (_projRight - _projLeft)),0,0,0 },
-	//	{ 0,(2 / (_projTop - _projBottom)),0,0 },
-	//	{ 0,0,(2 / (_projNear - _projFar)),0 },
-	//	{ -((_projRight + _projLeft) / (_projRight - _projLeft)),	-((_projTop + _projBottom) / (_projTop - _projBottom)),	-((_projFar + _projNear) / (_projFar - _projNear)),	1 }
-	//);
-
-	//glm::mat4x4 M;
-	//M[0][0] = (2 * _projNear) / (_projRight - _projLeft);
-	//M[0][1] = 0;
-	//M[0][2] = 0;
-	//M[0][3] = 0;
-
-	//M[1][0] = 0;
-	//M[1][1] = (2 * _projNear) / (_projTop - _projBottom);
-	//M[1][2] = 0;
-	//M[1][3] = 0;
-
-	//M[2][0] = (_projRight + _projLeft) / (_projRight - _projLeft);
-	//M[2][1] = (_projTop + _projBottom) / (_projTop - _projBottom);
-	//M[2][2] = -(_projFar + _projNear) / (_projFar - _projNear);
-	//M[2][3] = -1;
-
-	//M[3][0] = 0;
-	//M[3][1] = 0;
-	//M[3][2] = -(2 * _projFar * _projNear) / (_projFar - _projNear);
-	//M[3][3] = 0;
 
 	glm::mat4 normalization = glm::mat4(
 		{ (-2 / (frustumView.right - frustumView.left)),0,0,0 },

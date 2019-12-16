@@ -150,25 +150,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 	// multiple models
 	static int currmod = 0;
-	ImGui::InputInt("ActiveModel", &currmod);
-	if (currmod < 0) currmod = 0;
-	if (currmod >= scene.GetModelCount()) currmod = scene.GetModelCount() - 1;
-	scene.SetActiveModelIndex(currmod);
-
-	MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
-	//Camera& activeCamera = scene.GetCamera(currcam); // getting the active camera. 
-	//glm::vec3 currEye = activeCamera.getEye();
-	//glm::vec3 currAt = activeCamera.getAt();
-	//camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
-	//atX = currAt.x; atY = currAt.y; atZ = currAt.z;
-	
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s" , stringToCharSeq(activeModel.GetModelName())); // purple
-	ImGui::SameLine();
-	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
-
-	
-	if (ImGui::RadioButton("World", &WorldLocal, 0))
+	MeshModel& activeModel=scene.GetActiveModel();
+	if (ImGui::InputInt("ActiveModel", &currmod))
 	{
+		if (currmod < 0) currmod = 0;
+		if (currmod >= scene.GetModelCount()) currmod = scene.GetModelCount() - 1;
+		scene.SetActiveModelIndex(currmod);
+		activeModel = scene.GetActiveModel(); // getting the active model
+		ImGui::RadioButton("World", &WorldLocal, 0);
+		ImGui::SameLine();
+		ImGui::RadioButton("Local", &WorldLocal, 1);
+		if (WorldLocal == 0)
+		{
 			ScaleX = activeModel.getScaleVector_world().x;
 			ScaleY = activeModel.getScaleVector_world().y;
 			ScaleZ = activeModel.getScaleVector_world().z;
@@ -179,10 +172,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			TranslateX = activeModel.getTranslateVector_world().x;
 			TranslateY = activeModel.getTranslateVector_world().y;
 			TranslateZ = activeModel.getTranslateVector_world().z;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Local", &WorldLocal, 1))
-	{
+		}
+		else
+		{
 			ScaleX = activeModel.getScaleVector_local().x;
 			ScaleY = activeModel.getScaleVector_local().y;
 			ScaleZ = activeModel.getScaleVector_local().z;
@@ -193,7 +185,52 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			TranslateX = activeModel.getTranslateVector_local().x;
 			TranslateY = activeModel.getTranslateVector_local().y;
 			TranslateZ = activeModel.getTranslateVector_local().z;
+		}
+
 	}
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s", stringToCharSeq(activeModel.GetModelName())); // purple
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
+
+	//MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
+	//Camera& activeCamera = scene.GetCamera(currcam); // getting the active camera. 
+	//glm::vec3 currEye = activeCamera.getEye();
+	//glm::vec3 currAt = activeCamera.getAt();
+	//camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
+	//atX = currAt.x; atY = currAt.y; atZ = currAt.z;
+	
+	//ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s" , stringToCharSeq(activeModel.GetModelName())); // purple
+	//ImGui::SameLine();
+	//ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
+
+	
+	//if (ImGui::RadioButton("World", &WorldLocal, 0))
+	//{
+	//		ScaleX = activeModel.getScaleVector_world().x;
+	//		ScaleY = activeModel.getScaleVector_world().y;
+	//		ScaleZ = activeModel.getScaleVector_world().z;
+	//		ScaleU = activeModel.getScaleVector_world().x;
+	//		RotateX = activeModel.getRotateVector_world().x;
+	//		RotateY = activeModel.getRotateVector_world().y;
+	//		RotateZ = activeModel.getRotateVector_world().z;
+	//		TranslateX = activeModel.getTranslateVector_world().x;
+	//		TranslateY = activeModel.getTranslateVector_world().y;
+	//		TranslateZ = activeModel.getTranslateVector_world().z;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("Local", &WorldLocal, 1))
+	//{
+	//		ScaleX = activeModel.getScaleVector_local().x;
+	//		ScaleY = activeModel.getScaleVector_local().y;
+	//		ScaleZ = activeModel.getScaleVector_local().z;
+	//		ScaleU = activeModel.getScaleVector_local().x;
+	//		RotateX = activeModel.getRotateVector_local().x;
+	//		RotateY = activeModel.getRotateVector_local().y;
+	//		RotateZ = activeModel.getRotateVector_local().z;
+	//		TranslateX = activeModel.getTranslateVector_local().x;
+	//		TranslateY = activeModel.getTranslateVector_local().y;
+	//		TranslateZ = activeModel.getTranslateVector_local().z;
+	//}
 
 	ImGui::Checkbox("Scale Model", &show_scale_window);
 	ImGui::Checkbox("Rotate Model", &show_rotate_window);
