@@ -156,11 +156,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	scene.SetActiveModelIndex(currmod);
 
 	MeshModel& activeModel = scene.GetActiveModel(); // getting the active model.
-	Camera& activeCamera = scene.GetActiveCamera(); // getting the active camera. 
-	glm::vec3 currEye = activeCamera.getEye();
-	glm::vec3 currAt = activeCamera.getAt();
-	camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
-	atX = currAt.x; atY = currAt.y; atZ = currAt.z;
+	//Camera& activeCamera = scene.GetCamera(currcam); // getting the active camera. 
+	//glm::vec3 currEye = activeCamera.getEye();
+	//glm::vec3 currAt = activeCamera.getAt();
+	//camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
+	//atX = currAt.x; atY = currAt.y; atZ = currAt.z;
 	
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s" , stringToCharSeq(activeModel.GetModelName())); // purple
 	ImGui::SameLine();
@@ -216,11 +216,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
 		static int currcam = 0;
+		Camera& activeCamera = scene.GetCamera(currcam); // getting the active camera. 
+		glm::vec3 currEye = activeCamera.getEye();
+		glm::vec3 currAt = activeCamera.getAt();
+		camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
+		atX = currAt.x; atY = currAt.y; atZ = currAt.z;
 
 		ImGui::InputInt("ActiveCam", &currcam);
 		if (currcam < 0) currcam = 0;
 		if (currcam >= scene.GetCameraCount()) currcam = scene.GetCameraCount() - 1;
-		scene.SetActiveCameraIndex(currcam);
+		
+		if (ImGui::Button("Switch Camera"))
+			scene.SetActiveCameraIndex(currcam);
 
 		ImGui::RadioButton("orthographic", &pers, 0);
 		ImGui::SameLine();
