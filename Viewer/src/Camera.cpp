@@ -158,7 +158,7 @@ void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float
 	M[3][2] = -(2 * frustumView._far * frustumView._near) / (frustumView._far - frustumView._near);
 	M[3][3] = 0;
 
-	projection_transformation_ = M * normalization;
+	projection_transformation_ = M;
 }
 
 
