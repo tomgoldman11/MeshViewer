@@ -51,7 +51,7 @@ static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
 static float fovy = 50.0f; 
-static float zoom = 1.0f;
+float zoom = 1.0f;
 
 /**
  * Function implementation

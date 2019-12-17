@@ -30,6 +30,7 @@ extern float TranslateX;
 extern float TranslateY;
 extern float TranslateZ;
 
+extern float zoom;
 
 /**
  * Function declarations
@@ -145,9 +146,6 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	if (frameBufferWidth != renderer.GetViewportWidth() || frameBufferHeight != renderer.GetViewportHeight())
 	{
 		// TODO: Set new aspect ratio
-		//if (frameBufferHeight != 0) {
-		//	scene.GetActiveCamera().setAspectRatio(frameBufferWidth / frameBufferHeight);
-		//}
 		renderer.SetViewport(frameBufferWidth, frameBufferHeight);
 	}
 	// Use the ASCII table for more key codes (https://www.asciitable.com/)
@@ -172,9 +170,32 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	if (!io.WantCaptureMouse)
 	{
 		// TODO: Handle mouse events here
-		if (io.MouseDown[0])
+		if (io.MouseDown[0]) // Left mouse button is down
 		{
-			// Left mouse button is down
+			if (io.MouseDelta.y < 0)
+			{
+				zoom = zoom + 0.02f;
+			}
+			else if (io.MouseDelta.y > 0)
+			{
+				zoom = zoom - 0.02f;
+			}
+		}
+		if (io.MouseDown[1])
+		{
+			if (io.MouseDelta.y < 0)
+			{
+				scene.activeFacesNormals = true;
+			}
+			if (io.MouseDelta.x < 0)
+			{
+				scene.activeVerticesNormals = true;
+			}
+		}
+		//activeVerticesNormals
+		if (io.MouseDoubleClicked[0]) 
+		{
+			
 		}
 	}
 	// clears frame buffer

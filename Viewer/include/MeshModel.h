@@ -30,8 +30,6 @@ public:
 	const int getVertexFacesSum(int indx) const;
 	void getModelBoxVetrtices(glm::vec3& XnYZ, glm::vec3& XnYnZ, glm::vec3& nXnYnZ, glm::vec3& nXnYZ, glm::vec3& XYZ, glm::vec3& XYnZ, glm::vec3& nXYnZ, glm::vec3& nXYZ) const;
 
-	
-
 	// setters
 	void setScale(float newScale);
 	void setScale(const glm::vec3 newScale);
@@ -54,17 +52,14 @@ public:
 private:
 
 	void setModelBoxVetrtices();
+
 	// getters
 	glm::mat4x4 getRotationMatrix();
 	glm::mat4x4 getTranslationMatrix();
 	glm::mat4x4 getScalingMatrix();
-
 	glm::mat4x4 getRotationMatrix_local();
-
 	glm::mat4x4 getTranslationMatrix_local();
-
 	glm::mat4x4 getScalingMatrix_local();
-
 
 	// default memebers
 	std::vector<Face> faces_;
@@ -79,10 +74,11 @@ private:
 	glm::mat4x4 rotateTransform_local;
 
 	// vecs
+	//world
 	glm::vec3 translateVector;
 	glm::vec3 scaleVector;
 	glm::vec3 rotateVector;
-
+	//local
 	glm::vec3 translateVector_local;
 	glm::vec3 scaleVector_local;
 	glm::vec3 rotateVector_local;

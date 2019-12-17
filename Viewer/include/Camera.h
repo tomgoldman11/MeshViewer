@@ -61,11 +61,14 @@ public:
 
 	void setFOVY(const float _fovy);
 	float getFOVY() const;
+
 	void setAspectRatio(const float _aspectRatio);
 	void setNear(const float _near);
 	void setFar(const float _far);
+
 	void setZoom(const float _zoom);
 	float getZoom() const;
+
 	void set_current_position(const glm::vec3 eye, const glm::vec3 at, const glm::vec3 up);
 	glm::vec3 getEye()const;
 	glm::vec3 getAt()const;
