@@ -340,6 +340,11 @@ glm::vec3 MeshModel::getTranslateVector_local() const
 	return translateVector_local;
 }
 
+glm::vec3 MeshModel::getModelCenter() const
+{
+	return centerPoint;
+}
+
 const int MeshModel::getVertexFacesSum(int indx) const {
 	return verticesFaces.at(indx);
 }

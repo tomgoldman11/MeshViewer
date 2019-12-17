@@ -195,6 +195,11 @@ void Camera::setZoom(const float _zoom)
 	orthoView.zoom = _zoom;
 }
 
+float Camera::getZoom() const
+{
+	return orthoView.zoom;
+}
+
 void Camera::setAspectRatio(const float _aspectRatio)
 {
 	perspView.aspect = _aspectRatio;
@@ -244,3 +249,5 @@ glm::vec3 Camera::getUp() const
 {
 	return curPos.up;
 }
+
+

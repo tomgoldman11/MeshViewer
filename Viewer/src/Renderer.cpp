@@ -218,7 +218,7 @@ void Renderer::InitOpenGLRendering()
 	glUniform1i(glGetUniformLocation(program, "texture"), 0);
 }
 
-const glm::vec4 Renderer::trasformVec3(const glm::mat4& transformationMatrix, glm::vec3 vector)
+glm::vec4 Renderer::trasformVec3(const glm::mat4& transformationMatrix, glm::vec3 vector)
 {
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;

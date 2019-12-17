@@ -50,6 +50,7 @@ public:
 	glm::vec3 getRotateVector_local() const;
 	glm::vec3 getScaleVector_local() const;
 	glm::vec3 getTranslateVector_local() const;
+	glm::vec3 getModelCenter() const;
 
 private:
 
