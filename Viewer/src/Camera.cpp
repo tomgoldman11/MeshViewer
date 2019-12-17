@@ -39,7 +39,7 @@ void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const 
 		{0,0,1,0},
 		{-eye.x,-eye.y,-eye.z,1} );
 
-	view_transformation_ = glm::transpose(c) * eyeTranslate;
+	view_transformation_ = c * eyeTranslate;
 }
 
 const glm::mat4x4 Camera::getProjectionTransformation() const
@@ -158,7 +158,7 @@ void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float
 	M[3][2] = -(2 * frustumView._far * frustumView._near) / (frustumView._far - frustumView._near);
 	M[3][3] = 0;
 
-	projection_transformation_ = M;
+	projection_transformation_ = M * normalization;
 }
 
 

@@ -265,7 +265,7 @@ void Renderer::drawVerticesNormals(const MeshModel & mesh, const std::map<int, s
 		sumNormals = sumNormals / (float)listNormals.size();
 
 		glm::vec3 vVec = vertices[vInd->first];
-		glm::vec3 sumNormals3 = 30.0f * sumNormals + vVec;
+		glm::vec3 sumNormals3 = 0.5f * sumNormals + vVec;
 		vVec = trasformVec3(transformationMatrix, vVec);
 		sumNormals3 = trasformVec3(transformationMatrix, sumNormals3);
 
@@ -383,7 +383,7 @@ void Renderer::Render(const Scene& scene)
 	}
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
-	const glm::mat4x4 viewMatrix = activeCamera.getViewTransformation();
+	const glm::mat4x4 viewMatrix = glm::inverse(activeCamera.getViewTransformation());
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
 		{1,0,0,0},
@@ -407,7 +407,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4x4 worldlMatrix = mesh.getWorldTransformation();
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix = projectionMatrix* viewMatrix * worldlMatrix * modelMatrix;
+		transformationMatrix =  projectionMatrix* viewMatrix *worldlMatrix * modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -525,7 +525,7 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
 	);
-	glm::mat4 transformMat =projectionMatrix * viewMatrix ;
+	glm::mat4 transformMat =  projectionMatrix * viewMatrix;
 
 	//glm::vec4 centerT = transformMat * center;
 	//centerT = centerT / center.w;
