@@ -12,11 +12,12 @@
 #include "Renderer.h"
 #include "Scene.h"
 #include "Utils.h"
+#include "GuiMenu.h"
 
 /**
  * Fields
  */
-glm::vec4 clear_color = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
+extern glm::vec4 clear_color1;
 
 /**
  * Function declarations
@@ -157,7 +158,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		}
 	}
 	// clears frame buffer
-	renderer.ClearColorBuffer(clear_color);
+	renderer.ClearColorBuffer(clear_color1); // clear_color1
 	// Renders Scene
 	renderer.Render(scene);
 	// swap buffers

@@ -6,7 +6,15 @@
 #include "Scene.h"
 #include "Utils.h"
 #include "MeshModel.h"
-
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "Renderer.h"
+#include <cmath>
+#include <imgui/imgui.h>
+#include <stdio.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <nfd.h>
 /**
  * Fields
  */
@@ -24,7 +32,6 @@ static int WorldLocal = 0; // 0 for world , 1 for local
 
 
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
-glm::vec3 ObjColor = glm::vec3(1.0f, 0.0f, 1.0f);
 
 // model tranform
  static float ScaleX = 1.0f;
@@ -135,7 +142,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 
 	// Controls
-	ImGui::ColorEdit3("Clear Color", (float*)&clear_color1);
+	ImGui::Text("Background Color");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("Background", (float*)&clear_color1);
 	// TODO: Add more controls as needed
 
 	ImGui::End();
@@ -221,8 +230,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		TranslateZ = activeModel->getTranslateVector_local().z;
 	}
 
-
-
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active model : %s", stringToCharSeq(activeModel->GetModelName())); // purple
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of models : %d", scene.GetModelCount());
@@ -234,9 +241,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::Checkbox("Normals Per Face", &normals_per_face);
 	ImGui::SameLine();
 	ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
-
-	ImGui::ColorEdit3("clear color", (float*)&clear_color1); // Edit 3 floats representing a color
-
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
 
