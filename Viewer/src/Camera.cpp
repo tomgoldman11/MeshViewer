@@ -2,13 +2,11 @@
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
 	curPos({eye,at,up}),
-	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far
-	perspView({ 1.0f, 100.0f , 0.01f, 10.0f }), // aspect, fovy, near, far
-	zoom(2.0f)
+	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f ,1.0f }), // left, right, bottom, top, near, far
+	perspView({ 1.0f, 100.0f , 0.01f, 10.0f }) // aspect, fovy, near, far
 {
 	setCameraLookAt(eye, at, up);
 	projection_transformation_= glm::mat4x4(1);
-
 	//projection_transformation_ = glm::perspective(perspView.fovy * 0.01745329251994329576923690768489f, perspView.aspect, perspView._near, perspView._far);
 	//setPerspectiveProjection();
 	setOrthographicProjection();
@@ -65,7 +63,7 @@ void Camera::setPerspectiveProjection(const float aspect, const float fovy, cons
 	perspView._far = far;
 	const float zRange = far -near;
 
-	const float fov = fovy * 0.01745329251994329576923690768489f / zoom;
+	const float fov = fovy * 0.01745329251994329576923690768489f / orthoView.zoom;
 
 	float tanHalfFOV = tan(fov / 2.0f);
 
@@ -167,8 +165,12 @@ void Camera::setOrthographicProjection()
 	setOrthographicProjection(orthoView.left, orthoView.right, orthoView.bottom, orthoView.top, orthoView._near, orthoView._far);
 }
 
-void Camera::setOrthographicProjection(const float left, const float right, const float bottom, const float top, const float _near, const float _far)
+void Camera::setOrthographicProjection(const float _left, const float _right, const float _bottom, const float _top, const float _near, const float _far)
 {
+	float right = _right / orthoView.zoom;
+	float left = _left / orthoView.zoom;
+	float top = _top / orthoView.zoom;
+	float bottom = _bottom / orthoView.zoom;
 	projection_transformation_ = glm::mat4x4(
 		{2.0f / (right - left) ,0,0,0},
 		{0,2.0f / (top - bottom) ,0,0},
@@ -186,6 +188,11 @@ void Camera::setFOVY(const float _fovy)
 float Camera::getFOVY() const
 {
 	return perspView.fovy;
+}
+
+void Camera::setZoom(const float _zoom)
+{
+	orthoView.zoom = _zoom;
 }
 
 void Camera::setAspectRatio(const float _aspectRatio)
@@ -206,19 +213,15 @@ void Camera::setFar(const float _far)
 	//setPerspectiveProjection();
 }
 
-void Camera::setZoom(const float _zoom)
-{
-	zoom = _zoom;
-	orthoView.left = orthoView.left / zoom;
-	orthoView.right = orthoView.right / zoom;
-	orthoView.bottom = orthoView.bottom / zoom;
-	orthoView.top = orthoView.top / zoom;
-}
-
-float Camera::getZoom() const
-{
-	return zoom;
-}
+//float Camera::getZoom() const
+//{
+//	return zoom;
+//}
+//
+//void Camera::setZoom(const float _zoom)
+//{
+//	zoom == _zoom;
+//}
 
 void Camera::set_current_position(const glm::vec3 _eye, const glm::vec3 _at, const glm::vec3 _up)
 {
