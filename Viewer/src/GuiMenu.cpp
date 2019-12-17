@@ -34,18 +34,18 @@ static int WorldLocal = 0; // 0 for world , 1 for local
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
 // model tranform
- static float ScaleX = 1.0f;
- static float ScaleY = 1.0f;
- static float ScaleZ = 1.0f;
- static float ScaleU = 1.0f;
+ float ScaleX = 1.0f;
+ float ScaleY = 1.0f;
+ float ScaleZ = 1.0f;
+ float ScaleU = 1.0f;
 
- static float RotateX = 0.0f;
- static float RotateY = 0.0f;
- static float RotateZ = 0.0f;
+ float RotateX = 0.0f;
+ float RotateY = 0.0f;
+ float RotateZ = 0.0f;
 
-static float TranslateX = 0.0f;
-static float TranslateY = 0.0f;
-static float TranslateZ = 0.0f;
+ float TranslateX = 0.0f;
+ float TranslateY = 0.0f;
+ float TranslateZ = 0.0f;
 
 // camera transform
 static float camX = 0.0f; // eye parameters
@@ -55,6 +55,8 @@ static float disZ = 1.0f;
 static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
+
+static float fovy = 50.0f;
 
 //flags
 bool oneTime = false;
@@ -293,6 +295,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset atZ"))
 			atZ = 0.0f;
+		if (pers == 1)
+		{
+			ImGui::SliderFloat("fovy", &fovy, 0.0f, 180.0f);
+			ImGui::SameLine();
+			if (ImGui::Button("Reset fovy"))
+				fovy = 50.0f;
+			activeCamera.setFOVY(fovy);
+		}
 
 		if (currAt != glm::vec3(atX, atY, atZ) || currEye != glm::vec3(camX, camY, disZ)) {
 			activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(atX, atY, atZ), glm::vec3(0, 1, 0));
