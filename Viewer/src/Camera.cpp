@@ -37,7 +37,7 @@ void Camera::setCameraLookAt(const glm::vec3 & eye, const glm::vec3 & at, const 
 		{0,0,1,0},
 		{-eye.x,-eye.y,-eye.z,1} );
 
-	view_transformation_ = glm::transpose(c) * eyeTranslate;
+	view_transformation_ = c * eyeTranslate;
 }
 
 const glm::mat4x4 Camera::getProjectionTransformation() const
@@ -195,6 +195,11 @@ void Camera::setZoom(const float _zoom)
 	orthoView.zoom = _zoom;
 }
 
+float Camera::getZoom() const
+{
+	return orthoView.zoom;
+}
+
 void Camera::setAspectRatio(const float _aspectRatio)
 {
 	perspView.aspect = _aspectRatio;
@@ -244,3 +249,5 @@ glm::vec3 Camera::getUp() const
 {
 	return curPos.up;
 }
+
+

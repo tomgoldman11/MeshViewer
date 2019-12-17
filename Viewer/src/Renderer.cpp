@@ -218,11 +218,20 @@ void Renderer::InitOpenGLRendering()
 	glUniform1i(glGetUniformLocation(program, "texture"), 0);
 }
 
-const glm::vec4 Renderer::trasformVec3(const glm::mat4& transformationMatrix, glm::vec3 vector)
+glm::vec4 Renderer::trasformVec3(const glm::mat4& transformationMatrix, glm::vec3 vector)
 {
+	int half_width = viewport_width_ / 2;
+	int half_height = viewport_height_ / 2;
+	const glm::mat4x4 MMM = glm::mat4x4(
+		{ 1,0,0,0 },
+		{ 0,1,0,0 },
+		{ 0,0,1,0 },
+		{ half_width,half_height,0,1 }
+	);
+
 	glm::vec4 newPoint = transformationMatrix * Utils::Vec4FromVec3(vector);
 	newPoint = newPoint / newPoint.w;
-	return newPoint;
+	return MMM * newPoint;
 }
 
 void Renderer::drawFacesNormals(const glm::vec3& vec1, const glm::vec3& vec2, const glm::vec3& vec3, const glm::mat4x4& transformationMatrix, const Face& currFace)
@@ -234,7 +243,7 @@ void Renderer::drawFacesNormals(const glm::vec3& vec1, const glm::vec3& vec2, co
 	glm::vec3 _normalPoint = currFace.getNormal();
 	glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
 
-	glm::vec3 normal = (float)NORMALS_LENGHTF * _normalPoint + newPoint;
+	glm::vec3 normal = 0.5f * _normalPoint + newPoint;
 	normal = trasformVec3(transformationMatrix, normal);
 	DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
 
@@ -256,7 +265,7 @@ void Renderer::drawVerticesNormals(const MeshModel & mesh, const std::map<int, s
 		sumNormals = sumNormals / (float)listNormals.size();
 
 		glm::vec3 vVec = vertices[vInd->first];
-		glm::vec3 sumNormals3 = 30.0f * sumNormals + vVec;
+		glm::vec3 sumNormals3 = 0.5f * sumNormals + vVec;
 		vVec = trasformVec3(transformationMatrix, vVec);
 		sumNormals3 = trasformVec3(transformationMatrix, sumNormals3);
 
@@ -374,7 +383,7 @@ void Renderer::Render(const Scene& scene)
 	}
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 
-	const glm::mat4x4 viewMatrix = activeCamera.getViewTransformation();
+	const glm::mat4x4 viewMatrix = glm::inverse(activeCamera.getViewTransformation());
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
 		{1,0,0,0},
@@ -398,7 +407,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4x4 worldlMatrix = mesh.getWorldTransformation();
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix = MMM * projectionMatrix* viewMatrix * worldlMatrix * modelMatrix;
+		transformationMatrix =  projectionMatrix* viewMatrix *worldlMatrix * modelMatrix;
 		//draw every face
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -451,7 +460,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4 inverseLookAt = glm::inverse(cameraObj.getViewTransformation());
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix = MMM * projectionMatrix* viewMatrix * inverseLookAt;
+		transformationMatrix = projectionMatrix* viewMatrix * inverseLookAt;
 
 		for (int j = 0; j < cameraModel->GetFacesCount(); j++) {
 			Face currFace = cameraModel->GetFace(j);
@@ -506,26 +515,32 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	
-	glm::vec4 xAxis(300.0, 0.0, 0.0, 1.0);
-	glm::vec4 yAxis(0.0,300.0, 0.0, 1.0);
-	glm::vec4 zAxis(0.0, 0.0, 300.0, 1.0);
-	glm::vec4 center(0.0, 0.0, 0.0, 1.0);
+	glm::vec3 xAxis(300.0, 0.0, 0.0);
+	glm::vec3 yAxis(0.0,300.0, 0.0);
+	glm::vec3 zAxis(0.0, 0.0, 300.0);
+	glm::vec3 center(0.0, 0.0, 0.0);
 	const glm::mat4x4 MMM = glm::mat4x4(
 		{ 1,0,0,0 },
 		{ 0,1,0,0 },
 		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
 	);
-	glm::mat4 transformMat = MMM * projectionMatrix * viewMatrix ;
+	glm::mat4 transformMat =  projectionMatrix * viewMatrix;
 
-	glm::vec4 centerT = transformMat * center;
-	centerT = centerT / center.w;
-	glm::vec4 xAxisT = transformMat * xAxis;
-	xAxisT = xAxisT / xAxisT.w;
-	glm::vec4 yAxisT = transformMat * yAxis;
-	yAxisT = yAxisT / yAxisT.w;
-	glm::vec4 zAxisT = transformMat * zAxis;
-	zAxisT = zAxisT / zAxisT.w;
+	//glm::vec4 centerT = transformMat * center;
+	//centerT = centerT / center.w;
+	//glm::vec4 xAxisT = transformMat * xAxis;
+	//xAxisT = xAxisT / xAxisT.w;
+	//glm::vec4 yAxisT = transformMat * yAxis;
+	//yAxisT = yAxisT / yAxisT.w;
+	//glm::vec4 zAxisT = transformMat * zAxis;
+	//zAxisT = zAxisT / zAxisT.w;
+
+	glm::vec3 xAxisT = trasformVec3(transformMat, xAxis);
+	glm::vec3 yAxisT = trasformVec3(transformMat, yAxis);
+	glm::vec3 zAxisT = trasformVec3(transformMat, zAxis);
+	glm::vec3 centerT = trasformVec3(transformMat, center);
+
 
 	DrawLine(glm::vec2(centerT.x, centerT.y), glm::vec2(xAxisT.x, xAxisT.y), glm::vec3(1, 0, 0));
 	DrawLine(glm::vec2(centerT.x, centerT.y), glm::vec2(yAxisT.x, yAxisT.y), glm::vec3(0, 1, 0));

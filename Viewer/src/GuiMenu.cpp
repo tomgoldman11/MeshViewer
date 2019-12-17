@@ -296,6 +296,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				fovy = 50.0f;
 			activeCamera.setFOVY(fovy);
 		}
+		
+		//if (ImGui::Button("Look At")) {
+		//	glm::mat4 wt = activeModel->getWorldTransformation();
+		//	glm::mat4 lt = activeModel->getLocalTransformation();
+		//	glm::vec4 lookPoint = glm::vec4({ activeModel->getModelCenter(),1.0f });
+		//	lookPoint = wt * lt * lookPoint;
+		//	lookPoint = lookPoint / lookPoint.w;
+		//	atX = lookPoint.x;
+		//	atY = lookPoint.y;
+		//	atZ = lookPoint.z;
+
+		//}
 
 		if (currAt != glm::vec3(atX, atY, atZ) || currEye != glm::vec3(camX, camY, disZ)) {
 			activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(atX, atY, atZ), glm::vec3(0, 1, 0));

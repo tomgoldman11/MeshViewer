@@ -146,6 +146,9 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	if (frameBufferWidth != renderer.GetViewportWidth() || frameBufferHeight != renderer.GetViewportHeight())
 	{
 		// TODO: Set new aspect ratio
+		if (frameBufferHeight != 0) {
+			scene.GetActiveCamera().setAspectRatio((float)frameBufferWidth / (float)frameBufferHeight);
+		}
 		renderer.SetViewport(frameBufferWidth, frameBufferHeight);
 	}
 	// Use the ASCII table for more key codes (https://www.asciitable.com/)
