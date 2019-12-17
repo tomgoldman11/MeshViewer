@@ -18,7 +18,6 @@
 /**
  * Fields
  */
-
 bool show_demo_window = false;
 bool show_scale_window = false;
 bool show_rotate_window = false;
@@ -30,7 +29,6 @@ bool ortho = false;
 static int pers = 0; // 0 for ortho , 1 for perspective
 static int WorldLocal = 0; // 0 for world , 1 for local
 
-
 glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 
 // model tranform
@@ -38,11 +36,9 @@ glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
  float ScaleY = 1.0f;
  float ScaleZ = 1.0f;
  float ScaleU = 1.0f;
-
  float RotateX = 0.0f;
  float RotateY = 0.0f;
  float RotateZ = 0.0f;
-
  float TranslateX = 0.0f;
  float TranslateY = 0.0f;
  float TranslateZ = 0.0f;
@@ -51,16 +47,11 @@ glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
 static float camX = 0.0f; // eye parameters
 static float camY = 0.0f;
 static float disZ = 1.0f;
-
 static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
-
-static float fovy = 50.0f;
-
-//flags
-bool oneTime = false;
-bool oneTime2 = false;
+static float fovy = 50.0f; 
+static float zoom = 1.0f;
 
 /**
  * Function implementation
@@ -86,7 +77,7 @@ char* const stringToCharSeq(const std::string& str)
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 30), ImGuiCond_Once);
-	/**
+	/*
 	 * MeshViewer menu
 	 *
 	 */
@@ -147,9 +138,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::Text("Background Color");
 	ImGui::SameLine();
 	ImGui::ColorEdit3("Background", (float*)&clear_color1);
-	// TODO: Add more controls as needed
 
-	ImGui::End();
+	ImGui::End(); // end meshviewer menu
 
 	if (show_demo_window)
 		ImGui::ShowDemoWindow(&show_demo_window);
@@ -165,10 +155,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// multiple models
 	static int currmod = 0;
 	MeshModel* activeModel=&(scene.GetActiveModel());// getting the active model
-	//ImGui::RadioButton("World", &WorldLocal, 0);
-	//ImGui::SameLine();
-	//ImGui::RadioButton("Local", &WorldLocal, 1);
-
 	if (ImGui::InputInt("ActiveModel", &currmod))
 	{
 		if (currmod < 0) currmod = 0;
@@ -282,7 +268,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset dist"))
 			disZ = 1.0f;
-
 		ImGui::SliderFloat("AT X", &atX, -5.0f, 5.0f );
 		ImGui::SameLine();
 		if (ImGui::Button("Reset atX"))
@@ -295,6 +280,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset atZ"))
 			atZ = 0.0f;
+		if (pers == 0)
+		{
+			ImGui::SliderFloat("zoom", &zoom, 1.0f, 5.0f , "%.1f");
+			ImGui::SameLine();
+			if (ImGui::Button("Reset zoom"))
+				zoom = 1.0f;
+			activeCamera.setZoom(zoom);
+		}
 		if (pers == 1)
 		{
 			ImGui::SliderFloat("fovy", &fovy, 0.0f, 180.0f);

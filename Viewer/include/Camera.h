@@ -15,6 +15,7 @@ public:
 		float top;
 		float _near;
 		float _far;
+		float zoom;
 	};
 
 	struct frustum {
@@ -70,6 +71,9 @@ public:
 	glm::vec3 getAt()const;
 	glm::vec3 getUp()const;
 
+	//float zoom;
+	
+
 private:
 	glm::mat4x4 view_transformation_;
 	glm::mat4x4 projection_transformation_;
@@ -77,5 +81,6 @@ private:
 	perspective perspView;
 	frustum frustumView;
 	position curPos;
-	float zoom;
+
+
 };
