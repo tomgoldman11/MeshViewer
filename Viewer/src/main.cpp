@@ -19,6 +19,18 @@
  */
 extern glm::vec4 clear_color1;
 
+
+extern float ScaleU;
+
+extern float RotateX;
+extern float RotateY;
+extern float RotateZ;
+
+extern float TranslateX;
+extern float TranslateY;
+extern float TranslateZ;
+
+
 /**
  * Function declarations
  */
@@ -138,15 +150,23 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		//}
 		renderer.SetViewport(frameBufferWidth, frameBufferHeight);
 	}
-
+	// Use the ASCII table for more key codes (https://www.asciitable.com/)
 	if (!io.WantCaptureKeyboard)
 	{
-		// TODO: Handle keyboard events here
-		if (io.KeysDown[65])
-		{
-			// A key is down
-			// Use the ASCII table for more key codes (https://www.asciitable.com/)
-		}
+		if (io.KeysDown[87]) 	TranslateY++;  // W
+		if (io.KeysDown[83])	TranslateY--; // S
+		if (io.KeysDown[65])    TranslateX--; // A
+		if (io.KeysDown[68])    TranslateX++; // D
+		if (io.KeysDown[90])    TranslateZ--; // Z
+		if (io.KeysDown[67])    TranslateZ++; // C
+		if (io.KeysDown[82])    ScaleU++; // R
+		if (io.KeysDown[70])    ScaleU--; // F
+		if (io.KeysDown[89])    RotateY++; // Y
+		if (io.KeysDown[72])    RotateY--; // H
+		if (io.KeysDown[71])    RotateX--; // G
+		if (io.KeysDown[74])    RotateX++; // J
+		if (io.KeysDown[66])    RotateZ--; // B
+		if (io.KeysDown[77])    RotateZ++; // M
 	}
 
 	if (!io.WantCaptureMouse)
