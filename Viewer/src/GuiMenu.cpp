@@ -49,6 +49,7 @@ static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
 
+//flags
 bool oneTime = false;
 bool oneTime2 = false;
 
@@ -314,7 +315,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SliderFloat("Scale U", &ScaleU, 0.0f, 120.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset U"))
+		{
 			ScaleU = 1.0f;
+			ScaleX = 1.0f;
+			ScaleY = 1.0f;
+			ScaleZ = 1.0f;
+		}
 
 		if (WorldLocal == 0 && (activeModel->getScaleVector_world() != glm::vec3(ScaleX, ScaleY, ScaleZ) || activeModel->getScaleVector_world() != glm::vec3(ScaleU, ScaleU, ScaleU))) // world
 		{
