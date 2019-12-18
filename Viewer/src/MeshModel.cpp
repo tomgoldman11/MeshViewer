@@ -208,15 +208,12 @@ const glm::mat4x4 MeshModel::getWorldTransformation()
 
 const glm::mat4x4 MeshModel::getLocalTransformation()
 {
-	if (localUpdateFlag)
-	{
 		glm::mat4x4 translate = getTranslationMatrix_local();
 		glm::mat4x4 rotate = getRotationMatrix_local();
 		rotateVector_local = glm::vec3(0.0f);
 		glm::mat4x4 scale = getScalingMatrix_local();
 		localTransform = translate * rotate * scale;
 		localUpdateFlag = false;
-	}
 	return localTransform;
 }
 
