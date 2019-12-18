@@ -17,7 +17,7 @@
 /**
  * Fields
  */
-extern glm::vec4 clear_color1;
+extern glm::vec4 back_color;
 
 
 extern float ScaleU;
@@ -202,7 +202,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 		}
 	}
 	// clears frame buffer
-	renderer.ClearColorBuffer(clear_color1); // clear_color1
+	renderer.ClearColorBuffer(back_color); 
 	// Renders Scene
 	renderer.Render(scene);
 	// swap buffers

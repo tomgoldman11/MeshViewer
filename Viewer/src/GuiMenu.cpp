@@ -29,7 +29,7 @@ bool ortho = false;
 static int pers = 0; // 0 for ortho , 1 for perspective
 static int WorldLocal = 0; // 0 for world , 1 for local
 
-glm::vec4 clear_color1 = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
+glm::vec4 back_color = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f); 
 
 // model tranform
  float ScaleX = 1.0f;
@@ -59,7 +59,7 @@ float zoom = 1.0f;
 
 const glm::vec4& GetClearColor()
 {
-	return clear_color1;
+	return back_color;
 }
 
 char* const stringToCharSeq(const std::string& str)
@@ -137,7 +137,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// Controls
 	ImGui::Text("Background Color");
 	ImGui::SameLine();
-	ImGui::ColorEdit3("Background", (float*)&clear_color1);
+	ImGui::ColorEdit3("Background", (float*)&back_color);
 
 	ImGui::End(); // end meshviewer menu
 
@@ -189,7 +189,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 
 	}
-
 	if (ImGui::RadioButton("World", &WorldLocal, 0))
 	{
 		ScaleX = activeModel->getScaleVector_world().x;
@@ -297,17 +296,16 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			activeCamera.setFOVY(fovy);
 		}
 		
-		//if (ImGui::Button("Look At")) {
-		//	glm::mat4 wt = activeModel->getWorldTransformation();
-		//	glm::mat4 lt = activeModel->getLocalTransformation();
-		//	glm::vec4 lookPoint = glm::vec4({ activeModel->getModelCenter(),1.0f });
-		//	lookPoint = wt * lt * lookPoint;
-		//	lookPoint = lookPoint / lookPoint.w;
-		//	atX = lookPoint.x;
-		//	atY = lookPoint.y;
-		//	atZ = lookPoint.z;
-
-		//}
+		if (ImGui::Button("Look At")) {
+			glm::mat4 wt = activeModel->getWorldTransformation();
+			glm::mat4 lt = activeModel->getLocalTransformation();
+			glm::vec4 lookPoint = glm::vec4({ activeModel->getModelCenter(),1.0f });
+			lookPoint = wt * lt * lookPoint;
+			lookPoint = lookPoint / lookPoint.w;
+			atX = lookPoint.x;
+			atY = lookPoint.y;
+			atZ = lookPoint.z;
+		}
 
 		if (currAt != glm::vec3(atX, atY, atZ) || currEye != glm::vec3(camX, camY, disZ)) {
 			activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(atX, atY, atZ), glm::vec3(0, 1, 0));
@@ -341,11 +339,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			ScaleZ = 1.0f;
 		}
 
-		if (WorldLocal == 0 && (activeModel->getScaleVector_world() != glm::vec3(ScaleX, ScaleY, ScaleZ) || activeModel->getScaleVector_world() != glm::vec3(ScaleU, ScaleU, ScaleU))) // world
+		if (WorldLocal == 0 && (activeModel->getScaleVector_world() != glm::vec3(ScaleX, ScaleY, ScaleZ) 
+			|| activeModel->getScaleVector_world() != glm::vec3(ScaleU, ScaleU, ScaleU))) // world
 		{
-		/*	ScaleX = activeModel->getScaleVector_world().x;
-			ScaleY = activeModel->getScaleVector_world().y;
-			ScaleZ = activeModel->getScaleVector_world().z;*/
 			activeModel->setScale(glm::vec3(ScaleX, ScaleY, ScaleZ));
 			if (ScaleU != 1)
 			{
@@ -353,11 +349,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 				activeModel->setScale(ScaleU);
 			}
 		}
-		else if (WorldLocal == 1 && (activeModel->getScaleVector_local() != glm::vec3(ScaleX, ScaleY, ScaleZ) || activeModel->getScaleVector_local() != glm::vec3(ScaleU, ScaleU, ScaleU))) // local
+		else if (WorldLocal == 1 && (activeModel->getScaleVector_local() != glm::vec3(ScaleX, ScaleY, ScaleZ) 
+				 ||  activeModel->getScaleVector_local() != glm::vec3(ScaleU, ScaleU, ScaleU))) // local
 		{
-	/*		ScaleX = activeModel->getScaleVector_local().x;
-			ScaleY = activeModel->getScaleVector_local().y;
-			ScaleZ = activeModel->getScaleVector_local().z;*/
 			activeModel->setScale_local(glm::vec3(ScaleX, ScaleY, ScaleZ));
 			if (ScaleU != 1)
 			{

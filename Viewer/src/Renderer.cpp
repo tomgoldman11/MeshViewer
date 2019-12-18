@@ -4,8 +4,8 @@
 #include "Renderer.h"
 #include "InitShader.h"
 #include "Utils.h"
-#define NORMALS_LENGHTV 30.0
-#define NORMALS_LENGHTF 0.2
+#define NORMALS_LENGTHV 40.0f
+#define NORMALS_LENGTHF 0.2f
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
 
@@ -48,26 +48,29 @@ void Renderer::SetViewportWidth(const int _viewport_width)
 void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color)
 {
 	int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
-	float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
-	dx = x2 - x1;
-	dy = y2 - y1;
-	dx1 = fabs(dx);
-	dy1 = fabs(dy);
+	float x1 = float(p1.x);
+	float y1 = float(p1.y); 
+	float x2 = float(p2.x);
+	float y2 = float(p2.y);
+	dx = int(x2 - x1);
+	dy = int(y2 - y1);
+	dx1 = int(fabs(dx));
+	dy1 = int(fabs(dy));
 	px = 2 * dy1 - dx1;
 	py = 2 * dx1 - dy1;
 	if (dy1 <= dx1)
 	{
 		if (dx >= 0)
 		{
-			x = x1;
-			y = y1;
-			xe = x2;
+			x = int(x1);
+			y = int(y1);
+			xe = int(x2);
 		}
 		else
 		{
-			x = x2;
-			y = y2;
-			xe = x1;
+			x = int(x2);
+			y = int(y2);
+			xe = int(x1);
 		}
 		PutPixel(x, y, color);
 		for (i = 0; x < xe; i++)
@@ -96,15 +99,15 @@ void Renderer::DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::v
 	{
 		if (dy >= 0)
 		{
-			x = x1;
-			y = y1;
-			ye = y2;
+			x = int(x1);
+			y = int(y1);
+			ye = int(y2);
 		}
 		else
 		{
-			x = x2;
-			y = y2;
-			ye = y1;
+			x = int(x2);
+			y = int(y2);
+			ye = int(y1);
 		}
 		PutPixel(x, y, color);
 		for (i = 0; y < ye; i++)
@@ -243,7 +246,7 @@ void Renderer::drawFacesNormals(const glm::vec3& vec1, const glm::vec3& vec2, co
 	glm::vec3 _normalPoint = currFace.getNormal();
 	glm::vec4 normalPoint = glm::vec4(_normalPoint.x, _normalPoint.y, _normalPoint.z, 0.0f);
 
-	glm::vec3 normal = 0.5f * _normalPoint + newPoint;
+	glm::vec3 normal = NORMALS_LENGTHF * _normalPoint + newPoint;
 	normal = trasformVec3(transformationMatrix, normal);
 	DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
 
@@ -257,15 +260,15 @@ void Renderer::drawVerticesNormals(const MeshModel & mesh, const std::map<int, s
 	for (vInd = verticesNormals.begin(); vInd != verticesNormals.end(); vInd++) {
 		glm::vec3 sumNormals(0);
 		std::vector<int> listNormals = vInd->second;
-
-		for (int i = 0; i < listNormals.size(); ++i)
+		unsigned int i = 0;
+		for ( i; i < listNormals.size(); ++i)
 		{
 			sumNormals += normals[listNormals[i]];
 		}
 		sumNormals = sumNormals / (float)listNormals.size();
 
 		glm::vec3 vVec = vertices[vInd->first];
-		glm::vec3 sumNormals3 = 0.5f * sumNormals + vVec;
+		glm::vec3 sumNormals3 = NORMALS_LENGTHV * sumNormals + vVec;
 		vVec = trasformVec3(transformationMatrix, vVec);
 		sumNormals3 = trasformVec3(transformationMatrix, sumNormals3);
 
@@ -377,12 +380,7 @@ void Renderer::Render(const Scene& scene)
 	int half_height = viewport_height_ / 2;
 	std::map<int, std::vector<int>> verticesNormals;
 	glm::mat4 transformationMatrix;
-	if (scene.GetActiveCameraIndex() != 0)
-	{
-		int x;
-	}
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
-
 	const glm::mat4x4 viewMatrix = glm::inverse(activeCamera.getViewTransformation());
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
@@ -393,7 +391,7 @@ void Renderer::Render(const Scene& scene)
 	);
 	drawAxis(projectionMatrix, viewMatrix);
 
-	for (int i = 0; i < scene.GetModelCount(); i++) {
+	for (int i = 0; i < scene.GetModelCount(); i++) { // looping over the models
 		MeshModel mesh = scene.GetModel(i);
 
 		// init face normals
