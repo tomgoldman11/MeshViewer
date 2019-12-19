@@ -296,7 +296,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			activeCamera.setFOVY(fovy);
 		}
 		
-		if (ImGui::Button("Look At")) {
+		if (ImGui::Button("Set camera to active model")) {
 			glm::mat4 wt = activeModel->getWorldTransformation();
 			glm::mat4 lt = activeModel->getLocalTransformation();
 			glm::vec4 lookPoint = glm::vec4({ activeModel->getModelCenter(),1.0f });
