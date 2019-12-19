@@ -70,7 +70,7 @@ const std::string& MeshModel::GetModelName() const
 glm::mat4x4 MeshModel::getRotationMatrix()
 {
 	float angle;
-	float pi = atan(1) * 4;
+	float pi = float(atan(1) * 4);
 	glm::mat4x4 rotateTransformX(1);
 	glm::mat4x4 rotateTransformY(1);
 	glm::mat4x4 rotateTransformZ(1);
@@ -125,7 +125,7 @@ glm::mat4x4 MeshModel::getScalingMatrix()
 glm::mat4x4 MeshModel::getRotationMatrix_local()
 {
 	float angle;
-	float pi = atan(1) * 4;
+	float pi = float(atan(1) * 4);
 	glm::mat4x4 rotateTransformX(1);
 	glm::mat4x4 rotateTransformY(1);
 	glm::mat4x4 rotateTransformZ(1);

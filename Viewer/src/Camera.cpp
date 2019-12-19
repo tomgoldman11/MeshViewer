@@ -122,7 +122,7 @@ void Camera::setPerspectiveProjection_Alter()
 }
 void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float fovy, const float near, const float far)
 {
-	float scale = tan(fovy * 0.5 * M_PI / 180);
+	float scale = float(tan(fovy * 0.5 * M_PI / 180));
 	frustumView.top = near * scale, frustumView.bottom = -frustumView.top;
 	frustumView.right = frustumView.top * aspectRatio;
 	frustumView.left = -frustumView.right;
