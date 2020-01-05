@@ -2,7 +2,7 @@
 
 Camera::Camera(const glm::vec3 & eye, const glm::vec3 & at, const glm::vec3 & up) :
 	curPos({eye,at,up}),
-	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,-1.0f ,1.0f ,1.0f }), // left, right, bottom, top, near, far
+	orthoView({ -1.0f ,1.0f ,-1.0f ,1.0f ,1.0f ,-1.0f ,1.0f }), // left, right, bottom, top, near, far, zoom
 	perspView({ 1.0f, 100.0f , 0.01f, 10.0f }) // aspect, fovy, near, far
 {
 	setCameraLookAt(eye, at, up);

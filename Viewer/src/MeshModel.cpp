@@ -130,10 +130,15 @@ glm::mat4x4 MeshModel::getRotationMatrix_local()
 	glm::mat4x4 rotateTransformY(1);
 	glm::mat4x4 rotateTransformZ(1);
 	glm::mat4x4 translateToCenter(1);
+	glm::mat4x4 NEGtranslateToCenter(1);
 
-	translateToCenter[3].x = -centerPoint.x;
-	translateToCenter[3].y = -centerPoint.y;
-	translateToCenter[3].z = -centerPoint.z;
+	translateToCenter[3].x = centerPoint.x;
+	translateToCenter[3].y = centerPoint.y;
+	translateToCenter[3].z = centerPoint.z;
+
+	NEGtranslateToCenter[3].x = -centerPoint.x;
+	NEGtranslateToCenter[3].y = -centerPoint.y;
+	NEGtranslateToCenter[3].z = -centerPoint.z;
 
 	if (rotateVector_local.x != 0) {
 		angle = rotateVector_local.x * pi / 180;
@@ -158,39 +163,49 @@ glm::mat4x4 MeshModel::getRotationMatrix_local()
 	}
 
 	rotateTransform_local = rotateTransformX * rotateTransformY * rotateTransformZ;
-	return (-translateToCenter) * rotateTransform_local * translateToCenter;
+	return translateToCenter * rotateTransform_local * NEGtranslateToCenter;
 }
 
 glm::mat4x4 MeshModel::getTranslationMatrix_local()
 {
 	glm::mat4x4 transmat(1);
 	glm::mat4x4 translateToCenter(1);
+	glm::mat4x4 NEGtranslateToCenter(1);
 
-	translateToCenter[3].x = -centerPoint.x;
-	translateToCenter[3].y = -centerPoint.y;
-	translateToCenter[3].z = -centerPoint.z;
+	translateToCenter[3].x = centerPoint.x;
+	translateToCenter[3].y = centerPoint.y;
+	translateToCenter[3].z = centerPoint.z;
+
+	NEGtranslateToCenter[3].x = -centerPoint.x;
+	NEGtranslateToCenter[3].y = -centerPoint.y;
+	NEGtranslateToCenter[3].z = -centerPoint.z;
 
 	transmat[3].x = translateVector_local.x;
 	transmat[3].y = translateVector_local.y;
 	transmat[3].z = translateVector_local.z;
 
-	return (-translateToCenter) * transmat * translateToCenter;
+	return translateToCenter * transmat * NEGtranslateToCenter;
 }
 
 glm::mat4x4 MeshModel::getScalingMatrix_local()
 {
 	glm::mat4x4 scaleMat(1);
 	glm::mat4x4 translateToCenter(1);
+	glm::mat4x4 NEGtranslateToCenter(1);
 
-	translateToCenter[3].x = -centerPoint.x;
-	translateToCenter[3].y = -centerPoint.y;
-	translateToCenter[3].z = -centerPoint.z;
+	translateToCenter[3].x = centerPoint.x;
+	translateToCenter[3].y = centerPoint.y;
+	translateToCenter[3].z = centerPoint.z;
+
+	NEGtranslateToCenter[3].x = -centerPoint.x;
+	NEGtranslateToCenter[3].y = -centerPoint.y;
+	NEGtranslateToCenter[3].z = -centerPoint.z;
 
 	scaleMat[0].x *= scaleVector_local.x;
 	scaleMat[1].y *= scaleVector_local.y;
 	scaleMat[2].z *= scaleVector_local.z;
 
-	return (-translateToCenter) * scaleMat * translateToCenter;
+	return translateToCenter * scaleMat * NEGtranslateToCenter;
 }
 
 const glm::mat4x4 MeshModel::getWorldTransformation()

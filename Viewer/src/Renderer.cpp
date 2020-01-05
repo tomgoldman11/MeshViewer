@@ -35,6 +35,15 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 	color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
 }
 
+glm::vec3 Renderer::GetPixel(int i, int j)
+{
+	if (i < 0) return glm::vec3(0,0,0); if (i >= viewport_width_) return glm::vec3(0,0,0);
+	if (j < 0) return glm::vec3(0,0,0); if (j >= viewport_height_) return glm::vec3(0, 0, 0);
+
+	glm::vec3 retVec (color_buffer_[INDEX(viewport_width_, i, j, 0)], color_buffer_[INDEX(viewport_width_, i, j, 1)], color_buffer_[INDEX(viewport_width_, i, j, 2)]);
+	return retVec;
+}
+
 void Renderer::SetViewportHeight(const int _viewport_height)
 {
 	viewport_height_ = _viewport_height;
@@ -249,7 +258,6 @@ void Renderer::drawFacesNormals(const glm::vec3& vec1, const glm::vec3& vec2, co
 	glm::vec3 normal = NORMALS_LENGTHF * _normalPoint + newPoint;
 	normal = trasformVec3(transformationMatrix, normal);
 	DrawLine(glm::vec2(newPoint_T.x, newPoint_T.y), glm::vec2(normal.x, normal.y), glm::vec3(0, 1, 0));
-
 }
 
 void Renderer::drawVerticesNormals(const MeshModel & mesh, const std::map<int, std::vector<int>> & verticesNormals, const std::vector<glm::vec3> & vertices, const glm::mat4x4& transformationMatrix)
@@ -313,12 +321,130 @@ void Renderer::drawBoundBox(const MeshModel mesh, const glm::mat4x4& transformat
 
 }
 
+// flood fill algorithm 
+void Renderer::flood(int x, int y, const glm::vec3& new_col, const glm::vec3& sidesColor)
+{
+	int centerX = x, centeryY = y;
+	std::queue<std::pair<int, int>> pixels;
+	std::vector<std::pair<int, int>> visited;
+
+	pixels.push(std::make_pair(x, y));
+	visited.push_back(std::make_pair(x, y));
+
+	// check current pixel is old_color or not 
+	while (!pixels.empty()) {
+
+		// put new pixel with new color
+		x = pixels.front().first;
+		y = pixels.front().second;
+
+		pixels.pop();
+		if (GetPixel(x,y) != sidesColor && GetPixel(x, y) != new_col) {
+			PutPixel(x, y, new_col);
+
+			//int res = 0;
+			//for (std::vector<std::pair<int, int>>::iterator itr = visited.begin(); itr != visited.end(); ++itr) {
+			//	if (*itr == std::make_pair(x, y + 1)) {
+			//		res += 1;
+			//	}
+			//	if (*itr == std::make_pair(x + 1, y)) {
+			//		res += 2;
+			//	}
+			//	if (*itr == std::make_pair(x, y - 1)) {
+			//		res += 4;
+			//	}
+			//	if (*itr == std::make_pair(x - 1, y)) {
+			//		res += 8;
+			//	}
+			//	if (res == 15) {
+			//		break;
+			//	}
+			//}
+
+
+			//if (res < 8) {
+			//	pixels.push(std::make_pair(x - 1, y));
+			//	visited.push_back(std::make_pair(x - 1, y));
+			//}
+			//else {
+			//	res -= 8;
+			//}
+			//
+			//if (res < 4) {
+			//	pixels.push(std::make_pair(x, y - 1));
+			//	visited.push_back(std::make_pair(x, y - 1));
+			//}
+			//else {
+			//	res -= 4;
+			//}
+
+			//if (res < 2) {
+			//	pixels.push(std::make_pair(x + 1, y));
+			//	visited.push_back(std::make_pair(x + 1, y));
+			//}
+			//else {
+			//	res -= 2;
+			//}
+
+			//if (res < 1) {
+			//	pixels.push(std::make_pair(x, y + 1));
+			//	visited.push_back(std::make_pair(x, y + 1));
+			//}
+			//else {
+			//	res -= 1;
+			//}
+
+			if (std::find(visited.begin(), visited.end(), std::make_pair(x, y + 1)) == visited.end()) {
+				pixels.push(std::make_pair(x, y + 1));
+				visited.push_back(std::make_pair(x, y + 1));
+			}
+			if (std::find(visited.begin(), visited.end(), std::make_pair(x -1, y)) == visited.end()) {
+				pixels.push(std::make_pair(x - 1, y));
+				visited.push_back(std::make_pair(x - 1, y));
+			}
+			if (std::find(visited.begin(), visited.end(), std::make_pair(x + 1, y)) == visited.end()) {
+				pixels.push(std::make_pair(x + 1, y));
+				visited.push_back(std::make_pair(x + 1, y));
+			}
+			if (std::find(visited.begin(), visited.end(), std::make_pair(x, y - 1)) == visited.end()) {
+				pixels.push(std::make_pair(x, y - 1));
+				visited.push_back(std::make_pair(x, y - 1));
+			}
+
+
+		}
+	}
+
+	//if (GetPixel(x, y) != sidesColor && GetPixel(x, y) != new_col) {
+
+		//PutPixel(x, y, new_col);
+
+		//// recursive call for top pixel fill
+		//if (GetPixel(x, y + 1) != sidesColor && GetPixel(x, y + 1) != new_col) {
+		//	flood(x, y + 1, new_col, sidesColor);
+		//}
+
+		//// recursive call for left pixel fill 
+		//if (GetPixel(x-1, y) != sidesColor && GetPixel(x - 1, y) != new_col) {
+		//	flood(x - 1, y, new_col, sidesColor);
+		//}
+		//// recursive call for right pixel fill 
+		//if (GetPixel(x + 1, y) != sidesColor && GetPixel(x + 1, y) != new_col) {
+		//	flood(x + 1, y, new_col, sidesColor);
+		//}
+		//// recursive call for bottom pixel fill 
+		//if (GetPixel(x, y - 1) != sidesColor && GetPixel(x, y - 1) != new_col) {
+		//	flood(x, y - 1, new_col, sidesColor);
+		//}
+	//}
+}
+
 void Renderer::drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace)
 {
 	glm::vec3 vec1T = trasformVec3(transformationMatrix, vec1);
 	glm::vec3 vec2T = trasformVec3(transformationMatrix, vec2);
 	glm::vec3 vec3T = trasformVec3(transformationMatrix, vec3);
-
+	
 	// draw the triangle
 	if (currFace.getVerticesCount() == 3) {
 		DrawLine(glm::vec2(vec1T.x, vec1T.y), glm::vec2(vec2T.x, vec2T.y), glm::vec3(0, 0, 0));
@@ -327,6 +453,7 @@ void Renderer::drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, 
 	}
 
 }
+
 
 void Renderer::CreateOpenGLBuffer()
 {
@@ -406,7 +533,10 @@ void Renderer::Render(const Scene& scene)
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
 		transformationMatrix =  projectionMatrix* viewMatrix *worldlMatrix * modelMatrix;
-		//draw every face
+
+		// z-buffer
+		std::vector<faceZDist> zBuffer;
+
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
 			int v1 = currFace.GetVertexIndex(0) - 1;
@@ -415,12 +545,86 @@ void Renderer::Render(const Scene& scene)
 			glm::vec3 vec2 = vertices[v2];
 			int v3 = currFace.GetVertexIndex(2) - 1;
 			glm::vec3 vec3 = vertices[v3];
-			drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace);
+			glm::vec4 eyePoint(activeCamera.getEye(),0.0f);
+			eyePoint = projectionMatrix * viewMatrix *worldlMatrix * eyePoint;
+			
+			glm::vec3 newPoint = (vec1 + vec2 + vec3) / 3.0f;
+			newPoint = trasformVec3(transformationMatrix, newPoint);
+			float _distance = std::sqrt(pow((newPoint.x - eyePoint.x),2) + pow((newPoint.y - eyePoint.y), 2) + pow((newPoint.z - eyePoint.z), 2));
+			zBuffer.push_back(faceZDist({ j, _distance }));
+		}
+
+		std::sort(zBuffer.begin(), zBuffer.end(), std::greater<faceZDist>());
+
+		//draw every face
+		for (std::vector<faceZDist>::iterator itr = zBuffer.begin(); itr != zBuffer.end(); ++itr) {
+			int j = itr->faceIndex;
+		//for (int j = 0; j < mesh.GetFacesCount(); j++) {
+			Face currFace = mesh.GetFace(j);
+			int v1 = currFace.GetVertexIndex(0) - 1;
+			glm::vec3 vec1 = vertices[v1];
+			int v2 = currFace.GetVertexIndex(1) - 1;
+			glm::vec3 vec2 = vertices[v2];
+			int v3 = currFace.GetVertexIndex(2) - 1;
+			glm::vec3 vec3 = vertices[v3];
+			
+			glm::vec4 zAx(activeCamera.getAt() - activeCamera.getEye(), 0.0f);
+			zAx = projectionMatrix * viewMatrix *worldlMatrix * zAx;
+			glm::vec4 normalOrig (currFace.getNormal(),0.0f);
+			glm::vec4 normal = transformationMatrix * normalOrig;
+			float dotProd = glm::dot(zAx, normal);
+
+			if (dotProd > 0) {
+				drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace);
+
+				glm::vec3 lightPos(-10, -1, 1);
+				glm::vec3 lightColor(1, 1, 1);
+				glm::vec3 objColor(0, 0, 1);
+				glm::vec3 center = (vec1 + vec2 + vec3) / 3.0f;
+				glm::vec3 norm = normal;
+
+				// get face material attributes
+
+				float texuteAmbient = currFace.GetTextureIndex(0);
+				float texuteDiffuse = currFace.GetTextureIndex(1);
+				float texuteSpecular = currFace.GetTextureIndex(2);
+				texuteAmbient = 0.1;
+				texuteDiffuse = 0.5;
+				texuteSpecular = 5;
+
+				// attrs to vectors
+				//ambient
+				glm::vec3 ambient = texuteAmbient * lightColor;
+
+				//diffuse
+				glm::vec3 lightDir = glm::normalize(lightPos - center);
+				dotProd = glm::dot(norm, lightDir);
+
+				float diff = (dotProd > 0.0f) ? dotProd : 0.0f;
+				glm::vec3 diffuse = lightColor * (diff * texuteDiffuse);
+
+				// specular
+				glm::vec3 viewDir = zAx;
+				glm::vec3 reflectDir = glm::reflect(-lightDir, norm);
+				dotProd = dot(viewDir, reflectDir);
+				diff = (dotProd > 0.0f) ? dotProd : 0.0f;
+				float spec = pow(diff, texuteSpecular);
+				glm::vec3 specular = lightColor * (spec * texuteSpecular);
+
+
+				glm::vec3 result = ambient + diffuse + specular;
+
+				//add color
+				glm::vec3 center_T = trasformVec3(transformationMatrix, center);
+				//flood(center_T.x, center_T.y, result*objColor, glm::vec3(0, 0, 0), zAx);
+				flood(center_T.x, center_T.y, objColor, glm::vec3(0, 0, 0));
+				}
 
 			//draw faces normals
 			if (scene.getFacesNormalsStatus()) {
 				drawFacesNormals(vec1, vec2, vec3, transformationMatrix, currFace);
 			}
+
 			verticesNormals[v1].insert(verticesNormals[v1].begin(), currFace.GetNormalIndex(0)-1);
 			verticesNormals[v2].insert (verticesNormals[v2].begin(), currFace.GetNormalIndex(1)-1);
 			verticesNormals[v3].insert(verticesNormals[v3].begin(), currFace.GetNormalIndex(2)-1);
