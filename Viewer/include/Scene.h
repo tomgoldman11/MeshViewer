@@ -5,8 +5,17 @@
 
 #include "Camera.h"
 #include "MeshModel.h"
+#include "LightSource.h"
+
+//struct LightObj {
+//	glm::vec3 position;
+//	glm::vec3 color;
+//	bool pointSource;
+//	glm::vec3 target;
+//};
 
 class Scene {
+
 public:
 	Scene();
 
@@ -22,6 +31,14 @@ public:
 
 	void SetActiveCameraIndex(int index);
 	int GetActiveCameraIndex() const;
+
+	void AddLight(const std::shared_ptr<LightSource>& light);
+	int GetLightCount() const;
+	LightSource & GetLight(int index) const;
+	LightSource & GetActiveLight() const;
+
+	void SetActiveLightIndex(int index);
+	int GetActiveLightIndex() const;
 
 	void SetActiveModelIndex(int index);
 	int GetActiveModelIndex() const;
@@ -45,8 +62,9 @@ public:
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
 	std::vector<std::shared_ptr<Camera>> cameras_;
+	std::vector< std::shared_ptr<LightSource>> lights_sources_;
 
 	int active_camera_index_;
 	int active_model_index_;
-
+	int active_lights_sources_index_;
 };

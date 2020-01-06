@@ -601,6 +601,7 @@ void Renderer::Render(const Scene& scene)
 	std::map<int, std::vector<int>> verticesNormals;
 	glm::mat4 transformationMatrix;
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
+	const auto& activeLight = scene.GetActiveLight();
 	const glm::mat4x4 viewMatrix = glm::inverse(activeCamera.getViewTransformation());
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
@@ -675,8 +676,8 @@ void Renderer::Render(const Scene& scene)
 			if (dotProd > 0) {
 				drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace, mesh.getSidesColor());
 
-				glm::vec3 lightPos(-10, -1, 10);
-				glm::vec3 lightColor(1, 1, 1);
+				glm::vec3 lightPos(activeLight.getPosition());
+				glm::vec3 lightColor(activeLight.getColor());
 				glm::vec3 objColor(0, 0, 1);
 				glm::vec3 center = (vec1 + vec2 + vec3) / 3.0f;
 				glm::vec3 norm = normal;
