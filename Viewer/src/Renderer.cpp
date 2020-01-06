@@ -630,32 +630,10 @@ void Renderer::Render(const Scene& scene)
 
 		eyePoint= glm::vec4(activeCamera.getEye(),0.0f);
 		eyePoint = projectionMatrix * viewMatrix *worldlMatrix * eyePoint;
-		//// z-buffer
-		//std::vector<faceZDist> zBuffer;
+		glm::vec3 texuteAmbient = mesh.getAmbient();
+		glm::vec3 texuteDiffuse = mesh.getDiffuse();
+		glm::vec3 texuteSpecular = mesh.getSpecular();
 
-		//for (int j = 0; j < mesh.GetFacesCount(); j++) {
-		//	Face currFace = mesh.GetFace(j);
-		//	int v1 = currFace.GetVertexIndex(0) - 1;
-		//	glm::vec3 vec1 = vertices[v1];
-		//	int v2 = currFace.GetVertexIndex(1) - 1;
-		//	glm::vec3 vec2 = vertices[v2];
-		//	int v3 = currFace.GetVertexIndex(2) - 1;
-		//	glm::vec3 vec3 = vertices[v3];
-		//	glm::vec4 eyePoint(activeCamera.getEye(),0.0f);
-		//	eyePoint = projectionMatrix * viewMatrix *worldlMatrix * eyePoint;
-		//	
-		//	glm::vec3 newPoint = (vec1 + vec2 + vec3) / 3.0f;
-		//	newPoint = trasformVec3(transformationMatrix, newPoint);
-		//	float _distance = std::sqrt(pow((newPoint.x - eyePoint.x),2) + pow((newPoint.y - eyePoint.y), 2) + pow((newPoint.z - eyePoint.z), 2));
-		//	zBuffer.push_back(faceZDist({ j, _distance }));
-		//}
-
-		////std::sort(zBuffer.begin(), zBuffer.end(), std::greater<faceZDist>());
-		//std::sort(zBuffer.begin(), zBuffer.end());
-
-		//draw every face
-		//for (std::vector<faceZDist>::iterator itr = zBuffer.begin(); itr != zBuffer.end(); ++itr) {
-		//	int j = itr->faceIndex;
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
 			int v1 = currFace.GetVertexIndex(0) - 1;
@@ -684,12 +662,6 @@ void Renderer::Render(const Scene& scene)
 
 				// get face material attributes
 
-				float texuteAmbient = currFace.GetTextureIndex(0);
-				float texuteDiffuse = currFace.GetTextureIndex(1);
-				float texuteSpecular = currFace.GetTextureIndex(2);
-				texuteAmbient = 0.1;
-				texuteDiffuse = 0.5;
-				texuteSpecular = 5;
 
 				// attrs to vectors
 				//ambient
@@ -707,8 +679,8 @@ void Renderer::Render(const Scene& scene)
 				glm::vec3 reflectDir = glm::reflect(-lightDir, norm);
 				dotProd = dot(viewDir, reflectDir);
 				diff = (dotProd > 0.0f) ? dotProd : 0.0f;
-				float spec = pow(diff, texuteSpecular);
-				glm::vec3 specular = lightColor * (spec * texuteSpecular);
+				//float spec = pow(diff, shininess);
+				glm::vec3 specular = lightColor * (diff * texuteSpecular);
 
 
 				glm::vec3 result = ambient + diffuse + specular;
@@ -716,7 +688,6 @@ void Renderer::Render(const Scene& scene)
 				//add color
 				//glm::vec3 center_T = trasformVec3(transformationMatrix, center);
 				//flood(center_T.x, center_T.y, result*objColor, glm::vec3(0, 0, 0));
-				//flood(center_T.x, center_T.y, objColor, glm::vec3(0, 0, 0));
 				addColor(vec1, vec2, vec3, result*objColor, transformationMatrix);
 				
 				}

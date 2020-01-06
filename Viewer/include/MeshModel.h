@@ -18,6 +18,13 @@ public:
 		glm::vec3 nXYnZ;
 		glm::vec3 nXYZ;
 	};
+
+	struct material {
+		glm::vec3 ambient;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+	};
+
 	MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name);
 	virtual ~MeshModel();
 	const Face& GetFace(int index) const;
@@ -42,6 +49,9 @@ public:
 	void setFaceNormals();
 	void setSidesColor(const glm::vec3 & _color);
 	void setObjColor(const glm::vec3 & _color);
+	void setDiffuse(const glm::vec3 & _diffuse);
+	void setSpecular(const glm::vec3 & _specular);
+	void setAmbient(const glm::vec3 & _specular);
 
 	// getters
 	glm::vec3 getRotateVector_world() const;
@@ -53,6 +63,9 @@ public:
 	glm::vec3 getModelCenter() const;
 	glm::vec3 getSidesColor() const;
 	glm::vec3 getObjColor() const;
+	glm::vec3 getAmbient() const;
+	glm::vec3 getDiffuse() const;
+	glm::vec3 getSpecular() const;
 
 private:
 
@@ -98,4 +111,5 @@ private:
 	bool localUpdateFlag;
 	glm::vec3 sidesColor;
 	glm::vec3 objColor;
+	material objMaterial;
 };
