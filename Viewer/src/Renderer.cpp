@@ -522,7 +522,7 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color)
 
 }
 
-void Renderer::addColor(const glm::vec3 & p1, const glm::vec3 & p2, const glm::vec3 & p3, const glm::vec3 & color, const glm::mat4x4 & transformationMatrix)
+void Renderer::addColor(const glm::vec3 & p1, const glm::vec3 & p2, const glm::vec3 & p3, const glm::vec3 & color, const glm::mat4x4 & transformationMatrix) // find another implementation
 {
 	glm::vec3 Tp1 = trasformVec3(transformationMatrix, p1);
 	glm::vec3 Tp2 = trasformVec3(transformationMatrix, p2);
@@ -656,7 +656,7 @@ void Renderer::Render(const Scene& scene)
 
 				glm::vec3 lightPos(activeLight.getPosition());
 				glm::vec3 lightColor(activeLight.getColor());
-				glm::vec3 objColor(0, 0, 1);
+				glm::vec3 objColor(mesh.getObjColor());
 				glm::vec3 center = (vec1 + vec2 + vec3) / 3.0f;
 				glm::vec3 norm = normal;
 

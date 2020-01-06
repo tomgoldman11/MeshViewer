@@ -17,6 +17,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	worldUpdateFlag(true),
 	localUpdateFlag(true),
 	sidesColor(glm::vec3(0.0f,0.0f,0.0f)),
+	objColor(glm::vec3(0.0f, 0.0f, 1.0f)), 
 	objMaterial({glm::vec3(1.0f,0.5f,0.31f), glm::vec3(1.0f,0.5f,0.31f), glm::vec3(0.5f,0.5f,0.5f)}) // ambient, diffuse, specular
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)

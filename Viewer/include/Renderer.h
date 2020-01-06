@@ -9,19 +9,19 @@
 
 class Renderer
 {
-	struct faceZDist {
-		int faceIndex;
-		float distance;
+	//struct faceZDist {
+	//	int faceIndex;
+	//	float distance;
 
-		bool operator > (const faceZDist other) const
-		{
-			return (distance > other.distance);
-		}
-		bool operator < (const faceZDist other) const
-		{
-			return (distance < other.distance);
-		}
-	};
+	//	bool operator > (const faceZDist other) const
+	//	{
+	//		return (distance > other.distance);
+	//	}
+	//	bool operator < (const faceZDist other) const
+	//	{
+	//		return (distance < other.distance);
+	//	}
+	//};
 
 	struct zColor {
 		float z;
