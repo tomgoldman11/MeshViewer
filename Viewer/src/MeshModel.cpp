@@ -15,7 +15,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	top(0),
 	centerPoint(0),
 	worldUpdateFlag(true),
-	localUpdateFlag(true)
+	localUpdateFlag(true),
+	sidesColor(glm::vec3(0.0f,0.0f,0.0f))
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{
@@ -322,6 +323,21 @@ void MeshModel::setFaceNormals()
 
 }
 
+void MeshModel::setSidesColor(const glm::vec3 & _color)
+{
+	sidesColor.x = (_color.x > 0.0f) ? _color.x : 0.0f;
+	sidesColor.y = (_color.y > 0.0f) ? _color.y : 0.0f;
+	sidesColor.z = (_color.z > 0.0f) ? _color.z : 0.0f;
+}
+
+void MeshModel::setObjColor(const glm::vec3 & _color)
+{
+	objColor.x = (_color.x > 0.0f) ? _color.x : 0.0f;
+	objColor.y = (_color.y > 0.0f) ? _color.y : 0.0f;
+	objColor.z = (_color.z > 0.0f) ? _color.z : 0.0f;
+
+}
+
 glm::vec3 MeshModel::getRotateVector_world() const
 {
 	return rotateVector;
@@ -355,6 +371,16 @@ glm::vec3 MeshModel::getTranslateVector_local() const
 glm::vec3 MeshModel::getModelCenter() const
 {
 	return centerPoint;
+}
+
+glm::vec3 MeshModel::getSidesColor() const
+{
+	return sidesColor;
+}
+
+glm::vec3 MeshModel::getObjColor() const
+{
+	return objColor;
 }
 
 const int MeshModel::getVertexFacesSum(int indx) const {

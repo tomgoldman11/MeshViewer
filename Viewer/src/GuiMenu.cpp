@@ -228,6 +228,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::Checkbox("Normals Per Face", &normals_per_face);
 	ImGui::SameLine();
 	ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
+	
+
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
 

@@ -17,6 +17,15 @@ class Renderer
 		{
 			return (distance > other.distance);
 		}
+		bool operator < (const faceZDist other) const
+		{
+			return (distance < other.distance);
+		}
+	};
+
+	struct zColor {
+		float z;
+		glm::vec3 color;
 	};
 
 
@@ -27,17 +36,20 @@ public:
 	void SwapBuffers();
 	void ClearColorBuffer(const glm::vec3& color);
 	void SetViewport(int width, int height);
-	void DrawAsterisk();
+	float getZOnLine(int x, int y, int x1, int y1, float z1, int x2, int y2, float z2);
+	//void DrawAsterisk();
 	int GetViewportWidth() const;
 	int GetViewportHeight() const;
 	void drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & viewMatrix);
-	void DrawLine(const glm::ivec2& p1, const glm::ivec2& p2, const glm::vec3& color);
+	void DrawLine(const glm::ivec3& p1, const glm::ivec3& p2, const glm::vec3& color);
+	void ALTER_DrawLine(const glm::ivec3 & p1, const glm::ivec3 & p2, const glm::vec3 & color);
 	void PutPixel(const int i, const int j, const glm::vec3& color);
 	glm::vec3 GetPixel(int i, int j);
 	void SetViewportHeight(const int _viewport_height);
 	void SetViewportWidth(const int _viewport_width);
 
 private:
+	std::map<std::pair<int, int>, zColor> Mapix;
 	void CreateBuffers(int w, int h);
 	void CreateOpenGLBuffer();
 	void InitOpenGLRendering();
@@ -47,10 +59,13 @@ private:
 	GLuint gl_screen_tex_;
 	GLuint gl_screen_vtc_;
 	glm::vec4 trasformVec3(const glm::mat4 & transformationMatrix, glm::vec3 vector);
+	glm::vec4 eyePoint;
 
 	void drawFacesNormals(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace);
 	void drawVerticesNormals(const MeshModel & mesh, const std::map<int, std::vector<int>>& verticesNormals, const std::vector<glm::vec3>& vertices, const glm::mat4x4 & transformationMatrix);
 	void drawBoundBox(const MeshModel mesh, const glm::mat4x4 & transformationMatrix);
-	void flood(int x, int y, const glm::vec3& new_col, const glm::vec3& sidesColor, const glm::vec4& zAx);
-	void drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace);
+	void flood(int x, int y, const glm::vec3& new_col, const glm::vec3& sidesColor, Face & currFace);
+	void drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const glm::vec3 &color);
+	void addToMapix(int x, int y, float z, const glm::vec3& color);
+	void addColor(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& color, const glm::mat4x4 & transformationMatrix);
 };

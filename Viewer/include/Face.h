@@ -14,6 +14,7 @@ public:
 	int getVerticesCount() const;
 	void setNormal(glm::vec3 _normal);
 	glm::vec3 getNormal() const;
+	glm::vec3 color;
 
 private:
 	std::vector<int> vertex_indices_;

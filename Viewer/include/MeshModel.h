@@ -40,6 +40,8 @@ public:
 	void setRotate_local(const glm::vec3 newRotate);
 	void setTranslate_local(const glm::vec3 newTranslate);
 	void setFaceNormals();
+	void setSidesColor(const glm::vec3 & _color);
+	void setObjColor(const glm::vec3 & _color);
 
 	// getters
 	glm::vec3 getRotateVector_world() const;
@@ -49,6 +51,8 @@ public:
 	glm::vec3 getScaleVector_local() const;
 	glm::vec3 getTranslateVector_local() const;
 	glm::vec3 getModelCenter() const;
+	glm::vec3 getSidesColor() const;
+	glm::vec3 getObjColor() const;
 
 private:
 
@@ -92,5 +96,6 @@ private:
 	box boxAttr;
 	bool worldUpdateFlag;
 	bool localUpdateFlag;
-
+	glm::vec3 sidesColor;
+	glm::vec3 objColor;
 };
