@@ -53,6 +53,17 @@ static float atZ = 0.0f;
 static float fovy = 50.0f; 
 float zoom = 1.0f;
 
+// lighting fields
+static float posX = 0;
+static float posY = 0;
+static float posZ = 50;
+glm::vec3 light_color = glm::vec3(1.0f, 1.0f, 1.0f);
+static float ambientStr = 0.9;
+static float diffuseStr = 0.9;
+static float specularStr = 0.9;
+
+
+
 /**
  * Function implementation
  */
@@ -234,86 +245,140 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::End();
 
 
-		ImGui::Begin("Camera Control"); // camera window.
+	ImGui::Begin("Camera Control"); // camera window.
 
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Camera # : %d" , scene.GetActiveCameraIndex());
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
-		static int currcam = 0;
-		Camera& activeCamera = scene.GetCamera(currcam); // getting the active camera. 
-		glm::vec3 currEye = activeCamera.getEye();
-		glm::vec3 currAt = activeCamera.getAt();
-		camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
-		atX = currAt.x; atY = currAt.y; atZ = currAt.z;
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Camera # : %d" , scene.GetActiveCameraIndex());
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
+	static int currcam = 0;
+	Camera& activeCamera = scene.GetCamera(currcam); // getting the active camera. 
+	glm::vec3 currEye = activeCamera.getEye();
+	glm::vec3 currAt = activeCamera.getAt();
+	camX = currEye.x;	camY = currEye.y; disZ = currEye.z;
+	atX = currAt.x; atY = currAt.y; atZ = currAt.z;
 
-		ImGui::InputInt("ActiveCam", &currcam);
-		if (currcam < 0) currcam = 0;
-		if (currcam >= scene.GetCameraCount()) currcam = scene.GetCameraCount() - 1;
+	ImGui::InputInt("ActiveCam", &currcam);
+	if (currcam < 0) currcam = 0;
+	if (currcam >= scene.GetCameraCount()) currcam = scene.GetCameraCount() - 1;
 		
-		if (ImGui::Button("Switch Camera"))
-			scene.SetActiveCameraIndex(currcam);
+	if (ImGui::Button("Switch Camera"))
+		scene.SetActiveCameraIndex(currcam);
 
-		ImGui::RadioButton("orthographic", &pers, 0);
-		ImGui::SameLine();
-		ImGui::RadioButton("perspective", &pers, 1);
+	ImGui::RadioButton("orthographic", &pers, 0);
+	ImGui::SameLine();
+	ImGui::RadioButton("perspective", &pers, 1);
 
-		ImGui::SliderFloat("Cam X", &camX, -6.0f, 6.0f);
+	ImGui::SliderFloat("Cam X", &camX, -6.0f, 6.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset camX"))
+		camX = 0.0f;
+	ImGui::SliderFloat("Cam Y", &camY, -6.0f, 6.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset camY"))
+		camY = 0.0f;
+	ImGui::SliderFloat("Dis", &disZ, -6.0f, 6.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset dist"))
+		disZ = 1.0f;
+	ImGui::SliderFloat("AT X", &atX, -5.0f, 5.0f );
+	ImGui::SameLine();
+	if (ImGui::Button("Reset atX"))
+		atX = 0.0f;
+	ImGui::SliderFloat("AT Y", &atY, -5.0f, 5.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset atY"))
+		atY = 0.0f;
+	ImGui::SliderFloat("AT Z", &atZ, -5.0f, 5.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset atZ"))
+		atZ = 0.0f;
+	if (pers == 0)
+	{
+		ImGui::SliderFloat("zoom", &zoom, 1.0f, 5.0f , "%.1f");
 		ImGui::SameLine();
-		if (ImGui::Button("Reset camX"))
-			camX = 0.0f;
-		ImGui::SliderFloat("Cam Y", &camY, -6.0f, 6.0f);
+		if (ImGui::Button("Reset zoom"))
+			zoom = 1.0f;
+		activeCamera.setZoom(zoom);
+	}
+	if (pers == 1)
+	{
+		ImGui::SliderFloat("fovy", &fovy, 0.0f, 180.0f);
 		ImGui::SameLine();
-		if (ImGui::Button("Reset camY"))
-			camY = 0.0f;
-		ImGui::SliderFloat("Dis", &disZ, -6.0f, 6.0f);
-		ImGui::SameLine();
-		if (ImGui::Button("Reset dist"))
-			disZ = 1.0f;
-		ImGui::SliderFloat("AT X", &atX, -5.0f, 5.0f );
-		ImGui::SameLine();
-		if (ImGui::Button("Reset atX"))
-			atX = 0.0f;
-		ImGui::SliderFloat("AT Y", &atY, -5.0f, 5.0f);
-		ImGui::SameLine();
-		if (ImGui::Button("Reset atY"))
-			atY = 0.0f;
-		ImGui::SliderFloat("AT Z", &atZ, -5.0f, 5.0f);
-		ImGui::SameLine();
-		if (ImGui::Button("Reset atZ"))
-			atZ = 0.0f;
-		if (pers == 0)
-		{
-			ImGui::SliderFloat("zoom", &zoom, 1.0f, 5.0f , "%.1f");
-			ImGui::SameLine();
-			if (ImGui::Button("Reset zoom"))
-				zoom = 1.0f;
-			activeCamera.setZoom(zoom);
-		}
-		if (pers == 1)
-		{
-			ImGui::SliderFloat("fovy", &fovy, 0.0f, 180.0f);
-			ImGui::SameLine();
-			if (ImGui::Button("Reset fovy"))
-				fovy = 50.0f;
-			activeCamera.setFOVY(fovy);
-		}
+		if (ImGui::Button("Reset fovy"))
+			fovy = 50.0f;
+		activeCamera.setFOVY(fovy);
+	}
 		
-		if (ImGui::Button("Set camera to active model")) {
-			glm::mat4 wt = activeModel->getWorldTransformation();
-			glm::mat4 lt = activeModel->getLocalTransformation();
-			glm::vec4 lookPoint = glm::vec4({ activeModel->getModelCenter(),1.0f });
-			lookPoint = wt * lt * lookPoint;
-			lookPoint = lookPoint / lookPoint.w;
-			atX = lookPoint.x;
-			atY = lookPoint.y;
-			atZ = lookPoint.z;
-		}
+	if (ImGui::Button("Set camera to active model")) {
+		glm::mat4 wt = activeModel->getWorldTransformation();
+		glm::mat4 lt = activeModel->getLocalTransformation();
+		glm::vec4 lookPoint = glm::vec4({ activeModel->getModelCenter(),1.0f });
+		lookPoint = wt * lt * lookPoint;
+		lookPoint = lookPoint / lookPoint.w;
+		atX = lookPoint.x;
+		atY = lookPoint.y;
+		atZ = lookPoint.z;
+	}
 
-		if (currAt != glm::vec3(atX, atY, atZ) || currEye != glm::vec3(camX, camY, disZ)) {
-			activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(atX, atY, atZ), glm::vec3(0, 1, 0));
-		}
+	if (currAt != glm::vec3(atX, atY, atZ) || currEye != glm::vec3(camX, camY, disZ)) {
+		activeCamera.setCameraLookAt(glm::vec3(camX, camY, disZ), glm::vec3(atX, atY, atZ), glm::vec3(0, 1, 0));
+	}
 
-		ImGui::End(); // camera window end.
+	ImGui::End(); // camera window end.
+
+	ImGui::Begin("Lighting Control");
+	static int currlight = 0;
+	LightSource& activeLight = scene.GetLight(currlight); // getting the active light. 
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Light # : %d", scene.GetActiveLightIndex());
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Light Type # : %d", activeLight.getType()); // 1 for point 0 for parallel
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Lights : %d", scene.GetLightCount());
+
+	glm::vec3 currPos = activeLight.getPosition();
+	posX = currPos.x; posY = currPos.y; posZ = currPos.z;
+	light_color = activeLight.getColor();
+	ambientStr = activeLight.getAmbient();
+	diffuseStr = activeLight.getDiffuse();
+	specularStr = activeLight.getSpecular();
+
+	ImGui::InputInt("ActiveLight", &currlight);
+	if (currlight < 0) currlight = 0;
+	if (currlight >= scene.GetLightCount()) currlight = scene.GetLightCount() - 1;
+	if (ImGui::Button("Change Light Source")) {
+		scene.SetActiveLightIndex(currlight);
+		glm::vec3 currPos = activeLight.getPosition();
+		posX = currPos.x; posY = currPos.y; posZ = currPos.z;
+		light_color = activeLight.getColor();
+		ambientStr = activeLight.getAmbient();
+		diffuseStr = activeLight.getDiffuse();
+		specularStr = activeLight.getSpecular();
+		}
+	ImGui::SliderFloat("PosX", &posX, -100.0f, 100.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset PosX"))
+		posX = 0.0f;
+	ImGui::SliderFloat("PosY", &posY, -100.0f, 100.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset PosY"))
+		posY = 0.0f;
+	ImGui::SliderFloat("PosZ", &posZ, -100.0f, 100.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset PosZ"))
+		posZ = 50.0f;
+
+
+
+	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
+	activeLight.setPosition(lightPosition);
+
+
+
+
+
+	ImGui::End(); // lighting window end.
+
+
 
 	if (show_scale_window)
 	{
