@@ -5,6 +5,13 @@
 #include "Face.h"
 #include <map>
 
+struct material {
+	float ambient; // <fraction_of_ambient_light_reflected_from_surface (Ka)>
+	float diffuse; // <fraction_of_diffuse_light_reflected_from_surface (Kd)> 
+	float specular;  // <fraction_of_specular_light_reflected_from_surface (Ks)>
+	int shininess; // shininess coefficient (alpha)
+};
+
 class MeshModel
 {
 public:
@@ -19,12 +26,6 @@ public:
 		glm::vec3 nXYZ;
 	};
 
-	struct material {
-		glm::vec2 ambient; // ( <fraction_of_ambient_light_reflected_from_surface (Ka)>  , <ambient_light_intensity (La)> )
-		glm::vec2 diffuse; // ( <fraction_of_diffuse_light_reflected_from_surface (Kd)>  , <diffuse_light_intensity (Ld)> )
-		glm::vec2 specular;  // ( <fraction_of_specular_light_reflected_from_surface (Ks)>  , <specular_light_intensity (Ls)> )
-		int shininess; // shininess coefficient (alpha)
-	};
 
 	MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name);
 	virtual ~MeshModel();
@@ -50,9 +51,9 @@ public:
 	void setFaceNormals();
 	void setSidesColor(const glm::vec3 & _color);
 	void setObjColor(const glm::vec3 & _color);
-	void setDiffuse(const glm::vec2 & _diffuse);
-	void setSpecular(const glm::vec2 & _specular);
-	void setAmbient(const glm::vec2 & _specular);
+	void setDiffuse(const float _diffuse);
+	void setSpecular(const float _specular);
+	void setAmbient(const float _ambient);
 	void setShininess(const int _shininess);
 
 	// getters
@@ -65,10 +66,11 @@ public:
 	glm::vec3 getModelCenter() const;
 	glm::vec3 getSidesColor() const;
 	glm::vec3 getObjColor() const;
-	glm::vec2 getAmbient() const;
-	glm::vec2 getDiffuse() const;
-	glm::vec2 getSpecular() const;
+	float getAmbient() const;
+	float getDiffuse() const;
+	float getSpecular() const;
 	int getShininess() const;
+	material getObjMaterialStruct() const;
 
 private:
 

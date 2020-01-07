@@ -550,38 +550,39 @@ void Renderer::addColor(const glm::vec3 & p1, const glm::vec3 & p2, const glm::v
 
 }
 
-float Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye,
-	const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3 , const glm::vec2 & materialAmbient,  const glm::vec2 & materialDiffuse, const glm::vec2 & materialSpecular, const int materialShininess)
+glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye,
+	const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3 , const material & _materialAttr)
 {
 	float dotProd = 0.0f;
 	glm::vec3 lightPos(globalTransformationMatrix * glm::vec4(light.getPosition(), 1.0f));
 	glm::vec3 lightColor(light.getColor());
 	glm::vec3 newPoint = (vec1 + vec2 + vec3) / 3.0f;
 	glm::vec3 center = trasformVec3(transformationMatrix, newPoint);
+	const lightIntense intenseAttr = light.getLightIntenseStruct();
 
 	//ambient
-	float ambient = materialAmbient.x * materialAmbient.y;
+	float ambient = _materialAttr.ambient * intenseAttr.ambient;
 
 	//diffuse
 	glm::vec3 lightDir = glm::normalize(center - lightPos);
 	dotProd = glm::dot(lightDir, normalTEST);
 
 	float diff = (dotProd > 0.0f) ? dotProd : 0.0f;
-	float diffuse = materialDiffuse.x * diff * materialDiffuse.y;
+	float diffuse = _materialAttr.diffuse * diff * intenseAttr.diffuse;
 
 	// specular
 	glm::vec3 viewDir = glm::normalize(center - eye);
 	glm::vec3 reflectDir = glm::normalize(glm::reflect(-lightDir, normalTEST));
 	dotProd = dot(reflectDir, viewDir);
 	diff = (dotProd > 0.0f) ? dotProd : 0.0f;
-	float spec = pow(abs(diff), materialShininess);
-	float specular = materialSpecular.x * spec * materialSpecular.y;
+	float spec = pow(abs(diff), _materialAttr.shininess);
+	float specular = _materialAttr.specular * spec * intenseAttr.specular;
 
 
 	float result = ambient + diffuse + specular;
 
 
-	return result;
+	return result * light.getColor();
 }
 
 
@@ -668,9 +669,8 @@ void Renderer::Render(const Scene& scene)
 
 		eyePoint= glm::vec4(activeCamera.getEye(),0.0f);
 		//eyePoint = projectionMatrix * viewMatrix * eyePoint;
-		glm::vec2 materialAmbient = mesh.getAmbient();
-		glm::vec2 materialDiffuse = mesh.getDiffuse();
-		glm::vec2 materialSpecular = mesh.getSpecular();
+		material meshMaterialAttr = mesh.getObjMaterialStruct();
+
 		int materialShininess = mesh.getShininess();
 		glm::vec3 objColor(mesh.getObjColor());
 		glm::mat4x4 helper = MMM * projectionMatrix* viewMatrix;
@@ -699,7 +699,7 @@ void Renderer::Render(const Scene& scene)
 				//draw faces normals
 				glm::vec3 normalTEST = drawFacesNormals(vec1, vec2, vec3, transformationMatrix, currFace, scene.getFacesNormalsStatus());
 
-				float result = getFaceChanger(helper, activeLight, transformationMatrix, normalTEST, activeCamera.getEye(), vec1, vec2, vec3, materialAmbient, materialDiffuse, materialSpecular, materialShininess);
+				glm::vec3 result = getFaceChanger(helper, activeLight, transformationMatrix, normalTEST, activeCamera.getEye(), vec1, vec2, vec3, meshMaterialAttr);
 
 
 
@@ -740,7 +740,7 @@ void Renderer::Render(const Scene& scene)
 				//add color
 				//glm::vec3 center_T = trasformVec3(transformationMatrix, center);
 				//flood(center_T.x, center_T.y, result*objColor, glm::vec3(0, 0, 0));
-				glm::vec3 faceFinalColor = result * objColor;
+				glm::vec3 faceFinalColor = result *  objColor;
 				addColor(vec1, vec2, vec3, faceFinalColor, transformationMatrix);
 				
 				//}

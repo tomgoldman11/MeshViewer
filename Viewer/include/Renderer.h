@@ -68,6 +68,5 @@ private:
 	void drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const glm::vec3 &color);
 	void addToMapix(int x, int y, float z, const glm::vec3& color);
 	void addColor(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& color, const glm::mat4x4 & transformationMatrix);
-	float getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye,
-		const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::vec2 & materialAmbient, const glm::vec2 & materialDiffuse, const glm::vec2 & materialSpecular, const int materialShininess);
+	glm::vec3 getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const material & _materialAttr);
 };
