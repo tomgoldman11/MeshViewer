@@ -80,7 +80,7 @@ LightSource & Scene::GetLight(int index) const
 
 LightSource & Scene::GetActiveLight() const
 {
-	return *lights_sources_[active_camera_index_];
+	return *lights_sources_[active_lights_sources_index_];
 }
 
 void Scene::SetActiveLightIndex(int index)
@@ -90,7 +90,7 @@ void Scene::SetActiveLightIndex(int index)
 
 int Scene::GetActiveLightIndex() const
 {
-	return active_camera_index_;
+	return active_lights_sources_index_;
 }
 
 void Scene::SetActiveModelIndex(int index)

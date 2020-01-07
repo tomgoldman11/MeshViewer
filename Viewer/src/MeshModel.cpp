@@ -17,8 +17,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	worldUpdateFlag(true),
 	localUpdateFlag(true),
 	sidesColor(glm::vec3(0.0f,0.0f,0.0f)),
-	objColor(glm::vec3(0.0f, 0.0f, 1.0f)), 
-	objMaterial({glm::vec3(1.0f,0.5f,0.31f), glm::vec3(1.0f,0.5f,0.31f), glm::vec3(0.5f,0.5f,0.5f)}) // ambient, diffuse, specular
+	objColor(glm::vec3(0.0f, 0.0f, 255.0f)), 
+	objMaterial({glm::vec2(0.6f,0.32f), glm::vec2(0.9f,0.8f), glm::vec2(0.9f,0.9f), 8}) // ambient<K,L>, diffuse<K,L>, specular <K,L> , shininess <int>
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{
@@ -340,19 +340,24 @@ void MeshModel::setObjColor(const glm::vec3 & _color)
 
 }
 
-void MeshModel::setDiffuse(const glm::vec3 & _diffuse)
+void MeshModel::setDiffuse(const glm::vec2 & _diffuse)
 {
 	objMaterial.diffuse = _diffuse;
 }
 
-void MeshModel::setSpecular(const glm::vec3 & _specular)
+void MeshModel::setSpecular(const glm::vec2 & _specular)
 {
 	objMaterial.specular = _specular;
 }
 
-void MeshModel::setAmbient(const glm::vec3 & _ambient)
+void MeshModel::setAmbient(const glm::vec2 & _ambient)
 {
 	objMaterial.ambient = _ambient;
+}
+
+void MeshModel::setShininess(const int _shininess)
+{
+	objMaterial.shininess = _shininess;
 }
 
 glm::vec3 MeshModel::getRotateVector_world() const
@@ -400,19 +405,24 @@ glm::vec3 MeshModel::getObjColor() const
 	return objColor;
 }
 
-glm::vec3 MeshModel::getAmbient() const
+glm::vec2 MeshModel::getAmbient() const
 {
 	return objMaterial.ambient;
 }
 
-glm::vec3 MeshModel::getDiffuse() const
+glm::vec2 MeshModel::getDiffuse() const
 {
 	return  objMaterial.diffuse;
 }
 
-glm::vec3 MeshModel::getSpecular() const
+glm::vec2 MeshModel::getSpecular() const
 {
 	return objMaterial.specular;
+}
+
+int MeshModel::getShininess() const
+{
+	return objMaterial.shininess;
 }
 
 const int MeshModel::getVertexFacesSum(int indx) const {
