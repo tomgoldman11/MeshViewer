@@ -18,7 +18,7 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	localUpdateFlag(true),
 	sidesColor(glm::vec3(0.0f,0.0f,0.0f)),
 	objColor(glm::vec3(0.0f, 0.0f, 255.0f)), 
-	objMaterial({0.6f, 0.9f, 0.9f, 8}) // ambient<K,L>, diffuse<K,L>, specular <K,L> , shininess <int>
+	objMaterial({ glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(0.5f, 0.5f, 0.5f), 32 }) // ambient<K,L>, diffuse<K,L>, specular <K,L> , shininess <int>
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{
@@ -340,17 +340,17 @@ void MeshModel::setObjColor(const glm::vec3 & _color)
 
 }
 
-void MeshModel::setDiffuse(const float _diffuse)
+void MeshModel::setDiffuse(const glm::vec3 & _diffuse)
 {
 	objMaterial.diffuse = _diffuse;
 }
 
-void MeshModel::setSpecular(const float _specular)
+void MeshModel::setSpecular(const glm::vec3 & _specular)
 {
 	objMaterial.specular = _specular;
 }
 
-void MeshModel::setAmbient(const float _ambient)
+void MeshModel::setAmbient(const glm::vec3 & _ambient)
 {
 	objMaterial.ambient = _ambient;
 }
@@ -405,17 +405,17 @@ glm::vec3 MeshModel::getObjColor() const
 	return objColor;
 }
 
-float MeshModel::getAmbient() const
+glm::vec3 MeshModel::getAmbient() const
 {
 	return objMaterial.ambient;
 }
 
-float MeshModel::getDiffuse() const
+glm::vec3 MeshModel::getDiffuse() const
 {
 	return  objMaterial.diffuse;
 }
 
-float MeshModel::getSpecular() const
+glm::vec3 MeshModel::getSpecular() const
 {
 	return objMaterial.specular;
 }

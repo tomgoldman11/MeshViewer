@@ -558,31 +558,35 @@ glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatri
 	glm::vec3 lightColor(light.getColor());
 	glm::vec3 newPoint = (vec1 + vec2 + vec3) / 3.0f;
 	glm::vec3 center = trasformVec3(transformationMatrix, newPoint);
-	const lightIntense intenseAttr = light.getLightIntenseStruct();
 
 	//ambient
-	float ambient = _materialAttr.ambient * intenseAttr.ambient;
+	glm::vec3 ambient = _materialAttr.ambient * light.getAmbient();
 
 	//diffuse
-	glm::vec3 lightDir = glm::normalize(center - lightPos);
+	glm::vec3 lightDir = glm::normalize(lightPos - center);
 	dotProd = glm::dot(lightDir, normalTEST);
 
-	float diff = (dotProd > 0.0f) ? dotProd : 0.0f;
-	float diffuse = _materialAttr.diffuse * diff * intenseAttr.diffuse;
+	float diff1 = (dotProd > 0.0f) ? dotProd : 0.0f;
+	glm::vec3 diffuse = _materialAttr.diffuse * diff1 * light.getDiffuse();
 
 	// specular
 	glm::vec3 viewDir = glm::normalize(center - eye);
-	glm::vec3 reflectDir = glm::normalize(glm::reflect(-lightDir, normalTEST));
+	glm::vec3 reflectDir = glm::normalize(glm::reflect(lightDir, normalTEST));
 	dotProd = dot(reflectDir, viewDir);
-	diff = (dotProd > 0.0f) ? dotProd : 0.0f;
+	float diff = (dotProd > 0.0f) ? dotProd : 0.0f;
 	float spec = pow(abs(diff), _materialAttr.shininess);
-	float specular = _materialAttr.specular * spec * intenseAttr.specular;
+	glm::vec3 specular = _materialAttr.specular * spec * light.getSpecular();
 
 
-	float result = ambient + diffuse + specular;
-
+	glm::vec3 result = (ambient + diffuse + specular);
 
 	return result * light.getColor();
+}
+
+glm::vec3 Renderer::generateNewColor(const glm::mat4x4 & globalTransformationMatrix, const std::vector<std::shared_ptr<LightSource>>& lights_sources, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const triangleVecs & currTriangle, const material & _materialAttr)
+{
+
+	return glm::vec3();
 }
 
 
@@ -641,6 +645,7 @@ void Renderer::Render(const Scene& scene)
 	glm::mat4 transformationMatrix;
 	const auto& activeCamera = scene.GetActiveCamera(); // getting the active camera in the current scene
 	const auto& activeLight = scene.GetActiveLight();
+	const glm::vec3 lightColor = activeLight.getColor();
 	const glm::mat4x4 viewMatrix = glm::inverse(activeCamera.getViewTransformation());
     const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
@@ -684,7 +689,10 @@ void Renderer::Render(const Scene& scene)
 			glm::vec3 vec2 = vertices[v2];
 			int v3 = currFace.GetVertexIndex(2) - 1;
 			glm::vec3 vec3 = vertices[v3];
-			//drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace, mesh.getSidesColor());
+
+			triangleVecs currTriangle({ vec1,vec2,vec3 });
+
+			
 
 			//light 
 
@@ -701,48 +709,9 @@ void Renderer::Render(const Scene& scene)
 
 				glm::vec3 result = getFaceChanger(helper, activeLight, transformationMatrix, normalTEST, activeCamera.getEye(), vec1, vec2, vec3, meshMaterialAttr);
 
-
-
-				//glm::vec3 lightpos(helper * glm::vec4(activeLight.getPosition(),1.0f));
-				//glm::vec3 lightcolor(activeLight.getColor());
-				////glm::vec3 objcolor(mesh.getobjcolor());
-				//glm::vec3 newpoint = (vec1 + vec2 + vec3) / 3.0f;
-				//glm::vec3 center = trasformVec3(transformationMatrix, newpoint);
-				////center = center / center.w;
-				////glm::vec3 norm = trasformvec3(transformationmatrix ,(currface.getnormal() + newpoint));
-				////norm = norm - center;
-
-				//// get face material attributes
-				//
-
-				//// attrs to vectors
-				////ambient
-				//float ambient = materialAmbient.x * materialAmbient.y;
-
-				////diffuse
-				//glm::vec3 lightdir = glm::normalize(center - lightpos);
-				//float dotprod = glm::dot(lightdir, normalTEST);
-
-				//float diff = (dotprod > 0.0f) ? dotprod : 0.0f;
-				//float diffuse = materialDiffuse.x * diff * materialDiffuse.y;
-
-				//// specular
-				//glm::vec3 viewdir = glm::normalize(center - activeCamera.getEye());
-				//glm::vec3 reflectdir = glm::normalize(glm::reflect(-lightdir, normalTEST));
-				//dotprod = dot(reflectdir, viewdir);
-				//diff = (dotprod > 0.0f) ? dotprod : 0.0f;
-				//float spec = pow(abs(diff), materialShininess);
-				//float specular = materialSpecular.x * spec * materialSpecular.y;
-
-
-				//float result = ambient + diffuse + specular;
-
-				//add color
-				//glm::vec3 center_T = trasformVec3(transformationMatrix, center);
-				//flood(center_T.x, center_T.y, result*objColor, glm::vec3(0, 0, 0));
-				glm::vec3 faceFinalColor = result *  objColor;
-				addColor(vec1, vec2, vec3, faceFinalColor, transformationMatrix);
-				
+				//glm::vec3 faceFinalColor = result * lightColor;
+				//addColor(vec1, vec2, vec3, faceFinalColor, transformationMatrix);
+				addColor(vec1, vec2, vec3, result, transformationMatrix);
 				//}
 
 			verticesNormals[v1].insert(verticesNormals[v1].begin(), currFace.GetNormalIndex(0)-1);
@@ -798,7 +767,7 @@ void Renderer::Render(const Scene& scene)
 
 	// draw pixels
 	for (std::map<std::pair<int, int>, zColor>::iterator itr = Mapix.begin(); itr != Mapix.end(); ++itr) {
-		PutPixel(itr->first.first, itr->first.second, (itr->second.color/255.0f));
+		PutPixel(itr->first.first, itr->first.second, (itr->second.color)/255.0f);
 	}
 
 }

@@ -58,9 +58,9 @@ static float posX = 0;
 static float posY = 0;
 static float posZ = 50;
 glm::vec3 light_color = glm::vec3(1.0f, 1.0f, 1.0f);
-static float ambientStr = 0.9;
-static float diffuseStr = 0.9;
-static float specularStr = 0.9;
+static glm::vec3 ambientStr(0.9f, 0.9f, 0.9f);
+static glm::vec3 diffuseStr(0.9f, 0.9f, 0.9f);
+static glm::vec3 specularStr (0.9f,0.9f,0.9f);
 
 
 

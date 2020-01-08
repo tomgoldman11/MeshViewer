@@ -4,9 +4,9 @@
 #include <glm/glm.hpp>
 
 struct lightIntense {
-	float ambient; // <ambient_light_intensity (La)> 
-	float diffuse; // <diffuse_light_intensity (Ld)> 
-	float specular;  // <specular_light_intensity (Ls)> 
+	glm::vec3 ambient; // <ambient_light_intensity (La)> 
+	glm::vec3 diffuse; // <diffuse_light_intensity (Ld)> 
+	glm::vec3 specular;  // <specular_light_intensity (Ls)> 
 };
 
 class LightSource
@@ -20,18 +20,18 @@ public:
 	void setColor(const glm::vec3 & _color);
 	void setTarget(const glm::vec3 & _target);
 	void chageType();
-	void setDiffuse(const float _diffuse);
-	void setSpecular(const float _specular);
-	void setAmbient(const float _specular);
+	void setDiffuse(const glm::vec3 & _diffuse);
+	void setSpecular(const glm::vec3 & _specular);
+	void setAmbient(const glm::vec3 & _specular);
 
 	// getters
 	glm::vec3 getPosition() const;
 	glm::vec3 getColor() const;
 	glm::vec3 getTarget() const;
 	bool getType() const;
-	float getAmbient() const;
-	float getDiffuse() const;
-	float getSpecular() const;
+	glm::vec3 getAmbient() const;
+	glm::vec3 getDiffuse() const;
+	glm::vec3 getSpecular() const;
 	lightIntense getLightIntenseStruct() const;
 
 private:

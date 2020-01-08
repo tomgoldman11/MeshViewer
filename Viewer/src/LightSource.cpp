@@ -5,7 +5,7 @@ LightSource::LightSource(glm::vec3 _position, glm::vec3 _color, bool _pointSourc
 	color(_color),
 	pointSource(_pointSource),
 	target(_target),
-	intense({0.9,0.9,0.9})
+	intense({ glm::vec3(0.2f, 0.2f, 0.2f),glm::vec3(0.5f, 0.5f, 0.5f),glm::vec3(1.0f, 1.0f, 1.0f) })
 {
 }
 
@@ -33,17 +33,17 @@ void LightSource::chageType()
 	pointSource = !pointSource;
 }
 
-void LightSource::setDiffuse(const float _diffuse)
+void LightSource::setDiffuse(const glm::vec3 & _diffuse)
 {
 	intense.diffuse = _diffuse;
 }
 
-void LightSource::setSpecular(const float _specular)
+void LightSource::setSpecular(const glm::vec3 & _specular)
 {
 	intense.specular = _specular;
 }
 
-void LightSource::setAmbient(const float _ambient)
+void LightSource::setAmbient(const glm::vec3 & _ambient)
 {
 	intense.ambient = _ambient;
 }
@@ -68,17 +68,17 @@ bool LightSource::getType() const
 	return pointSource;
 }
 
-float LightSource::getAmbient() const
+glm::vec3 LightSource::getAmbient() const
 {
 	return intense.ambient;
 }
 
-float LightSource::getDiffuse() const
+glm::vec3 LightSource::getDiffuse() const
 {
 	return intense.diffuse;
 }
 
-float LightSource::getSpecular() const
+glm::vec3 LightSource::getSpecular() const
 {
 	return intense.specular;
 }

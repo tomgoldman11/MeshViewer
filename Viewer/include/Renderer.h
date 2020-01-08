@@ -28,6 +28,12 @@ class Renderer
 		glm::vec3 color;
 	};
 
+	struct triangleVecs {
+		glm::vec3 & vec1P;
+		glm::vec3 & vec2P;
+		glm::vec3 & vec3P;
+	};
+
 
 public:
 	Renderer(int viewportWidth, int viewportHeight);
@@ -69,4 +75,5 @@ private:
 	void addToMapix(int x, int y, float z, const glm::vec3& color);
 	void addColor(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& color, const glm::mat4x4 & transformationMatrix);
 	glm::vec3 getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const material & _materialAttr);
+	glm::vec3 generateNewColor(const glm::mat4x4 & globalTransformationMatrix, const std::vector<std::shared_ptr<LightSource>> & lights_sources, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const triangleVecs & currTriangle, const material & _materialAttr);
 };

@@ -7,13 +7,6 @@
 #include "MeshModel.h"
 #include "LightSource.h"
 
-//struct LightObj {
-//	glm::vec3 position;
-//	glm::vec3 color;
-//	bool pointSource;
-//	glm::vec3 target;
-//};
-
 class Scene {
 
 public:

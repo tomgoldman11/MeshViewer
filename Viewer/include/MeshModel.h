@@ -6,9 +6,9 @@
 #include <map>
 
 struct material {
-	float ambient; // <fraction_of_ambient_light_reflected_from_surface (Ka)>
-	float diffuse; // <fraction_of_diffuse_light_reflected_from_surface (Kd)> 
-	float specular;  // <fraction_of_specular_light_reflected_from_surface (Ks)>
+	glm::vec3 ambient; // <fraction_of_ambient_light_reflected_from_surface (Ka)>
+	glm::vec3 diffuse; // <fraction_of_diffuse_light_reflected_from_surface (Kd)> 
+	glm::vec3 specular;  // <fraction_of_specular_light_reflected_from_surface (Ks)>
 	int shininess; // shininess coefficient (alpha)
 };
 
@@ -51,9 +51,9 @@ public:
 	void setFaceNormals();
 	void setSidesColor(const glm::vec3 & _color);
 	void setObjColor(const glm::vec3 & _color);
-	void setDiffuse(const float _diffuse);
-	void setSpecular(const float _specular);
-	void setAmbient(const float _ambient);
+	void setDiffuse(const glm::vec3 & _diffuse);
+	void setSpecular(const glm::vec3 & _specular);
+	void setAmbient(const glm::vec3 & _ambient);
 	void setShininess(const int _shininess);
 
 	// getters
@@ -66,9 +66,9 @@ public:
 	glm::vec3 getModelCenter() const;
 	glm::vec3 getSidesColor() const;
 	glm::vec3 getObjColor() const;
-	float getAmbient() const;
-	float getDiffuse() const;
-	float getSpecular() const;
+	glm::vec3 getAmbient() const;
+	glm::vec3 getDiffuse() const;
+	glm::vec3 getSpecular() const;
 	int getShininess() const;
 	material getObjMaterialStruct() const;
 
