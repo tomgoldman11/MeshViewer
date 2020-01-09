@@ -68,6 +68,14 @@ glm::vec3 ambientStr(0.9f, 0.9f, 0.9f);
 glm::vec3 diffuseStr(0.9f, 0.9f, 0.9f);
 glm::vec3 specularStr (0.9f,0.9f,0.9f);
 
+// shading fields
+//Shading flats = flat;
+//Shading gourauds = gouraud;
+//Shading phongs = phong;
+bool shade_flat = false;
+bool shade_gouraud = false;
+bool shade_phong = false;
+
 
 
 /**
@@ -255,6 +263,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ModelAmbient = activeModel->getAmbient();
 	ModelDiffuse = activeModel->getDiffuse();
 	ModelSpecular = activeModel->getSpecular();
+	Shininess = activeModel->getShininess();
 
 	ImGui::Text("ModelAmbient");
 	ImGui::SameLine();
@@ -434,7 +443,32 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	ImGui::End(); // lighting window end.
 
+	/*bool shade_flat = false;
+	bool shade_gouraud = false;
+	bool shade_phong = false;*/
 
+	ImGui::Begin("Shading Control");
+
+	ImGui::Checkbox("flat", &shade_flat);
+	ImGui::SameLine();
+	ImGui::Checkbox("gouraud", &shade_gouraud);
+	ImGui::SameLine();
+	ImGui::Checkbox("phong", &shade_phong);
+
+	ImGui::End();
+
+	if (shade_flat && !shade_gouraud && !shade_phong)
+	{
+		scene.setShading(flat);
+	}
+	if (!shade_flat && shade_gouraud && !shade_phong)
+	{
+		scene.setShading(gouraud);
+	}
+	if (!shade_flat && !shade_gouraud && shade_phong)
+	{
+		scene.setShading(phong);
+	}
 
 	if (show_scale_window)
 	{
