@@ -9,7 +9,7 @@ Scene::Scene() :
 	activeFacesNormals(false),
 	activeVerticesNormals(true),
 	activeBoundBox(false),
-	shading_type(flat),
+	shading_type(gouraud), //flat, gouraud, phong
 	ambientLight(0,0,0,0)
 {
 

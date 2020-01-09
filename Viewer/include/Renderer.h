@@ -43,7 +43,6 @@ public:
 	void ClearColorBuffer(const glm::vec3& color);
 	void SetViewport(int width, int height);
 	float getZOnLine(int x, int y, int x1, int y1, float z1, int x2, int y2, float z2);
-	bool getLinearInterpolationOfPoints(float x, float y, const glm::vec3 & point1, const glm::vec3 & point2, const glm::vec3 & point3, float * const alpha, float * const beta, float * const gama, bool * const changed) const;
 	//void DrawAsterisk();
 	int GetViewportWidth() const;
 	int GetViewportHeight() const;
@@ -73,7 +72,7 @@ private:
 	void drawBoundBox(const MeshModel mesh, const glm::mat4x4 & transformationMatrix);
 	void flood(int x, int y, const glm::vec3& new_col, const glm::vec3& sidesColor, Face & currFace);
 	void drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const glm::vec3 &color);
-	void addToMapix(int x, int y, float z, const glm::vec3& color);
+	void addToMapix(int x, int y, float z, const glm::vec3& color, bool addColor=false);
 	void addColor(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& color, const glm::mat4x4 & transformationMatrix);
 	glm::vec3 getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point);
 	glm::vec3 generateNewColor(const glm::mat4x4 & globalTransformationMatrix, const std::vector<std::shared_ptr<LightSource>> & lights_sources, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const triangleVecs & currTriangle, const material & _materialAttr);

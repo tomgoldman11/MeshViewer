@@ -159,17 +159,60 @@ float Utils::sign(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
 }
 
 
-bool Utils::PointInTriangle(glm::vec3 pt, glm::vec3 v1, glm::vec3 v2, glm::vec3 v3)
+bool Utils::PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, float * zPoint)
 {
-	float d1, d2, d3;
-	bool has_neg, has_pos;
+	//float d1, d2, d3;
+	//bool has_neg, has_pos;
 
-	d1 = sign(pt, v1, v2);
-	d2 = sign(pt, v2, v3);
-	d3 = sign(pt, v3, v1);
+	//d1 = sign(pt, v1, v2);
+	//d2 = sign(pt, v2, v3);
+	//d3 = sign(pt, v3, v1);
 
-	has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-	has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+	//has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+	//has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
-	return !(has_neg && has_pos);
+	//return !(has_neg && has_pos);
+
+	float a = 0.0f, b = 0.0f, c = 0.0f;
+	bool value = getLinearInterpolationOfPoints(pt.x, pt.y, v1, v2, v3, &a, &b, &c, nullptr);
+	if (value == false) return false;
+	float z1 = v1.z, z2 = v2.z, z3 = v3.z;
+	if (zPoint != nullptr) {
+		*zPoint = a * z1 + b * z2 + c * z3;
+	}
+	return true;
+
+}
+
+bool Utils::getLinearInterpolationOfPoints(float x, float y, const glm::vec3& point1, const glm::vec3& point2, const glm::vec3& point3, float* const alpha, float* const beta, float* const gama, bool* const changed)
+{
+	if (changed != nullptr) {
+		*changed = false;
+	}
+	//source: http://totologic.blogspot.com/2014/01/accurate-point-in-triangle-test.html
+	float x1 = point1.x, x2 = point2.x, x3 = point3.x;
+	float y1 = point1.y, y2 = point2.y, y3 = point3.y;
+	float z1 = point1.z, z2 = point2.z, z3 = point3.z;
+	float diva = ((y2 - y3)*(x1 - x3) + (x3 - x2)*(y1 - y3));
+	if (diva == 0) return false;
+	float a = ((y2 - y3)*(x - x3) + (x3 - x2)*(y - y3)) / diva;
+	if (a < 0.0f || a > 1.0f) return false;
+	float divb = ((y2 - y3)*(x1 - x3) + (x3 - x2)*(y1 - y3));
+	if (divb == 0) return false;
+	float b = ((y3 - y1)*(x - x3) + (x1 - x3)*(y - y3)) / divb;
+	if (b < 0.0f || b > 1.0f) return false;
+	float c = 1.0f - a - b;
+	if (c < 0.0f || c > 1.0f) return false;
+	if (alpha == nullptr || beta == nullptr || gama == nullptr) {
+		//do nothing
+	}
+	else {
+		*alpha = a;
+		*beta = b;
+		*gama = c;
+		if (changed != nullptr) {
+			*changed = true;
+		}
+	}
+	return true;
 }
