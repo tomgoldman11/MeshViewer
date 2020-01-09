@@ -384,13 +384,25 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (ImGui::Button("Reset PosZ"))
 		posZ = 50.0f;
 
+	ImGui::SliderFloat("AmbientStr", &ambientStr, -100.0f, 100.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset PosX"))
+		posX = 0.0f;
+	ImGui::SliderFloat("PosY", &posY, -100.0f, 100.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset PosY"))
+		posY = 0.0f;
+	ImGui::SliderFloat("PosZ", &posZ, -100.0f, 100.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset PosZ"))
+		posZ = 50.0f;
+
 
 
 
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
 	activeLight.setColor(light_color);
-
 	scene.SetAmbientLight(ambient_light);
 
 
