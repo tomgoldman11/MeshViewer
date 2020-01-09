@@ -43,6 +43,12 @@ glm::vec4 back_color = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
  float TranslateY = 0.0f;
  float TranslateZ = 0.0f;
 
+// model material
+ glm::vec3 ModelAmbient(1.0f, 0.5f, 0.31f);
+ glm::vec3 ModelDiffuse(1.0f, 0.5f, 0.31f);
+ glm::vec3 ModelSpecular(0.5f, 0.5f, 0.5f);
+ int Shininess = 32;
+
 // camera transform
 static float camX = 0.0f; // eye parameters
 static float camY = 0.0f;
@@ -244,9 +250,29 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
 	
-
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
+
+	ModelAmbient = activeModel->getAmbient();
+	ModelDiffuse = activeModel->getDiffuse();
+	ModelSpecular = activeModel->getSpecular();
+
+	ImGui::Text("ModelAmbient");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("MA", (float*)&ModelAmbient);
+	ImGui::Text("ModelDiffuse");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("MD", (float*)&ModelDiffuse);
+	ImGui::Text("ModelSpecular");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("MS", (float*)&ModelSpecular);
+	ImGui::SliderInt("Shininess", &Shininess, 0, 100);
+
+	activeModel->setAmbient(ModelAmbient);
+	activeModel->setDiffuse(ModelDiffuse);
+	activeModel->setSpecular(ModelSpecular);
+	activeModel->setShininess(Shininess);
+
+	ImGui::End(); // end model control
 
 
 	ImGui::Begin("Camera Control"); // camera window.
@@ -329,8 +355,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 
 	ImGui::End(); // camera window end.
+	
 
 	ImGui::Begin("Lighting Control");
+
 	static int currlight = 0;
 	LightSource& activeLight = scene.GetLight(currlight); // getting the active light. 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Light # : %d", scene.GetActiveLightIndex());
@@ -351,7 +379,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::InputInt("ActiveLight", &currlight);
 	if (currlight < 0) currlight = 0;
 	if (currlight >= scene.GetLightCount()) currlight = scene.GetLightCount() - 1;
-	if (ImGui::Button("Change Light Source")) {
+	if (ImGui::Button("Change Light Source"))
+	{
 		scene.SetActiveLightIndex(currlight);
 		glm::vec3 currPos = activeLight.getPosition();
 		posX = currPos.x; posY = currPos.y; posZ = currPos.z;
@@ -359,17 +388,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ambientStr = activeLight.getAmbient();
 		diffuseStr = activeLight.getDiffuse();
 		specularStr = activeLight.getSpecular();
-		}
-
+	}
 
 	ImGui::Text("SceneAmbientColor");
 	ImGui::SameLine();
 	ImGui::ColorEdit3("SAC", (float*)&ambient_light);
-	
-	ImGui::Text("Light Color");
-	ImGui::SameLine();
-	ImGui::ColorEdit3("LC", (float*)&light_color);
-
 
 	ImGui::SliderFloat("PosX", &posX, -100.0f, 100.0f);
 	ImGui::SameLine();
