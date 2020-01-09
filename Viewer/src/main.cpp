@@ -18,6 +18,7 @@
  * Fields
  */
 extern glm::vec4 back_color;
+extern glm::vec3 light_color;
 
 
 extern float ScaleU;
@@ -75,7 +76,7 @@ int main(int argc, char **argv)
 	scene.SetActiveCameraIndex(0);
 	// adding light to scene
 	scene.AddLight((std::shared_ptr<LightSource>) &LightSource(glm::vec3{ 0,0,50 }, glm::vec3{ 255, 255, 255 }, true, glm::vec3{ 0,1,0 }));
-	scene.SetActiveCameraIndex(0);
+	scene.SetActiveLightIndex(0);
 
 	// main Loop
 	while (!glfwWindowShouldClose(window))
@@ -206,6 +207,7 @@ void RenderFrame(GLFWwindow* window, Scene& scene, Renderer& renderer, ImGuiIO& 
 	}
 	// clears frame buffer
 	renderer.ClearColorBuffer(back_color); 
+	//renderer.ClearColorBuffer(light_color);
 	// Renders Scene
 	renderer.Render(scene);
 	// swap buffers

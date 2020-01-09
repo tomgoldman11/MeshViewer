@@ -124,6 +124,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			{
 				scene.AddCamera(Utils::LoadCamera(glm::vec3{ 1,0,1 }, glm::vec3{ 0,0,0 }, glm::vec3{ 0,1,0 }));
 			}
+			if (ImGui::MenuItem("add point light", "CTRL+Q"))
+			{
+				//scene.AddLight((std::shared_ptr<LightSource>) &LightSource(glm::vec3{ 0,0,0 }, glm::vec3{ 255, 255, 255 }, true, glm::vec3{ 0,1,0 })); // load light model?
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
@@ -148,7 +152,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	// Controls
 	ImGui::Text("Background Color");
 	ImGui::SameLine();
-	ImGui::ColorEdit3("Background", (float*)&back_color);
+	ImGui::ColorEdit3("", (float*)&back_color);
 
 	ImGui::End(); // end meshviewer menu
 
@@ -342,6 +346,8 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	diffuseStr = activeLight.getDiffuse();
 	specularStr = activeLight.getSpecular();
 
+	glm::vec4 ambient_light = scene.GetAmbientLight();
+
 	ImGui::InputInt("ActiveLight", &currlight);
 	if (currlight < 0) currlight = 0;
 	if (currlight >= scene.GetLightCount()) currlight = scene.GetLightCount() - 1;
@@ -354,6 +360,17 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		diffuseStr = activeLight.getDiffuse();
 		specularStr = activeLight.getSpecular();
 		}
+
+
+	ImGui::Text("Ambient Light Color");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("ambient", (float*)&ambient_light);
+	
+	ImGui::Text("Light Color");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("color", (float*)&light_color);
+
+
 	ImGui::SliderFloat("PosX", &posX, -100.0f, 100.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosX"))
@@ -369,8 +386,12 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 
+
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
+	activeLight.setColor(light_color);
+
+	scene.SetAmbientLight(ambient_light);
 
 
 

@@ -56,6 +56,9 @@ public:
 	void setShading(Shading _type);
 	Shading getSahding() const;
 
+	const glm::vec4& GetAmbientLight() const { return ambientLight; }
+	void SetAmbientLight(const glm::vec4& light) { ambientLight = light; }
+
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
 	std::vector<std::shared_ptr<Camera>> cameras_;
@@ -66,5 +69,7 @@ private:
 	int active_lights_sources_index_;
 
 	Shading shading_type;
+
+	glm::vec4 ambientLight; // for adding ambient light into the scene
 
 };

@@ -9,7 +9,8 @@ Scene::Scene() :
 	activeFacesNormals(false),
 	activeVerticesNormals(true),
 	activeBoundBox(false),
-	shading_type(flat)
+	shading_type(flat),
+	ambientLight(0,0,0,0)
 {
 
 }
