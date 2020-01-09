@@ -7,6 +7,8 @@
 #include "MeshModel.h"
 #include "LightSource.h"
 
+enum Shading { flat, gouraud, phong };
+
 class Scene {
 
 public:
@@ -51,6 +53,8 @@ public:
 	void setZoomForCam(float zoom, int index);
 	bool activeBoundBox;
 
+	void setShading(Shading _type);
+	Shading getSahding() const;
 
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
@@ -60,4 +64,7 @@ private:
 	int active_camera_index_;
 	int active_model_index_;
 	int active_lights_sources_index_;
+
+	Shading shading_type;
+
 };

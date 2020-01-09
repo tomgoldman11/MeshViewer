@@ -38,6 +38,7 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::ifstream ifile(filePath.c_str());
+	std::map<int, std::vector<int>> verticesFacesNormals;
 
 	// while not end of file
 	while (!ifile.eof())
@@ -67,7 +68,11 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 		}
 		else if (lineType == "f")
 		{
-			faces.push_back(Face(issLine));
+			Face currFace(issLine);
+			faces.push_back(currFace);
+			verticesFacesNormals[currFace.GetVertexIndex(0) - 1].insert(verticesFacesNormals[currFace.GetVertexIndex(0) - 1].begin(), currFace.GetNormalIndex(0) - 1);
+			verticesFacesNormals[currFace.GetVertexIndex(1) - 1].insert(verticesFacesNormals[currFace.GetVertexIndex(1) - 1].begin(), currFace.GetNormalIndex(1) - 1);
+			verticesFacesNormals[currFace.GetVertexIndex(2) - 1].insert(verticesFacesNormals[currFace.GetVertexIndex(2) - 1].begin(), currFace.GetNormalIndex(2) - 1);
 		}
 		else if (lineType == "#" || lineType == "")
 		{
@@ -78,8 +83,30 @@ std::shared_ptr<MeshModel> Utils::LoadMeshModel(const std::string& filePath)
 			std::cout << "Found unknown line Type \"" << lineType << "\"";
 		}
 	}
+	std::vector<glm::vec3> verticesNormals(vertices.size());
 
-	return std::make_shared<MeshModel>(faces, vertices, normals, Utils::GetFileName(filePath));
+	for (std::map<int, std::vector<int>>::const_iterator vInd = verticesFacesNormals.begin(); vInd != verticesFacesNormals.end(); vInd++) {
+		glm::vec3 sumNormals(0);
+		std::vector<int> listNormals = vInd->second;
+		unsigned int i = 0;
+		for (i; i < listNormals.size(); ++i)
+		{
+			sumNormals += normals[listNormals[i]];
+		}
+		sumNormals = sumNormals / (float)listNormals.size();
+		
+		try
+		{
+			verticesNormals[vInd->first] = sumNormals;
+		}
+		catch (int e)
+		{
+			verticesNormals[0] = sumNormals;
+		}
+	}
+
+
+	return std::make_shared<MeshModel>(faces, vertices, normals, Utils::GetFileName(filePath), verticesNormals);
 }
 
 

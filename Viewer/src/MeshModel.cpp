@@ -1,6 +1,6 @@
 #include "MeshModel.h"
 
-MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name) :
+MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name, std::vector<glm::vec3> _verticesNormals) :
 	faces_(faces),
 	vertices_(vertices),
 	normals_(normals),
@@ -18,7 +18,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	localUpdateFlag(true),
 	sidesColor(glm::vec3(0.0f,0.0f,0.0f)),
 	objColor(glm::vec3(0.0f, 0.0f, 255.0f)), 
-	objMaterial({ glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(0.5f, 0.5f, 0.5f), 32 }) // ambient<K,L>, diffuse<K,L>, specular <K,L> , shininess <int>
+	objMaterial({ glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(0.5f, 0.5f, 0.5f), 32 }), // ambient<K,L>, diffuse<K,L>, specular <K,L> , shininess <int>
+	verticesNormals(_verticesNormals)
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{
@@ -360,6 +361,7 @@ void MeshModel::setShininess(const int _shininess)
 	objMaterial.shininess = _shininess;
 }
 
+
 glm::vec3 MeshModel::getRotateVector_world() const
 {
 	return rotateVector;
@@ -428,6 +430,19 @@ int MeshModel::getShininess() const
 material MeshModel::getObjMaterialStruct() const
 {
 	return objMaterial;
+}
+
+glm::vec3 MeshModel::getVertexNormal(int index) const
+{
+	if (index < 0 || index >= verticesNormals.size()) {
+		return glm::vec3(0, 0, 0);
+	}
+	return verticesNormals[index];
+}
+
+int MeshModel::getVerticesCount() const
+{
+	return vertices_.size();
 }
 
 const int MeshModel::getVertexFacesSum(int indx) const {

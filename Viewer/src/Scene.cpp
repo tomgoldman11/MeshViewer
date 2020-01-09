@@ -8,7 +8,8 @@ Scene::Scene() :
 	active_model_index_(0),
 	activeFacesNormals(false),
 	activeVerticesNormals(true),
-	activeBoundBox(false)
+	activeBoundBox(false),
+	shading_type(flat)
 {
 
 }
@@ -75,6 +76,9 @@ int Scene::GetLightCount() const
 
 LightSource & Scene::GetLight(int index) const
 {
+	if (index < 0 || index >= lights_sources_.size()) {
+		return *lights_sources_[0];
+	}
 	return *lights_sources_[index];
 }
 
@@ -92,6 +96,7 @@ int Scene::GetActiveLightIndex() const
 {
 	return active_lights_sources_index_;
 }
+
 
 void Scene::SetActiveModelIndex(int index)
 {
@@ -137,3 +142,14 @@ void Scene::setZoomForCam(float zoom, int index)
 {
 	cameras_[index]->setZoom(zoom);
 }
+
+void Scene::setShading(Shading _type)
+{
+	shading_type = _type;
+}
+
+Shading Scene::getSahding() const
+{
+	return shading_type;
+}
+

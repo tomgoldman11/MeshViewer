@@ -27,7 +27,7 @@ public:
 	};
 
 
-	MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name);
+	MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, std::vector<glm::vec3> normals, const std::string& model_name, std::vector<glm::vec3> _verticesNormals);
 	virtual ~MeshModel();
 	const Face& GetFace(int index) const;
 	std::vector<glm::vec3> getVertices() const;
@@ -71,6 +71,8 @@ public:
 	glm::vec3 getSpecular() const;
 	int getShininess() const;
 	material getObjMaterialStruct() const;
+	glm::vec3 getVertexNormal(int index) const;
+	int getVerticesCount() const;
 
 private:
 
@@ -89,6 +91,7 @@ private:
 	std::vector<glm::vec3> vertices_;
 	std::vector<glm::vec3> normals_;
 	std::string model_name_;
+	std::vector<glm::vec3> verticesNormals;
 	
 	// matrices
 	glm::mat4x4 worldTransform;
