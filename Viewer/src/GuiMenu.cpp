@@ -58,9 +58,9 @@ static float posX = 0;
 static float posY = 0;
 static float posZ = 50;
 glm::vec3 light_color = glm::vec3(1.0f, 1.0f, 1.0f);
-static glm::vec3 ambientStr(0.9f, 0.9f, 0.9f);
-static glm::vec3 diffuseStr(0.9f, 0.9f, 0.9f);
-static glm::vec3 specularStr (0.9f,0.9f,0.9f);
+glm::vec3 ambientStr(0.9f, 0.9f, 0.9f);
+glm::vec3 diffuseStr(0.9f, 0.9f, 0.9f);
+glm::vec3 specularStr (0.9f,0.9f,0.9f);
 
 
 
@@ -362,13 +362,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		}
 
 
-	ImGui::Text("Ambient Light Color");
+	ImGui::Text("SceneAmbientColor");
 	ImGui::SameLine();
-	ImGui::ColorEdit3("ambient", (float*)&ambient_light);
+	ImGui::ColorEdit3("SAC", (float*)&ambient_light);
 	
 	ImGui::Text("Light Color");
 	ImGui::SameLine();
-	ImGui::ColorEdit3("color", (float*)&light_color);
+	ImGui::ColorEdit3("LC", (float*)&light_color);
 
 
 	ImGui::SliderFloat("PosX", &posX, -100.0f, 100.0f);
@@ -383,27 +383,27 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosZ"))
 		posZ = 50.0f;
-
-	ImGui::SliderFloat("AmbientStr", &ambientStr, -100.0f, 100.0f);
+	
+	ImGui::Text("AmbientStr");
 	ImGui::SameLine();
-	if (ImGui::Button("Reset PosX"))
-		posX = 0.0f;
-	ImGui::SliderFloat("PosY", &posY, -100.0f, 100.0f);
-	ImGui::SameLine();
-	if (ImGui::Button("Reset PosY"))
-		posY = 0.0f;
-	ImGui::SliderFloat("PosZ", &posZ, -100.0f, 100.0f);
-	ImGui::SameLine();
-	if (ImGui::Button("Reset PosZ"))
-		posZ = 50.0f;
+	ImGui::ColorEdit3("AS", (float*)&ambientStr);
 
+	ImGui::Text("DiffueStr");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("DS", (float*)&diffuseStr);
 
+	ImGui::Text("SpecularStr");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("SS", (float*)&specularStr);
 
 
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
 	activeLight.setColor(light_color);
 	scene.SetAmbientLight(ambient_light);
+	activeLight.setAmbient(ambientStr);
+	activeLight.setDiffuse(diffuseStr);
+	activeLight.setSpecular(specularStr);
 
 
 
