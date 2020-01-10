@@ -361,7 +361,7 @@ glm::vec3 Renderer::drawFacesNormals(const glm::vec3& vec1, const glm::vec3& vec
 	if (print_normals) {
 		ALTER_DrawLine(newPoint_T, normal, glm::vec3(0, 255, 0));
 	}
-	return normal - newPoint_T;
+	return glm::normalize(normal - newPoint_T);
 }
 
 void Renderer::drawVerticesNormals(const MeshModel & mesh, const std::vector<glm::vec3> & vertices, const glm::mat4x4& transformationMatrix, const bool print_normals)
@@ -490,9 +490,6 @@ void Renderer::drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, 
 	
 	// draw the triangle
 	if (currFace.getVerticesCount() == 3) {
-		//DrawLine(vec1T, vec2T, glm::vec3(0, 0, 0));
-		//DrawLine(vec2T, vec3T, glm::vec3(0, 0, 0));
-		//DrawLine(vec3T, vec1T, glm::vec3(0, 0, 0));
 		ALTER_DrawLine(vec1T, vec2T, color);
 		ALTER_DrawLine(vec2T, vec3T, color);
 		ALTER_DrawLine(vec3T, vec1T, color);
@@ -500,7 +497,7 @@ void Renderer::drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, 
 
 }
 
-void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool addColor)
+void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool addColorFlag)
 {
 	float _distance = std::sqrt(pow((x - eyePoint.x), 2) + pow((y - eyePoint.y), 2) + pow((z - eyePoint.z), 2));
 
@@ -514,34 +511,58 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 		return;
 	}
 
-	//if (_distance == Mapix[std::make_pair(x, y)].z && addColor) {
+	//if (_distance == Mapix[std::make_pair(x, y)].z) {
 	//	Mapix[std::make_pair(x, y)].color += color;
 	//	return;
 	//}
 
 }
 
-void Renderer::addColor(const glm::vec3 & p1, const glm::vec3 & p2, const glm::vec3 & p3, const glm::vec3 & color, const glm::mat4x4 & transformationMatrix) // find another implementation
+void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 &faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr, const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter) // find another implementation
 {
-	glm::vec3 Tp1 = trasformVec3(transformationMatrix, p1);
-	glm::vec3 Tp2 = trasformVec3(transformationMatrix, p2);
-	glm::vec3 Tp3 = trasformVec3(transformationMatrix, p3);
-	float zPoint;
+	glm::vec3 Tp1 = trasformVec3(transformationMatrix, origTriangle.vec1P);
+	glm::vec3 Tp2 = trasformVec3(transformationMatrix, origTriangle.vec2P);
+	glm::vec3 Tp3 = trasformVec3(transformationMatrix, origTriangle.vec3P);
+	float a = 0.0f, b = 0.0f, c = 0.0f, zPoint;
+	bool changed = false;
+	glm::vec3 norm1(0), norm2(0), norm3(0), result(0), color(0);
+	glm::vec3 faceCenterT = trasformVec3(transformationMatrix, faceCenter);
 
 	int minX = std::min(std::min(Tp1.x, Tp2.x), Tp3.x);
 	int maxX = std::max(std::max(Tp1.x, Tp2.x), Tp3.x);
 	int minY = std::min(std::min(Tp1.y, Tp2.y), Tp3.y);
 	int maxY = std::max(std::max(Tp1.y, Tp2.y), Tp3.y);
-	int maxZ = std::max(std::max(Tp1.z, Tp2.z), Tp3.z);
-	int minZ = std::min(std::min(Tp1.z, Tp2.z), Tp3.z);
+
+	norm1 = drawVertixNormal(origTriangle.vec1P, origVerticesNormals.vec1N, transformationMatrix, printVerticesNormals);
+	norm2 = drawVertixNormal(origTriangle.vec2P, origVerticesNormals.vec2N, transformationMatrix, printVerticesNormals);
+	norm3 = drawVertixNormal(origTriangle.vec3P, origVerticesNormals.vec3N, transformationMatrix, printVerticesNormals);
+
+
 	for (int x = minX; x <= maxX; ++x) {
 		for (int y = maxY; y >= minY; --y) {
-			//for (int z = maxZ; z >= minZ; --z) {
-				if (Utils::PointInTriangle(glm::vec2(x, y), Tp1, Tp2, Tp3, &zPoint)) {
+			if (Utils::PointInTriangle(glm::vec2(x, y), Tp1, Tp2, Tp3, &zPoint)) {
+				switch (shadingType)
+				{
+				case flat:
+					color = getFaceChanger(helper, currentLight, faceNormal, origTriangle, meshMaterialAttr, faceCenterT);
+					break;
+				case gouraud:
+					Utils::getLinearInterpolationOfPoints(faceCenterT.x, faceCenterT.y, Tp1, Tp2, Tp3, &a, &b, &c, &changed);
+					if (changed == false) continue;
+					glm::vec3 color1 = getFaceChanger(helper, currentLight, norm1, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
+					glm::vec3 color2 = getFaceChanger(helper, currentLight, norm2, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
+					glm::vec3 color3 = getFaceChanger(helper, currentLight, norm3, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
+					color = a * color1 + b * color2 + c * color3;
+					break;
+				case phong:
+					Utils::getLinearInterpolationOfPoints(x, y, Tp1, Tp2, Tp3, &a, &b, &c, &changed);
+					if (changed == false) continue;
+					glm::vec3 superNormal = a * norm1 + b * norm2 + c * norm3;
 
-					addToMapix(x, y, zPoint, color);
+					color = getFaceChanger(helper, currentLight, superNormal, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
 				}
-			//}
+				addToMapix(x, y, zPoint, color);
+			}
 		}
 	}
 
@@ -551,7 +572,7 @@ glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatri
 {
 	float dotProd = 0.0f;
 	glm::vec3 lightDir;
-	glm::vec3 lightPos(globalTransformationMatrix * glm::vec4(light.getPosition(), 1.0f));
+	glm::vec3 lightPos(globalTransformationMatrix * glm::vec4(light.getPosition(), 0.0f));
 	//glm::vec3 newPoint = (currTriangle.vec1P + currTriangle.vec2P + currTriangle.vec3P) / 3.0f;
 	//glm::vec3 center = trasformVec3(transformationMatrix, newPoint);
 
@@ -572,14 +593,14 @@ glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatri
 	float diff1 = (dotProd > 0.0f) ? dotProd : 0.0f;
 	glm::vec3 diffuse = _materialAttr.diffuse * diff1 * light.getDiffuse();
 
+
 	// specular
 	glm::vec3 viewDir = glm::normalize(point - glm::vec3(eyePoint));
-	glm::vec3 reflectDir = glm::normalize(glm::reflect(lightDir, normalTEST));
+	glm::vec3 reflectDir = glm::normalize(glm::reflect(-lightDir, normalTEST));
 	dotProd = dot(reflectDir, viewDir);
 	float diff = (dotProd > 0.0f) ? dotProd : 0.0f;
 	float spec = pow(abs(diff), _materialAttr.shininess);
 	glm::vec3 specular = _materialAttr.specular * spec * light.getSpecular();
-
 
 	glm::vec3 result = (ambient + diffuse + specular);
 
@@ -602,16 +623,19 @@ glm::vec3 Renderer::drawVertixNormal(const glm::vec3 & vertex, const glm::vec3 &
 		ALTER_DrawLine(vVec, sumNormals3, glm::vec3(0, 255, 0));
 	}
 
-	return sumNormals3 - vVec;
+	return glm::normalize(sumNormals3 - vVec);
 }
 
 glm::vec3 Renderer::handleLight(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 &faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr , const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter)
 {
-	glm::vec3 result(0);
+	glm::vec3 result(0) ,Tp1 ,Tp2 ,Tp3;
 	float a = 0.0f, b = 0.0f, c = 0.0f;
 	bool changed = false;
 	glm::vec3 norm1, norm2, norm3;
 	glm::vec3 faceCenterT = trasformVec3(transformationMatrix, faceCenter);
+	float zPoint;
+	int minX, maxX ,minY ,maxY;
+
 
 	switch (shadingType)
 	{
@@ -622,34 +646,51 @@ glm::vec3 Renderer::handleLight(const Shading & shadingType, const glm::mat4x4 &
 		norm1 = drawVertixNormal(origTriangle.vec1P, origVerticesNormals.vec1N, transformationMatrix, printVerticesNormals);
 		norm2 = drawVertixNormal(origTriangle.vec2P, origVerticesNormals.vec2N, transformationMatrix, printVerticesNormals);
 		norm3 = drawVertixNormal(origTriangle.vec3P, origVerticesNormals.vec3N, transformationMatrix, printVerticesNormals);
-		glm::vec3 color1 = getFaceChanger(helper, currentLight, norm1, origTriangle, meshMaterialAttr, trasformVec3(transformationMatrix, origTriangle.vec1P));
-		glm::vec3 color2 = getFaceChanger(helper, currentLight, norm2, origTriangle, meshMaterialAttr, trasformVec3(transformationMatrix, origTriangle.vec2P));
-		glm::vec3 color3 = getFaceChanger(helper, currentLight, norm3, origTriangle, meshMaterialAttr, trasformVec3(transformationMatrix, origTriangle.vec3P));
+		Tp1 = trasformVec3(transformationMatrix, origTriangle.vec1P);
+		Tp2 = trasformVec3(transformationMatrix, origTriangle.vec2P);
+		Tp3 = trasformVec3(transformationMatrix, origTriangle.vec3P);
 
-		Utils::getLinearInterpolationOfPoints(faceCenter.x, faceCenter.y, origTriangle.vec1P, origTriangle.vec2P, origTriangle.vec3P, &a, &b, &c, &changed);
-		if (changed == false) return glm::vec3(0);
-		result = a * color1 + b * color2 + c * color3;
+		minX = std::min(std::min(Tp1.x, Tp2.x), Tp3.x);
+		maxX = std::max(std::max(Tp1.x, Tp2.x), Tp3.x);
+		minY = std::min(std::min(Tp1.y, Tp2.y), Tp3.y);
+		maxY = std::max(std::max(Tp1.y, Tp2.y), Tp3.y);
+
+		for (int x = minX; x <= maxX; ++x) {
+			for (int y = maxY; y >= minY; --y) {
+				if (Utils::PointInTriangle(glm::vec2(x, y), Tp1, Tp2, Tp3, &zPoint)) {
+					Utils::getLinearInterpolationOfPoints(faceCenter.x, faceCenter.y, origTriangle.vec1P, origTriangle.vec2P, origTriangle.vec3P, &a, &b, &c, &changed);
+					if (changed == false) return glm::vec3(0);
+					glm::vec3 color1 = getFaceChanger(helper, currentLight, norm1, origTriangle, meshMaterialAttr, trasformVec3(transformationMatrix, glm::vec3(x, y, zPoint)));
+					glm::vec3 color2 = getFaceChanger(helper, currentLight, norm2, origTriangle, meshMaterialAttr, trasformVec3(transformationMatrix, glm::vec3(x, y, zPoint)));
+					glm::vec3 color3 = getFaceChanger(helper, currentLight, norm3, origTriangle, meshMaterialAttr, trasformVec3(transformationMatrix, glm::vec3(x, y, zPoint)));
+					result = a * color1 + b * color2 + c * color3;
+					addToMapix(x, y, zPoint, result, true);
+				}
+			}
+		}
+
+		
 		break;
 	case phong:
 		norm1 = drawVertixNormal(origTriangle.vec1P, origVerticesNormals.vec1N, transformationMatrix, printVerticesNormals);
 		norm2 = drawVertixNormal(origTriangle.vec2P, origVerticesNormals.vec2N, transformationMatrix, printVerticesNormals);
 		norm3 = drawVertixNormal(origTriangle.vec3P, origVerticesNormals.vec3N, transformationMatrix, printVerticesNormals);
-		glm::vec3 Tp1 = trasformVec3(transformationMatrix, origTriangle.vec1P);
-		glm::vec3 Tp2 = trasformVec3(transformationMatrix, origTriangle.vec2P);
-		glm::vec3 Tp3 = trasformVec3(transformationMatrix, origTriangle.vec3P);
-		float zPoint;
+		Tp1 = trasformVec3(transformationMatrix, origTriangle.vec1P);
+		Tp2 = trasformVec3(transformationMatrix, origTriangle.vec2P);
+		Tp3 = trasformVec3(transformationMatrix, origTriangle.vec3P);
 
-		int minX = std::min(std::min(Tp1.x, Tp2.x), Tp3.x);
-		int maxX = std::max(std::max(Tp1.x, Tp2.x), Tp3.x);
-		int minY = std::min(std::min(Tp1.y, Tp2.y), Tp3.y);
-		int maxY = std::max(std::max(Tp1.y, Tp2.y), Tp3.y);
+		minX = std::min(std::min(Tp1.x, Tp2.x), Tp3.x);
+		maxX = std::max(std::max(Tp1.x, Tp2.x), Tp3.x);
+		minY = std::min(std::min(Tp1.y, Tp2.y), Tp3.y);
+		maxY = std::max(std::max(Tp1.y, Tp2.y), Tp3.y);
 
 		for (int x = minX; x <= maxX; ++x) {
 			for (int y = maxY; y >= minY; --y) {
-				//if (Utils::PointInTriangle(glm::vec2(x, y), Tp1, Tp2, Tp3, &zPoint)) {
-				if (Utils::getLinearInterpolationOfPoints(x, y, Tp1, Tp2, Tp3, &a, &b, &c, &changed)) {
+				if (Utils::PointInTriangle(glm::vec2(x, y), Tp1, Tp2, Tp3, &zPoint)) {
+					Utils::getLinearInterpolationOfPoints(x, y, Tp1, Tp2, Tp3, &a, &b, &c, &changed);
 					if (changed == false) continue;
 					glm::vec3 superNormal = a * norm1 + b * norm2 + c * norm3;
+
 					glm::vec3 color = getFaceChanger(helper, currentLight, superNormal, origTriangle, meshMaterialAttr, trasformVec3(transformationMatrix, glm::vec3(x, y, zPoint)));
 					addToMapix(x, y, zPoint, color, true);
 				}
@@ -771,12 +812,13 @@ void Renderer::Render(const Scene& scene)
 			//light
 			glm::vec3 result(0);
 			for (int indLight = 0; indLight < scene.GetLightCount(); ++indLight) { 
-				result += handleLight(shadingType, helper, scene.GetLight(indLight), normalTEST, currTriangle, meshMaterialAttr, currVerticesNormals, transformationMatrix, scene.getVerticesNormalsStatus(), faceCenter);
+				//result += handleLight(shadingType, helper, scene.GetLight(indLight), normalTEST, currTriangle, meshMaterialAttr, currVerticesNormals, transformationMatrix, scene.getVerticesNormalsStatus(), faceCenter);
+				addColor2(shadingType, helper, scene.GetLight(indLight), normalTEST, currTriangle, meshMaterialAttr, currVerticesNormals, transformationMatrix, scene.getVerticesNormalsStatus(), faceCenter);
 			}
 
-			if (shadingType != phong) {
-				addColor(vec1, vec2, vec3, result, transformationMatrix);
-			}
+			//if (shadingType == flat) {
+			//	addColor(vec1, vec2, vec3, result, transformationMatrix);
+			//}
 
 		}
 		//draw vertices normals
