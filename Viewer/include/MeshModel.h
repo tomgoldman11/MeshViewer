@@ -12,6 +12,19 @@ struct material {
 	int shininess; // shininess coefficient (alpha)
 };
 
+struct triangleVecs {
+	glm::vec3 & vec1P;
+	glm::vec3 & vec2P;
+	glm::vec3 & vec3P;
+};
+
+struct triangleVecsNormals {
+	glm::vec3 & vec1N;
+	glm::vec3 & vec2N;
+	glm::vec3 & vec3N;
+};
+
+
 class MeshModel
 {
 public:

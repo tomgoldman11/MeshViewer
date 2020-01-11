@@ -28,16 +28,9 @@ class Renderer
 		glm::vec3 color;
 	};
 
-	struct triangleVecs {
-		glm::vec3 & vec1P;
-		glm::vec3 & vec2P;
-		glm::vec3 & vec3P;
-	};
-
-	struct triangleVecsNormals {
-		glm::vec3 & vec1N;
-		glm::vec3 & vec2N;
-		glm::vec3 & vec3N;
+	struct antiAlising {
+		bool active;
+		int k;
 	};
 
 public:
@@ -71,6 +64,7 @@ private:
 	GLuint gl_screen_vtc_;
 	glm::vec4 trasformVec3(const glm::mat4 & transformationMatrix, glm::vec3 vector);
 	glm::vec4 eyePoint;
+	antiAlising AA;
 
 	glm::vec3 drawFacesNormals(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const bool print_normals);
 	void drawVerticesNormals(const MeshModel & mesh, const std::vector<glm::vec3>& vertices, const glm::mat4x4 & transformationMatrix, const bool print_normals);
@@ -82,4 +76,5 @@ private:
 	glm::vec3 getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point);
 	glm::vec3 generateNewColor(const glm::mat4x4 & globalTransformationMatrix, const std::vector<std::shared_ptr<LightSource>> & lights_sources, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const triangleVecs & currTriangle, const material & _materialAttr);
 	glm::vec3 drawVertixNormal( const glm::vec3 & vertex, const glm::vec3 & normal, const glm::mat4x4 & transformationMatrix, const bool print_normals);
+
 };

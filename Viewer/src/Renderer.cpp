@@ -11,7 +11,8 @@
 
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),
-	viewport_height_(viewport_height)
+	viewport_height_(viewport_height),
+	AA({ false,1 })
 {
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
@@ -30,40 +31,43 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 	if (i < 0) return; if (i >= viewport_width_) return;
 	if (j < 0) return; if (j >= viewport_height_) return;
 
-	//int k = 1;
-	//int pxCount = 0;
+	if (AA.active)
+	{
+		int pxCount = 0;
 
-	//glm::vec3 finalColor(0);
-	//for (int r = i-k; r <= i+k; r+=2)
-	//{
-	//	if (r < 0) continue; if (r >= viewport_width_) continue;
-	//	for (int c = j-k; c <= j+k; c+=2)
-	//	{
-	//		if (c < 0) continue; if (c >= viewport_height_) continue;
-	//		try
-	//		{
-	//			finalColor += Mapix[std::make_pair(r, c)].color;
-	//			++pxCount;
-	//		}
-	//		catch (const std::exception& e) {
-	//			// Pixel did not set from default color 0,0,0
-	//			finalColor += glm::vec3(0.0f,0.0f,0.0f);
-	//			++pxCount;
-	//		}
-	//		
-	//	}
-	//}
-	//finalColor /= pxCount*255;
+		glm::vec3 finalColor(0);
+		for (int r = i- AA.k; r <= i+ AA.k; r+=2)
+		{
+			if (r < 0) continue; if (r >= viewport_width_) continue;
+			for (int c = j- AA.k; c <= j+ AA.k; c+=2)
+			{
+				if (c < 0) continue; if (c >= viewport_height_) continue;
+				try
+				{
+					finalColor += Mapix[std::make_pair(r, c)].color;
+					++pxCount;
+				}
+				catch (const std::exception& e) {
+					// Pixel did not set from default color 0,0,0
+					finalColor += glm::vec3(0.0f,0.0f,0.0f);
+					++pxCount;
+				}
+				
+			}
+		}
+		finalColor /= pxCount;
 
-	//color_buffer_[INDEX(viewport_width_, i, j, 0)] = finalColor.x;
-	//color_buffer_[INDEX(viewport_width_, i, j, 1)] = finalColor.y;
-	//color_buffer_[INDEX(viewport_width_, i, j, 2)] = finalColor.z;
+		color_buffer_[INDEX(viewport_width_, i, j, 0)] = finalColor.x;
+		color_buffer_[INDEX(viewport_width_, i, j, 1)] = finalColor.y;
+		color_buffer_[INDEX(viewport_width_, i, j, 2)] = finalColor.z;
 
-
-	
-	color_buffer_[INDEX(viewport_width_, i, j, 0)] = color.x;
-	color_buffer_[INDEX(viewport_width_, i, j, 1)] = color.y;
-	color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
+	}
+	else
+	{
+		color_buffer_[INDEX(viewport_width_, i, j, 0)] = color.x;
+		color_buffer_[INDEX(viewport_width_, i, j, 1)] = color.y;
+		color_buffer_[INDEX(viewport_width_, i, j, 2)] = color.z;
+	}
 }
 
 glm::vec3 Renderer::GetPixel(int i, int j)
