@@ -51,6 +51,10 @@ public:
 	glm::vec3 GetPixel(int i, int j);
 	void SetViewportHeight(const int _viewport_height);
 	void SetViewportWidth(const int _viewport_width);
+	void AASwitch();
+	void setAAk(int _k);
+	bool getAAMode() const;
+	bool getAAk() const;
 
 private:
 	std::map<std::pair<int, int>, zColor> Mapix;
@@ -76,5 +80,4 @@ private:
 	glm::vec3 getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point);
 	glm::vec3 generateNewColor(const glm::mat4x4 & globalTransformationMatrix, const std::vector<std::shared_ptr<LightSource>> & lights_sources, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const triangleVecs & currTriangle, const material & _materialAttr);
 	glm::vec3 drawVertixNormal( const glm::vec3 & vertex, const glm::vec3 & normal, const glm::mat4x4 & transformationMatrix, const bool print_normals);
-
 };

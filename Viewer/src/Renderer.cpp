@@ -89,6 +89,26 @@ void Renderer::SetViewportWidth(const int _viewport_width)
 	viewport_width_ = _viewport_width;
 }
 
+void Renderer::AASwitch()
+{
+	AA.active = !AA.active;
+}
+
+void Renderer::setAAk(int _k)
+{
+	AA.k = _k;
+}
+
+bool Renderer::getAAMode() const
+{
+	return AA.active;
+}
+
+bool Renderer::getAAk() const
+{
+	return AA.k;
+}
+
 void Renderer::DrawLine(const glm::ivec3& p1, const glm::ivec3& p2, const glm::vec3& color)
 {
 	int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
