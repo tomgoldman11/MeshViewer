@@ -78,10 +78,8 @@ private:
 	void flood(int x, int y, const glm::vec3& new_col, const glm::vec3& sidesColor, Face & currFace);
 	void drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const glm::vec3 &color);
 	void addToMapix(int x, int y, float z, const glm::vec3& color, bool addColor=false);
-	void addColor(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& color, const glm::mat4x4 & transformationMatrix);
-	void addColor2(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 & faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr, const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter);
+	void addColor(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 & faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr, const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter, const objFog & fog);
 	glm::vec3 getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point);
 	glm::vec3 generateNewColor(const glm::mat4x4 & globalTransformationMatrix, const std::vector<std::shared_ptr<LightSource>> & lights_sources, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const triangleVecs & currTriangle, const material & _materialAttr);
 	glm::vec3 drawVertixNormal( const glm::vec3 & vertex, const glm::vec3 & normal, const glm::mat4x4 & transformationMatrix, const bool print_normals);
-	glm::vec3 handleLight(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 &faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr, const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter);
 };

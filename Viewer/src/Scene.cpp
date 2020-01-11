@@ -10,7 +10,8 @@ Scene::Scene() :
 	activeVerticesNormals(true),
 	activeBoundBox(false),
 	shading_type(flat), //flat, gouraud, phong
-	ambientLight(0,0,0,0)
+	ambientLight(0,0,0,0),
+	fog({ noFog, 1.00191271f , 1.0018f , glm::vec3(0.4, 0.4, 0.4) }) // type, max, min, color //the default value match to our perspective view
 {
 
 }
@@ -154,3 +155,47 @@ Shading Scene::getSahding() const
 	return shading_type;
 }
 
+Fog Scene::getFogType() const
+{
+	return fog.fogType;
+}
+
+float Scene::getFogStart() const
+{
+	return fog.fog_mindist;
+}
+
+float Scene::getFogEnd() const
+{
+	return fog.fog_maxdist;
+}
+
+glm::vec3 Scene::getFogColor() const
+{
+	return fog.fog_color;
+}
+
+void Scene::setFogType(const Fog & _fogType)
+{
+	fog.fogType = _fogType;
+}
+
+void Scene::setFogStart(const float _start)
+{
+	fog.fog_mindist = _start;
+}
+
+void Scene::setFogEnd(const float _end)
+{
+	fog.fog_maxdist = _end;
+}
+
+void Scene::setFogColor(const glm::vec3 & _color)
+{
+	fog.fog_color = _color;
+}
+
+objFog Scene::getFogObject() const
+{
+	return fog;
+}

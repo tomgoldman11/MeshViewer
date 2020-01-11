@@ -8,6 +8,14 @@
 #include "LightSource.h"
 
 enum Shading { flat, gouraud, phong };
+enum Fog { noFog ,linear , exponential, exponentialSquered};
+
+struct objFog {
+	Fog fogType;
+	float fog_maxdist;
+	float fog_mindist;
+	glm::vec3  fog_color;
+};
 
 class Scene {
 
@@ -59,6 +67,16 @@ public:
 	const glm::vec4& GetAmbientLight() const { return ambientLight; }
 	void SetAmbientLight(const glm::vec4& light) { ambientLight = light; }
 
+	Fog getFogType() const;
+	float getFogStart() const;
+	float getFogEnd() const;
+	glm::vec3 getFogColor() const;
+	void setFogType(const Fog & _fogType);
+	void setFogStart(const float _start);
+	void setFogEnd(const float _end);
+	void setFogColor(const glm::vec3 & _color);
+	objFog getFogObject() const;
+
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
 	std::vector<std::shared_ptr<Camera>> cameras_;
@@ -72,4 +90,5 @@ private:
 
 	glm::vec4 ambientLight; // for adding ambient light into the scene
 
+	objFog fog;
 };
