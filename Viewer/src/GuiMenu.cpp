@@ -74,6 +74,11 @@ static int Shade = 0;
 
 // fog fields
 static int FogT = 0;
+static float fog_start = 0.0f;
+static float fog_end = 0.0f;
+glm::vec3 fog_color(0.0f, 0.0f, 0.0f);
+static float fog_density = 0.0f;
+
 
 // AntiAliasing
 bool AA_Switch = false;
@@ -489,6 +494,36 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	{
 		FogT = exponentialSquared;
 	}
+
+	fog_start = scene.getFogStart();
+	fog_end = scene.getFogEnd();
+	fog_density = scene.getFogDensity();
+	fog_color = scene.getFogColor();
+
+	ImGui::SliderFloat("FogStart", &fog_start, 0.0f, 30.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset Start"))
+		fog_start = 0.0f;
+
+	ImGui::SliderFloat("FogEnd", &fog_end, 0.0f, 30.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset End"))
+		fog_end = 0.0f;
+
+	ImGui::SliderFloat("FogDensity", &fog_density, 0.0f, 100.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset Density"))
+		fog_density = 0.0f;
+
+	ImGui::Text("FogColor");
+	ImGui::SameLine();
+	ImGui::ColorEdit3("FC", (float*)&fog_color);
+
+	scene.setFogStart(fog_start);
+	scene.setFogEnd(fog_end);
+	scene.setFogDensity(fog_density);
+	scene.setFogColor(fog_color);
+
 
 	if(ImGui::Checkbox("AntiAliasing", &AA_Switch) == true)
 	{
