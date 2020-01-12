@@ -12,7 +12,7 @@
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),
 	viewport_height_(viewport_height),
-	AA({ false,1 })
+	AA({ true,1 })
 {
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
@@ -42,16 +42,15 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 			for (int c = j- AA.k; c <= j+ AA.k; c+=2)
 			{
 				if (c < 0) continue; if (c >= viewport_height_) continue;
-				try
+				std::map<std::pair<int, int>, zColor>::iterator neighborPixel = Mapix.find(std::make_pair(r, c));
+				if (neighborPixel != Mapix.end())
 				{
-					finalColor += Mapix[std::make_pair(r, c)].color;
+					finalColor += neighborPixel->second.color;
 					++pxCount;
 				}
-				catch (const std::exception& e) {
-					// Pixel did not set from default color 0,0,0
-					finalColor += glm::vec3(0.0f,0.0f,0.0f);
+				else
+				{
 					++pxCount;
-					throw e;
 				}
 				
 			}
@@ -854,7 +853,7 @@ void Renderer::Render(const Scene& scene)
 		}
 		Camera&  cameraObj = scene.GetCamera(i);
 		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
@@ -883,7 +882,9 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetLightCount(); ++i)
 	{
 		LightSource&  lightObj = scene.GetLight(i);
-		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();
 		lightModel->setTranslate_local(lightObj.getPosition());
