@@ -12,7 +12,7 @@
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),
 	viewport_height_(viewport_height),
-	AA({ true,1 })
+	AA({ false,1 })
 {
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
@@ -852,8 +852,8 @@ void Renderer::Render(const Scene& scene)
 			continue;
 		}
 		Camera&  cameraObj = scene.GetCamera(i);
-		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
@@ -882,8 +882,8 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetLightCount(); ++i)
 	{
 		LightSource&  lightObj = scene.GetLight(i);
-		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
-		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
 
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();
