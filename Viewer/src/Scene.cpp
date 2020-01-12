@@ -11,7 +11,7 @@ Scene::Scene() :
 	activeBoundBox(false),
 	shading_type(flat), //flat, gouraud, phong
 	ambientLight(0,0,0,0),
-	fog({ noFog, 1.00191271f , 1.0018f , glm::vec3(0.4, 0.4, 0.4) }) // type, max, min, color //the default value match to our perspective view
+	fog({ noFog, 1.00191271f , 1.0018f , glm::vec3(0.4, 0.4, 0.4) , 0.05f }) // type (noFog ,linear , exponential, exponentialSquered) , max, min, color //the default value match to our perspective view
 {
 
 }
@@ -170,6 +170,11 @@ float Scene::getFogEnd() const
 	return fog.fog_maxdist;
 }
 
+float Scene::getFogDensity() const
+{
+	return fog.density;
+}
+
 glm::vec3 Scene::getFogColor() const
 {
 	return fog.fog_color;
@@ -188,6 +193,11 @@ void Scene::setFogStart(const float _start)
 void Scene::setFogEnd(const float _end)
 {
 	fog.fog_maxdist = _end;
+}
+
+void Scene::setFogDensity(const float _density)
+{
+	fog.density = _density;
 }
 
 void Scene::setFogColor(const glm::vec3 & _color)

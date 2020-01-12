@@ -15,6 +15,7 @@ struct objFog {
 	float fog_maxdist;
 	float fog_mindist;
 	glm::vec3  fog_color;
+	float density;
 };
 
 class Scene {
@@ -70,10 +71,12 @@ public:
 	Fog getFogType() const;
 	float getFogStart() const;
 	float getFogEnd() const;
+	float getFogDensity() const;
 	glm::vec3 getFogColor() const;
 	void setFogType(const Fog & _fogType);
 	void setFogStart(const float _start);
 	void setFogEnd(const float _end);
+	void setFogDensity(const float _density);
 	void setFogColor(const glm::vec3 & _color);
 	objFog getFogObject() const;
 

@@ -9,19 +9,6 @@
 
 class Renderer
 {
-	//struct faceZDist {
-	//	int faceIndex;
-	//	float distance;
-
-	//	bool operator > (const faceZDist other) const
-	//	{
-	//		return (distance > other.distance);
-	//	}
-	//	bool operator < (const faceZDist other) const
-	//	{
-	//		return (distance < other.distance);
-	//	}
-	//};
 
 	struct zColor {
 		float z;
@@ -68,7 +55,11 @@ private:
 	GLuint gl_screen_vtc_;
 	glm::vec4 trasformVec3(const glm::mat4 & transformationMatrix, glm::vec3 vector);
 	glm::vec4 eyePoint;
+	glm::vec4 eyePoint2;
 	antiAlising AA;
+	float farestKnownPoint;
+	float minZ;
+	float maxZ;
 
 	glm::vec3 drawFacesNormals(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const bool print_normals);
 	void drawVerticesNormals(const MeshModel & mesh, const std::vector<glm::vec3>& vertices, const glm::mat4x4 & transformationMatrix, const bool print_normals);

@@ -594,10 +594,6 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 	norm1 = drawVertixNormal(origTriangle.vec1P, origVerticesNormals.vec1N, transformationMatrix, printVerticesNormals);
 	norm2 = drawVertixNormal(origTriangle.vec2P, origVerticesNormals.vec2N, transformationMatrix, printVerticesNormals);
 	norm3 = drawVertixNormal(origTriangle.vec3P, origVerticesNormals.vec3N, transformationMatrix, printVerticesNormals);
-	float fog_maxdist = fog.fog_maxdist;
-	float fog_mindist = fog.fog_mindist;
-	glm::vec3  fog_color(fog.fog_color);
-	Fog fogType = fog.fogType;
 
 	for (int x = minX; x <= maxX; ++x) {
 		for (int y = maxY; y >= minY; --y) {
@@ -623,26 +619,26 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 					color = getFaceChanger(helper, currentLight, superNormal, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
 				}
 
-				switch (fogType)
+				switch (fog.fogType)
 				{
 				case linear:
-					fog_factor = (fog_maxdist - zPoint) / (fog_maxdist - fog_mindist);
+					fog_factor = (fog.fog_maxdist - zPoint) / (fog.fog_maxdist - fog.fog_mindist);
 					if (fog_factor < 0.0) fog_factor = 0;
 					else if (fog_factor > 1.0) fog_factor = 1;
 					
-					color = (1 - fog_factor) * fog_color + fog_factor * color;
+					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
 
 					break;
 				case exponential:
-					fog_factor = 1 / (exp(fog_factor*zPoint));
+					fog_factor = 1 / (exp(fog.density*zPoint));
 
-					color = (1 - fog_factor) * fog_color + fog_factor * color;
+					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
 
 					break;
 				case exponentialSquered:
-					fog_factor = 1 / (exp(pow(fog_factor*zPoint,2)));
+					fog_factor = 50 + 1 / (exp(pow(fog.density*zPoint,2)));
 
-					color = (1 - fog_factor) * fog_color + fog_factor * color;
+					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
 
 					break;
 				default:
@@ -651,6 +647,12 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 				}
 
 				addToMapix(x, y, zPoint, color);
+				if (zPoint < minZ) {
+					minZ = zPoint;
+				}
+				if (zPoint > maxZ) {
+					maxZ = zPoint;
+				}
 			}
 		}
 	}
@@ -762,6 +764,7 @@ void Renderer::Render(const Scene& scene)
 {
 	// TODO: Replace this code with real scene rendering code
 	Mapix.clear();
+	farestKnownPoint = 0;
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
 	std::map<int, std::vector<int>> verticesNormals;
@@ -779,7 +782,7 @@ void Renderer::Render(const Scene& scene)
 	);
 	drawAxis(projectionMatrix, viewMatrix);
 	const objFog sceneFog = scene.getFogObject();
-
+	minZ = 1000, maxZ = 0;
 	for (int i = 0; i < scene.GetModelCount(); i++) { // looping over the models
 		MeshModel mesh = scene.GetModel(i);
 
@@ -908,6 +911,7 @@ void Renderer::Render(const Scene& scene)
 	// draw pixels
 	for (std::map<std::pair<int, int>, zColor>::iterator itr = Mapix.begin(); itr != Mapix.end(); ++itr) {
 		PutPixel(itr->first.first, itr->first.second, itr->second.color);
+		farestKnownPoint = (itr->second.z > farestKnownPoint) ? itr->second.z : farestKnownPoint;
 	}
 
 }
