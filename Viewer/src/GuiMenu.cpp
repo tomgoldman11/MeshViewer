@@ -307,27 +307,27 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	ImGui::RadioButton("perspective", &pers, 1);
 
-	ImGui::SliderFloat("Cam X", &camX, -6.0f, 6.0f);
+	ImGui::SliderFloat("Cam X", &camX, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset camX"))
 		camX = 0.0f;
-	ImGui::SliderFloat("Cam Y", &camY, -6.0f, 6.0f);
+	ImGui::SliderFloat("Cam Y", &camY, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset camY"))
 		camY = 0.0f;
-	ImGui::SliderFloat("Dis", &disZ, -6.0f, 6.0f);
+	ImGui::SliderFloat("Dis", &disZ, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset dist"))
 		disZ = 1.0f;
-	ImGui::SliderFloat("AT X", &atX, -5.0f, 5.0f );
+	ImGui::SliderFloat("AT X", &atX, -200.0f, 200.0f );
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atX"))
 		atX = 0.0f;
-	ImGui::SliderFloat("AT Y", &atY, -5.0f, 5.0f);
+	ImGui::SliderFloat("AT Y", &atY, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atY"))
 		atY = 0.0f;
-	ImGui::SliderFloat("AT Z", &atZ, -5.0f, 5.0f);
+	ImGui::SliderFloat("AT Z", &atZ, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atZ"))
 		atZ = 0.0f;
