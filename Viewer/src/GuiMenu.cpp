@@ -145,7 +145,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			}
 			if (ImGui::MenuItem("add point light", "CTRL+Q"))
 			{
-				//scene.AddLight((std::shared_ptr<LightSource>) &LightSource(glm::vec3{ 0,0,0 }, glm::vec3{ 255, 255, 255 }, true, glm::vec3{ 0,1,0 })); // load light model?
+				scene.AddLight(Utils::LoadLight(glm::vec3{ 0,0,49 }, glm::vec3{ 255, 255, 255 }, true, glm::vec3{ 0,1,0 }));
 			}
 			ImGui::EndMenu();
 		}
@@ -399,21 +399,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::InputInt("ActiveLight", &currlight);
 	if (currlight < 0) currlight = 0;
 	if (currlight >= scene.GetLightCount()) currlight = scene.GetLightCount() - 1;
-	if (ImGui::Button("Change Light Source"))
-	{
-		scene.SetActiveLightIndex(currlight);
-		glm::vec3 currPos = activeLight.getPosition();
-		posX = currPos.x; posY = currPos.y; posZ = currPos.z;
-		light_color = activeLight.getColor();
-		ambientStr = activeLight.getAmbient();
-		diffuseStr = activeLight.getDiffuse();
-		specularStr = activeLight.getSpecular();
-	}
-
-	
-	ImGui::Text("SceneAmbientColor");
-	ImGui::SameLine();
-	ImGui::ColorEdit3("SAC", (float*)&ambient_light);
 
 	ImGui::SliderFloat("PosX", &posX, -100.0f, 100.0f);
 	ImGui::SameLine();

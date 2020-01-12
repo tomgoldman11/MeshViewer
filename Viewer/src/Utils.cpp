@@ -117,6 +117,14 @@ std::shared_ptr<Camera> Utils::LoadCamera(const glm::vec3 eye, const glm::vec3 a
 	return std::make_shared<Camera>(eye_, at_, up_);
 }
 
+std::shared_ptr<LightSource> Utils::LoadLight(glm::vec3 _position, glm::vec3 _color, bool _pointSource, glm::vec3 _target) {
+	glm::vec3 position  = _position;
+	glm::vec3 color = _color;
+	bool pointSource = _pointSource;
+	glm::vec3 target = _target;
+	return std::make_shared<LightSource>(position, color, pointSource, target);
+}
+
 std::string Utils::GetFileName(const std::string& filePath)
 {
 	if (filePath.empty()) {
