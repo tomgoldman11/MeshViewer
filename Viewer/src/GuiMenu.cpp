@@ -5,6 +5,7 @@
 #include <nfd.h>
 #include "Scene.h"
 #include "Utils.h"
+#include "Renderer.h"
 #include "MeshModel.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -69,14 +70,13 @@ glm::vec3 diffuseStr(0.9f, 0.9f, 0.9f);
 glm::vec3 specularStr (0.9f,0.9f,0.9f);
 
 // shading fields
-//Shading flats = flat;
-//Shading gourauds = gouraud;
-//Shading phongs = phong;
-bool shade_flat = false;
-bool shade_gouraud = false;
-bool shade_phong = false;
+static int Shade = 0;
 
+// fog fields
+static int FogT = 0;
 
+// AntiAliasing
+bool AA_Switch = false;
 
 /**
  * Function implementation
@@ -101,7 +101,7 @@ char* const stringToCharSeq(const std::string& str)
 
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
-	ImGui::SetNextWindowPos(ImVec2(0, 30), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0,17), ImGuiCond_Once);
 	/*
 	 * MeshViewer menu
 	 *
@@ -372,7 +372,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	LightSource& activeLight = scene.GetLight(currlight); // getting the active light. 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Light # : %d", scene.GetActiveLightIndex());
 	ImGui::SameLine();
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Light Type # : %d", activeLight.getType()); // 1 for point 0 for parallel
+	if (activeLight.getType() == 1) 
+	{
+		ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Light Type : Point");
+	}
+	else if (activeLight.getType() == 0)
+	{
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Light Type : Parallel");
+	}
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Lights : %d", scene.GetLightCount());
 
@@ -439,35 +446,86 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 
 
-
-
 	ImGui::End(); // lighting window end.
 
-	/*bool shade_flat = false;
-	bool shade_gouraud = false;
-	bool shade_phong = false;*/
 
-	ImGui::Begin("Shading Control");
+	ImGui::Begin("Shading&Fog&AntiAliasing Control");
 
-	ImGui::Checkbox("flat", &shade_flat);
+	ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Choose Shading Type:"); // dark blue
 	ImGui::SameLine();
-	ImGui::Checkbox("gouraud", &shade_gouraud);
+	if (ImGui::RadioButton("Flat", Shade == flat)) 
+	{
+		Shade = flat;
+	}
 	ImGui::SameLine();
-	ImGui::Checkbox("phong", &shade_phong);
+	if (ImGui::RadioButton("Gouraud", Shade == gouraud))
+	{
+		Shade = gouraud;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Phong", Shade == phong))
+	{
+		Shade = phong;
+	}
 
-	ImGui::End();
+	ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Choose Fog Type:"); // dark blue
+	ImGui::SameLine();
+	if (ImGui::RadioButton("NoFog", FogT == noFog))
+	{
+		FogT = noFog;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Linear", FogT == linear))
+	{
+		FogT = linear;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Exponential", FogT == exponential))
+	{
+		FogT = exponential;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("ExponentialSquared", FogT == exponentialSquared))
+	{
+		FogT = exponentialSquared;
+	}
 
-	if (shade_flat && !shade_gouraud && !shade_phong)
+	if(ImGui::Checkbox("AntiAliasing", &AA_Switch) == true)
+	{
+
+	}
+
+	ImGui::End(); // end shading control window.
+
+
+	if (Shade == flat)
 	{
 		scene.setShading(flat);
 	}
-	if (!shade_flat && shade_gouraud && !shade_phong)
+	else if (Shade == gouraud)
 	{
 		scene.setShading(gouraud);
 	}
-	if (!shade_flat && !shade_gouraud && shade_phong)
+	else if (Shade == phong)
 	{
 		scene.setShading(phong);
+	}
+
+	if (FogT == noFog)
+	{
+		scene.setFogType(noFog);
+	}
+	else if (FogT == linear)
+	{
+		scene.setFogType(linear);
+	}
+	else if (FogT == exponential)
+	{
+		scene.setFogType(exponential);
+	}
+	else if (FogT == exponentialSquared)
+	{
+		scene.setFogType(exponentialSquared);
 	}
 
 	if (show_scale_window)

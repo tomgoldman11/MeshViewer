@@ -51,6 +51,7 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 					// Pixel did not set from default color 0,0,0
 					finalColor += glm::vec3(0.0f,0.0f,0.0f);
 					++pxCount;
+					throw e;
 				}
 				
 			}
@@ -586,10 +587,10 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 	glm::vec3 norm1(0), norm2(0), norm3(0), result(0), color(0);
 	glm::vec3 faceCenterT = trasformVec3(transformationMatrix, faceCenter);
 
-	int minX = std::min(std::min(Tp1.x, Tp2.x), Tp3.x);
-	int maxX = std::max(std::max(Tp1.x, Tp2.x), Tp3.x);
-	int minY = std::min(std::min(Tp1.y, Tp2.y), Tp3.y);
-	int maxY = std::max(std::max(Tp1.y, Tp2.y), Tp3.y);
+	int minX = int(std::min(std::min(Tp1.x, Tp2.x), Tp3.x));
+	int minY = int(std::min(std::min(Tp1.y, Tp2.y), Tp3.y));
+	int maxX = int(std::max(std::max(Tp1.x, Tp2.x), Tp3.x));
+	int maxY = int(std::max(std::max(Tp1.y, Tp2.y), Tp3.y));
 
 	norm1 = drawVertixNormal(origTriangle.vec1P, origVerticesNormals.vec1N, transformationMatrix, printVerticesNormals);
 	norm2 = drawVertixNormal(origTriangle.vec2P, origVerticesNormals.vec2N, transformationMatrix, printVerticesNormals);
@@ -635,7 +636,7 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
 
 					break;
-				case exponentialSquered:
+				case exponentialSquared:
 					fog_factor = 50 + 1 / (exp(pow(fog.density*zPoint,2)));
 
 					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
@@ -853,7 +854,7 @@ void Renderer::Render(const Scene& scene)
 		}
 		Camera&  cameraObj = scene.GetCamera(i);
 		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
@@ -882,7 +883,7 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetLightCount(); ++i)
 	{
 		LightSource&  lightObj = scene.GetLight(i);
-		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();
 		lightModel->setTranslate_local(lightObj.getPosition());
@@ -996,11 +997,11 @@ void Renderer::SetViewport(int width, int height)
 
 float Renderer::getZOnLine(int x, int y, int x1, int y1, float z1, int x2, int y2, float z2)
 {
-	float divBeta = (y2 * x1 - y1 * x2);
+	float divBeta = float((y2 * x1 - y1 * x2));
 	if (x1 == 0.0f || divBeta == 0.0f) return -100000;
-	float beta = (y * x1 - x * y1) / divBeta;
-	float alpha = (x - x2 * beta) / x1;
-	float z = alpha * z1 + beta * z2;
+	float beta = float((y * x1 - x * y1) / divBeta);
+	float alpha = float((x - x2 * beta) / x1);
+	float z = float(alpha * z1 + beta * z2);
 	return z;
 }
 

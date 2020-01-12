@@ -8,7 +8,7 @@
 #include "LightSource.h"
 
 enum Shading { flat, gouraud, phong };
-enum Fog { noFog ,linear , exponential, exponentialSquered};
+enum Fog { noFog ,linear , exponential, exponentialSquared};
 
 struct objFog {
 	Fog fogType;
