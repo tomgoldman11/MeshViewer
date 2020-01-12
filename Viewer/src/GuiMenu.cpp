@@ -394,7 +394,6 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ambientStr = activeLight.getAmbient();
 	diffuseStr = activeLight.getDiffuse();
 	specularStr = activeLight.getSpecular();
-
 	glm::vec4 ambient_light = scene.GetAmbientLight();
 
 	ImGui::InputInt("ActiveLight", &currlight);
@@ -411,6 +410,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		specularStr = activeLight.getSpecular();
 	}
 
+	
 	ImGui::Text("SceneAmbientColor");
 	ImGui::SameLine();
 	ImGui::ColorEdit3("SAC", (float*)&ambient_light);
@@ -444,10 +444,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
 	activeLight.setColor(light_color);
-	scene.SetAmbientLight(ambient_light);
 	activeLight.setAmbient(ambientStr);
 	activeLight.setDiffuse(diffuseStr);
 	activeLight.setSpecular(specularStr);
+
+	scene.SetAmbientLight(ambient_light);
 
 
 

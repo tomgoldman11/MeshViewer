@@ -10,7 +10,7 @@ Scene::Scene() :
 	activeVerticesNormals(true),
 	activeBoundBox(false),
 	shading_type(flat), //flat, gouraud, phong
-	ambientLight(0,0,0,0),
+	ambientLight(1.0,1.0,1.0,1.0),
 	fog({ noFog, 1.00191271f , 1.0018f , glm::vec3(0.4, 0.4, 0.4) , 0.05f }) // type (noFog ,linear , exponential, exponentialSquered) , max, min, color //the default value match to our perspective view
 {
 
