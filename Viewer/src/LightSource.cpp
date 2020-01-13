@@ -20,9 +20,15 @@ void LightSource::setPosition(const glm::vec3 & _position)
 	position = _position;
 }
 
+void LightSource::setScaling(const float _scale)
+{
+	setScaling(glm::vec3(_scale, _scale, _scale));
+}
+
+
 void LightSource::setScaling(const glm::vec3 & _scale)
 {
-	scaleLight = scaleLight;
+	scaleLight = _scale;
 }
 
 void LightSource::setColor(const glm::vec3 & _color)
