@@ -586,7 +586,7 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 
 }
 
-void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 &faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr, const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter, const objFog & fog) // find another implementation
+void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 &faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr, const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter, const objFog & fog, const texture & modelTexture) // find another implementation
 {
 	glm::vec3 Tp1 = trasformVec3(transformationMatrix, origTriangle.vec1P);
 	glm::vec3 Tp2 = trasformVec3(transformationMatrix, origTriangle.vec2P);
@@ -611,14 +611,14 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 				switch (shadingType)
 				{
 				case flat:
-					color = getFaceChanger(helper, currentLight, faceNormal, origTriangle, meshMaterialAttr, faceCenterT);
+					color = getFaceChanger(helper, currentLight, faceNormal, origTriangle, meshMaterialAttr, faceCenterT, modelTexture);
 					break;
 				case gouraud:
 					Utils::getLinearInterpolationOfPoints(faceCenterT.x, faceCenterT.y, Tp1, Tp2, Tp3, &a, &b, &c, &changed);
 					if (changed == false) continue;
-					glm::vec3 color1 = getFaceChanger(helper, currentLight, norm1, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
-					glm::vec3 color2 = getFaceChanger(helper, currentLight, norm2, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
-					glm::vec3 color3 = getFaceChanger(helper, currentLight, norm3, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
+					glm::vec3 color1 = getFaceChanger(helper, currentLight, norm1, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint), modelTexture);
+					glm::vec3 color2 = getFaceChanger(helper, currentLight, norm2, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint), modelTexture);
+					glm::vec3 color3 = getFaceChanger(helper, currentLight, norm3, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint), modelTexture);
 					color = a * color1 + b * color2 + c * color3;
 					break;
 				case phong:
@@ -626,7 +626,7 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 					if (changed == false) continue;
 					glm::vec3 superNormal = a * norm1 + b * norm2 + c * norm3;
 
-					color = getFaceChanger(helper, currentLight, superNormal, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint));
+					color = getFaceChanger(helper, currentLight, superNormal, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint), modelTexture);
 				}
 
 				switch (fog.fogType)
@@ -832,6 +832,7 @@ void Renderer::Render(const Scene& scene)
 
 		glm::mat4x4 helper = MMM * projectionMatrix* viewMatrix;
 		Shading shadingType = scene.getSahding();
+		texture modelTexture = mesh.getTextureType();
 
 		for (int j = 0; j < mesh.GetFacesCount(); j++) {
 			Face currFace = mesh.GetFace(j);
@@ -855,7 +856,7 @@ void Renderer::Render(const Scene& scene)
 			//light
 			glm::vec3 result(0);
 			for (int indLight = 0; indLight < scene.GetLightCount(); ++indLight) { 
-				addColor(shadingType, helper, scene.GetLight(indLight), normalTEST, currTriangle, meshMaterialAttr, currVerticesNormals, transformationMatrix, scene.getVerticesNormalsStatus(), faceCenter, sceneFog);
+				addColor(shadingType, helper, scene.GetLight(indLight), normalTEST, currTriangle, meshMaterialAttr, currVerticesNormals, transformationMatrix, scene.getVerticesNormalsStatus(), faceCenter, sceneFog, modelTexture);
 			}
 
 

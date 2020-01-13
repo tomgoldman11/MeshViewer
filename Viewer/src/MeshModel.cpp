@@ -19,7 +19,8 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	sidesColor(glm::vec3(0.0f,0.0f,0.0f)),
 	objColor(glm::vec3(0.0f, 0.0f, 255.0f)), 
 	objMaterial({ glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(1.0f, 0.5f, 0.31f),glm::vec3(0.5f, 0.5f, 0.5f), 32 }), // ambient<K,L>, diffuse<K,L>, specular <K,L> , shininess <int>
-	verticesNormals(_verticesNormals)
+	verticesNormals(_verticesNormals),
+	textureType(uniform) //uniform, non_uniform, random_uniform
 {
 	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
 	{

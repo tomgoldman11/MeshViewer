@@ -70,6 +70,7 @@ public:
 	void setSpecular(const glm::vec3 & _specular);
 	void setAmbient(const glm::vec3 & _ambient);
 	void setShininess(const int _shininess);
+	void setTextureType(const texture & _type);
 
 	// getters
 	glm::vec3 getRotateVector_world() const;
@@ -88,7 +89,7 @@ public:
 	material getObjMaterialStruct() const;
 	glm::vec3 getVertexNormal(int index) const;
 	int getVerticesCount() const;
-
+	texture getTextureType() const;
 private:
 
 	void setModelBoxVetrtices();
