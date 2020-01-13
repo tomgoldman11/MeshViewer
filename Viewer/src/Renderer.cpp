@@ -902,6 +902,7 @@ void Renderer::Render(const Scene& scene)
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();
 		lightModel->setTranslate_local(lightObj.getPosition());
+		lightModel->setScale_local(lightObj.getScaling());
 
 
 		//get the M matrix (world frame) related to the mesh model
