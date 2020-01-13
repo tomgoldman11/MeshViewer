@@ -359,6 +359,11 @@ void MeshModel::setShininess(const int _shininess)
 	objMaterial.shininess = _shininess;
 }
 
+void MeshModel::setTextureType(const texture & _type)
+{
+	textureType = _type;
+}
+
 
 glm::vec3 MeshModel::getRotateVector_world() const
 {
@@ -441,6 +446,11 @@ glm::vec3 MeshModel::getVertexNormal(int index) const
 int MeshModel::getVerticesCount() const
 {
 	return vertices_.size();
+}
+
+texture MeshModel::getTextureType() const
+{
+	return textureType;
 }
 
 const int MeshModel::getVertexFacesSum(int indx) const {

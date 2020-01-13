@@ -570,7 +570,7 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 		return;
 	}
 	
-	if (_distance < pixel->second.z) {
+	if (_distance > pixel->second.z) {
 		Mapix[std::make_pair(x, y)] = zColor({ _distance, color });
 		shabeng[x*viewport_width_ + y * viewport_height_] = color.x;
 		shabeng[x*viewport_width_ + y * viewport_height_ + 1] = color.y;
@@ -669,14 +669,28 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 
 }
 
-glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point)
+glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point,const texture & modelTexture)
 {
 	float dotProd = 0.0f;
 	glm::vec3 lightDir;
 	glm::vec3 lightPos(globalTransformationMatrix * glm::vec4(light.getPosition(), 0.0f));
-
+	glm::vec3 ambient(0);
+	glm::vec3 newAmbient(0);
 	//ambient
-	glm::vec3 ambient = _materialAttr.ambient * light.getAmbient();
+	switch (modelTexture) {
+	case uniform:
+		ambient = _materialAttr.ambient * light.getAmbient();
+		break;
+	case non_uniform:
+		newAmbient= glm::vec3(cos(currTriangle.vec1P.x*1000), cos(currTriangle.vec2P.y*1000), cos(currTriangle.vec3P.z*1000));
+		ambient = newAmbient * light.getAmbient();
+		break;
+	case random_uniform:
+		newAmbient = glm::vec3(cos(point.x), cos(point.y), cos(point.z));
+		ambient = newAmbient * light.getAmbient(); 
+		break;
+	}
+
 
 	//diffuse
 	if (light.getType()) {
@@ -866,8 +880,8 @@ void Renderer::Render(const Scene& scene)
 			continue;
 		}
 		Camera&  cameraObj = scene.GetCamera(i);
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
-		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
@@ -896,8 +910,8 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetLightCount(); ++i)
 	{
 		LightSource&  lightObj = scene.GetLight(i);
-		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
-		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
 
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();

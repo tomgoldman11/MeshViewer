@@ -5,6 +5,8 @@
 #include "Face.h"
 #include <map>
 
+enum texture {uniform, non_uniform, random_uniform};
+
 struct material {
 	glm::vec3 ambient; // <fraction_of_ambient_light_reflected_from_surface (Ka)>
 	glm::vec3 diffuse; // <fraction_of_diffuse_light_reflected_from_surface (Kd)> 
@@ -133,4 +135,5 @@ private:
 	glm::vec3 sidesColor;
 	glm::vec3 objColor;
 	material objMaterial;
+	texture textureType;
 };
