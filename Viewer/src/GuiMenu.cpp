@@ -50,6 +50,9 @@ glm::vec4 back_color = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f);
  glm::vec3 ModelSpecular(0.5f, 0.5f, 0.5f);
  int Shininess = 32;
 
+ // model texture
+ static int ModelT = 0;
+
 // camera transform
 static float camX = 0.0f; // eye parameters
 static float camY = 0.0f;
@@ -291,6 +294,24 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	ImGui::ColorEdit3("MS", (float*)&ModelSpecular);
 	ImGui::SliderInt("Shininess", &Shininess, 0, 30);
+
+	ImGui::Text("Model Texture:");
+	ImGui::SameLine();
+
+	if (ImGui::RadioButton("Uniform", ModelT == uniform))
+	{
+		ModelT = uniform;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("NonUniform", ModelT == non_uniform))
+	{
+		ModelT = non_uniform;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("RandUniform", ModelT == random_uniform))
+	{
+		ModelT = random_uniform;
+	}
 
 	activeModel->setAmbient(ModelAmbient);
 	activeModel->setDiffuse(ModelDiffuse);
@@ -611,6 +632,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	else if (FogT == exponentialSquared)
 	{
 		scene.setFogType(exponentialSquared);
+	}
+	if (ModelT == uniform)
+	{
+		activeModel->setTextureType(uniform);
+	}
+	else if (ModelT == non_uniform)
+	{
+		activeModel->setTextureType(non_uniform);
+	}
+	else if (ModelT == random_uniform)
+	{
+		activeModel->setTextureType(random_uniform);
 	}
 
 	if (show_scale_window)
