@@ -214,14 +214,12 @@ glm::mat4x4 MeshModel::getScalingMatrix_local()
 
 const glm::mat4x4 MeshModel::getWorldTransformation()
 {
-	if (worldUpdateFlag) {
 		glm::mat4x4 translate = getTranslationMatrix();
 		glm::mat4x4 rotate = getRotationMatrix();
 		rotateVector = glm::vec3(0.0f);
 		glm::mat4x4 scale = getScalingMatrix();
 		worldTransform = translate * rotate * scale;
 		worldUpdateFlag = false;
-	}
 	return worldTransform;
 }
 

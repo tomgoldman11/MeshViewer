@@ -17,6 +17,7 @@ public:
 
 	//setters
 	void setPosition(const glm::vec3 & _position);
+	void setScaling(const glm::vec3 & _scale);
 	void setColor(const glm::vec3 & _color);
 	void setTarget(const glm::vec3 & _target);
 	void chageType();
@@ -26,6 +27,7 @@ public:
 
 	// getters
 	glm::vec3 getPosition() const;
+	glm::vec3 getScaling() const;
 	glm::vec3 getColor() const;
 	glm::vec3 getTarget() const;
 	bool getType() const;
@@ -40,4 +42,7 @@ private:
 	bool pointSource;
 	glm::vec3 target;
 	lightIntense intense;
+	glm::vec3 scaleLight;
+	glm::vec3 rotateLight;
+
 };

@@ -5,7 +5,9 @@ LightSource::LightSource(glm::vec3 _position, glm::vec3 _color, bool _pointSourc
 	color(_color),
 	pointSource(_pointSource),
 	target(_target),
-	intense({ glm::vec3(0.2f, 0.2f, 0.2f),glm::vec3(0.5f, 0.5f, 0.5f),glm::vec3(1.0f, 1.0f, 1.0f) })
+	intense({ glm::vec3(0.2f, 0.2f, 0.2f),glm::vec3(0.5f, 0.5f, 0.5f),glm::vec3(1.0f, 1.0f, 1.0f) }),
+	scaleLight(glm::vec3(1.0f, 1.0f, 1.0f)),
+	rotateLight(glm::vec3(0.0f, 0.0f, 0.0f))
 {
 }
 

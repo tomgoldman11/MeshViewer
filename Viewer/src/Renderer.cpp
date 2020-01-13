@@ -926,8 +926,10 @@ void Renderer::Render(const Scene& scene)
 
 
 	//draw pixels
-	for (std::map<std::pair<int, int>, zColor>::iterator itr = Mapix.begin(); itr != Mapix.end(); ++itr) {
+	for (std::map<std::pair<int, int>, zColor>::iterator itr = Mapix.begin(); itr != Mapix.end(); ++itr) 
+	{
 		PutPixel(itr->first.first, itr->first.second, itr->second.color);
+
 		farestKnownPoint = (itr->second.z > farestKnownPoint) ? itr->second.z : farestKnownPoint;
 	}
 
@@ -939,7 +941,7 @@ void Renderer::Render(const Scene& scene)
 	//		PutPixel(r, c, pixColor);
 	//	}
 	//}
-	//delete[] shabeng;
+	delete[] shabeng;
 
 }
 
