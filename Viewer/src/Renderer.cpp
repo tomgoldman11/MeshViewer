@@ -12,11 +12,11 @@
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),
 	viewport_height_(viewport_height),
-	AA({ false,1 })
+	AA({ false,1 }),
+	shabeng(NULL)
 {
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
-
 	DrawLine(glm::vec3(0, 0,0), glm::vec3(1000, 1000,0), glm::vec3(0, 0, 0));
 }
 
@@ -33,16 +33,35 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 	if (AA.active)
 	{
-		int pxCount = 0;
-
-		glm::vec3 finalColor(0);
-		for (int r = i- AA.k; r <= i+ AA.k; r+=2)
+		int pxCount = 1;
+		std::map<std::pair<int, int>, zColor>::iterator neighborPixel;
+		glm::vec3 finalColor(color);
+		if (i % 2 == 0)
 		{
-			if (r < 0) continue; if (r >= viewport_width_) continue;
-			for (int c = j- AA.k; c <= j+ AA.k; c+=2)
-			{
-				if (c < 0) continue; if (c >= viewport_height_) continue;
-				std::map<std::pair<int, int>, zColor>::iterator neighborPixel = Mapix.find(std::make_pair(r, c));
+			if (j % 2 == 0) neighborPixel = Mapix.find(std::make_pair(i + 1, j - 1));
+			else neighborPixel = Mapix.find(std::make_pair(i + 1, j + 1));
+		}
+		else
+		{
+			if (j % 2 == 0) neighborPixel = Mapix.find(std::make_pair(i - 1, j + 1));
+			else neighborPixel = Mapix.find(std::make_pair(i - 1, j - 1));
+		}
+		//if (shabeng.empty())
+		//{
+		//	color_buffer_[INDEX(viewport_width_, i, j, 0)] = 0;
+		//	color_buffer_[INDEX(viewport_width_, i, j, 1)] = 0;
+		//	color_buffer_[INDEX(viewport_width_, i, j, 2)] = 0;
+		//	return;
+		//}
+		//for (int r = i- AA.k; r <= i+ AA.k; r+=2)
+		//{
+		//	if (r < 0) continue; if (r >= viewport_width_) continue;
+		//	for (int c = j- AA.k; c <= j+ AA.k; c+=2)
+		//	{
+		//		if (r == i && c == j) continue;
+		//		if (rand() % 5 != 1) continue;
+		//		if (c < 0) continue; if (c >= viewport_height_) continue;
+		//		std::map<std::pair<int, int>, zColor>::iterator neighborPixel = Mapix.find(std::make_pair(r, c));
 				if (neighborPixel != Mapix.end())
 				{
 					finalColor += neighborPixel->second.color;
@@ -50,13 +69,13 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 				}
 				else
 				{
+					finalColor += glm::vec3(0.8, 0.8, 0.8);
 					++pxCount;
 				}
-				
-			}
-		}
-		finalColor /= pxCount;
-
+		//		
+		//	}
+		//}
+		finalColor /= 2;
 		color_buffer_[INDEX(viewport_width_, i, j, 0)] = finalColor.x;
 		color_buffer_[INDEX(viewport_width_, i, j, 1)] = finalColor.y;
 		color_buffer_[INDEX(viewport_width_, i, j, 2)] = finalColor.z;
@@ -560,22 +579,16 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 	float _distance = std::sqrt(pow((x - eyePoint.x), 2) + pow((y - eyePoint.y), 2) + pow((z - eyePoint.z), 2));
 
 	std::map<std::pair<int, int>, zColor>::iterator pixel = Mapix.find(std::make_pair(x, y));
+	int currentPixel = x * viewport_width_ + y ;
+	int colorIndex = 3 * currentPixel;
 
 	if (pixel == Mapix.end()) { //if it doesnt exist...
 		Mapix[std::make_pair(x, y)] = zColor({ _distance, color });
-		shabeng[x*viewport_width_ + y * viewport_height_] = color.x;
-		shabeng[x*viewport_width_ + y * viewport_height_ + 1] = color.y;
-		shabeng[x*viewport_width_ + y * viewport_height_ + 2] = color.z;
-
 		return;
 	}
 	
 	if (_distance > pixel->second.z) {
 		Mapix[std::make_pair(x, y)] = zColor({ _distance, color });
-		shabeng[x*viewport_width_ + y * viewport_height_] = color.x;
-		shabeng[x*viewport_width_ + y * viewport_height_ + 1] = color.y;
-		shabeng[x*viewport_width_ + y * viewport_height_ + 2] = color.z;
-
 		return;
 	}
 
@@ -583,6 +596,20 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 		Mapix[std::make_pair(x, y)].color += color;
 		return;
 	}
+	//if (_distance > zBuffer[currentPixel]) {
+	//	shabeng[colorIndex + 0] = color.x;
+	//	shabeng[colorIndex + 1] = color.y;
+	//	shabeng[colorIndex + 2] = color.z;
+	//	zBuffer[currentPixel] = _distance;
+	//	return;
+	//}
+
+	//if (_distance == zBuffer[currentPixel]) {
+	//	shabeng[colorIndex + 0] += color.x;
+	//	shabeng[colorIndex + 1] += color.y;
+	//	shabeng[colorIndex + 2] += color.z;
+	//	return;
+	//}
 
 }
 
@@ -788,8 +815,9 @@ void Renderer::Render(const Scene& scene)
 {
 	// TODO: Replace this code with real scene rendering code
 	Mapix.clear();
-	shabeng = new float[viewport_width_ * viewport_height_ * 3];
-	std::fill(shabeng, shabeng + viewport_width_ * viewport_height_ * 3, 0.8f);
+	//shabeng = std::vector<float>(viewport_width_ * viewport_height_ * 3,0.8f);
+	//zBuffer = new float[viewport_width_ * viewport_height_ ];
+	//std::fill(zBuffer, zBuffer + viewport_width_ * viewport_height_, -10000);
 	farestKnownPoint = 0;
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
@@ -881,8 +909,8 @@ void Renderer::Render(const Scene& scene)
 			continue;
 		}
 		Camera&  cameraObj = scene.GetCamera(i);
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
-		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
@@ -911,8 +939,8 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetLightCount(); ++i)
 	{
 		LightSource&  lightObj = scene.GetLight(i);
-		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
-		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
 
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();
@@ -948,15 +976,16 @@ void Renderer::Render(const Scene& scene)
 		farestKnownPoint = (itr->second.z > farestKnownPoint) ? itr->second.z : farestKnownPoint;
 	}
 
-	//for (int r = 0; r < viewport_width_ ; ++r)
+	//for (int r = 0; r < viewport_height_; ++r)
 	//{
-	//	for (int c = 0; c < viewport_height_; ++c) {
-	//		int location = r * viewport_width_ + c * viewport_height_;
+	//	for (int c = 0; c < viewport_width_; ++c) {
+	//		int location = (r * viewport_width_ + c) * 3;
 	//		glm::vec3 pixColor(shabeng[location + 0], shabeng[location + 1], shabeng[location + 2]);
 	//		PutPixel(r, c, pixColor);
 	//	}
 	//}
-	delete[] shabeng;
+	//shabeng.clear();
+	//delete[] zBuffer;
 
 }
 
@@ -1026,9 +1055,9 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 	glm::vec3 centerT = trasformVec3(transformMat, center);
 
 
-	ALTER_DrawLine(centerT, xAxisT, glm::vec3(1, 0, 0));
-	ALTER_DrawLine(centerT, yAxisT, glm::vec3(0, 1, 0));
-	ALTER_DrawLine(centerT, zAxisT, glm::vec3(0, 0, 1));
+	DrawLine(centerT, xAxisT, glm::vec3(1, 0, 0));
+	DrawLine(centerT, yAxisT, glm::vec3(0, 1, 0));
+	DrawLine(centerT, zAxisT, glm::vec3(0, 0, 1));
 }
 
 void Renderer::SetViewport(int width, int height)

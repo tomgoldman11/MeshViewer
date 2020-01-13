@@ -14,6 +14,13 @@ class Renderer
 		float z;
 		glm::vec3 color;
 	};
+	
+	struct pixelInfo {
+		float distance;
+		float R;
+		float G;
+		float B;
+	};
 
 	struct antiAlising {
 		bool active;
@@ -45,7 +52,8 @@ public:
 
 private:
 	std::map<std::pair<int, int>, zColor> Mapix;
-	float * shabeng;
+	std::vector<float> shabeng;
+	float * zBuffer;
 	void CreateBuffers(int w, int h);
 	void CreateOpenGLBuffer();
 	void InitOpenGLRendering();
