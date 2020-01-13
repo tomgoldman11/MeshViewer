@@ -45,6 +45,7 @@ public:
 
 private:
 	std::map<std::pair<int, int>, zColor> Mapix;
+	float * shabeng;
 	void CreateBuffers(int w, int h);
 	void CreateOpenGLBuffer();
 	void InitOpenGLRendering();
@@ -60,6 +61,7 @@ private:
 	float farestKnownPoint;
 	float minZ;
 	float maxZ;
+	int currentLight;
 
 	glm::vec3 drawFacesNormals(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const bool print_normals);
 	void drawVerticesNormals(const MeshModel & mesh, const std::vector<glm::vec3>& vertices, const glm::mat4x4 & transformationMatrix, const bool print_normals);

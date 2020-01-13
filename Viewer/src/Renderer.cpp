@@ -450,22 +450,22 @@ void Renderer::drawBoundBox(const MeshModel mesh, const glm::mat4x4& transformat
 	nXYZ = trasformVec3(transformationMatrix, nXYZ); //8
 
 	// draw
-	DrawLine(XnYZ, XYZ, glm::vec3(0, 0, 1));
-	DrawLine(XnYZ, XnYnZ, glm::vec3(0, 0, 1));
-	DrawLine(XnYZ, nXnYZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(XnYZ, XYZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(XnYZ, XnYnZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(XnYZ, nXnYZ, glm::vec3(0, 0, 1));
 
-	DrawLine(nXYnZ, nXYZ, glm::vec3(0, 0, 1));
-	DrawLine(nXYnZ, XYnZ, glm::vec3(0, 0, 1));
-	DrawLine(nXYnZ, nXnYnZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(nXYnZ, nXYZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(nXYnZ, XYnZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(nXYnZ, nXnYnZ, glm::vec3(0, 0, 1));
 
-	DrawLine(XnYnZ, nXnYnZ, glm::vec3(0, 0, 1));
-	DrawLine(XnYnZ, XYnZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(XnYnZ, nXnYnZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(XnYnZ, XYnZ, glm::vec3(0, 0, 1));
 
-	DrawLine(nXYZ, nXnYZ, glm::vec3(0, 0, 1));
-	DrawLine(nXYZ, XYZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(nXYZ, nXnYZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(nXYZ, XYZ, glm::vec3(0, 0, 1));
 
-	DrawLine(nXnYnZ, nXnYZ, glm::vec3(0, 0, 1));
-	DrawLine(XYnZ, XYZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(nXnYnZ, nXnYZ, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(XYnZ, XYZ, glm::vec3(0, 0, 1));
 
 }
 
@@ -559,20 +559,30 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 
 	float _distance = std::sqrt(pow((x - eyePoint.x), 2) + pow((y - eyePoint.y), 2) + pow((z - eyePoint.z), 2));
 
-	if (Mapix.find(std::make_pair(x,y)) == Mapix.end()) { //if it doesnt exist...
+	std::map<std::pair<int, int>, zColor>::iterator pixel = Mapix.find(std::make_pair(x, y));
+
+	if (pixel == Mapix.end()) { //if it doesnt exist...
 		Mapix[std::make_pair(x, y)] = zColor({ _distance, color });
+		shabeng[x*viewport_width_ + y * viewport_height_] = color.x;
+		shabeng[x*viewport_width_ + y * viewport_height_ + 1] = color.y;
+		shabeng[x*viewport_width_ + y * viewport_height_ + 2] = color.z;
+
 		return;
 	}
 	
-	if (_distance > Mapix[std::make_pair(x, y)].z) {
+	if (_distance < pixel->second.z) {
 		Mapix[std::make_pair(x, y)] = zColor({ _distance, color });
+		shabeng[x*viewport_width_ + y * viewport_height_] = color.x;
+		shabeng[x*viewport_width_ + y * viewport_height_ + 1] = color.y;
+		shabeng[x*viewport_width_ + y * viewport_height_ + 2] = color.z;
+
 		return;
 	}
 
-	//if (_distance == Mapix[std::make_pair(x, y)].z) {
-	//	Mapix[std::make_pair(x, y)].color += color;
-	//	return;
-	//}
+	if (_distance == pixel->second.z) {
+		Mapix[std::make_pair(x, y)].color += color;
+		return;
+	}
 
 }
 
@@ -764,6 +774,8 @@ void Renderer::Render(const Scene& scene)
 {
 	// TODO: Replace this code with real scene rendering code
 	Mapix.clear();
+	shabeng = new float[viewport_width_ * viewport_height_ * 3];
+	std::fill(shabeng, shabeng + viewport_width_ * viewport_height_ * 3, 0.8f);
 	farestKnownPoint = 0;
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
@@ -783,6 +795,9 @@ void Renderer::Render(const Scene& scene)
 	drawAxis(projectionMatrix, viewMatrix);
 	const objFog sceneFog = scene.getFogObject();
 	minZ = 1000, maxZ = 0;
+
+	eyePoint = glm::vec4(activeCamera.getEye(), 0.0f);
+
 	for (int i = 0; i < scene.GetModelCount(); i++) { // looping over the models
 		MeshModel mesh = scene.GetModel(i);
 
@@ -799,7 +814,6 @@ void Renderer::Render(const Scene& scene)
 		//set a 4X4 transform matrix for the faces T = P*V*M
 		transformationMatrix =  projectionMatrix* viewMatrix *worldlMatrix * modelMatrix;
 
-		eyePoint= glm::vec4(activeCamera.getEye(),0.0f);
 		material meshMaterialAttr = mesh.getObjMaterialStruct();
 
 		glm::mat4x4 helper = MMM * projectionMatrix* viewMatrix;
@@ -852,8 +866,8 @@ void Renderer::Render(const Scene& scene)
 			continue;
 		}
 		Camera&  cameraObj = scene.GetCamera(i);
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
-		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
@@ -882,8 +896,8 @@ void Renderer::Render(const Scene& scene)
 	for (int i = 0; i < scene.GetLightCount(); ++i)
 	{
 		LightSource&  lightObj = scene.GetLight(i);
-		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
-		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
 
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();
@@ -910,11 +924,21 @@ void Renderer::Render(const Scene& scene)
 	}
 
 
-	// draw pixels
+	//draw pixels
 	for (std::map<std::pair<int, int>, zColor>::iterator itr = Mapix.begin(); itr != Mapix.end(); ++itr) {
 		PutPixel(itr->first.first, itr->first.second, itr->second.color);
 		farestKnownPoint = (itr->second.z > farestKnownPoint) ? itr->second.z : farestKnownPoint;
 	}
+
+	//for (int r = 0; r < viewport_width_ ; ++r)
+	//{
+	//	for (int c = 0; c < viewport_height_; ++c) {
+	//		int location = r * viewport_width_ + c * viewport_height_;
+	//		glm::vec3 pixColor(shabeng[location + 0], shabeng[location + 1], shabeng[location + 2]);
+	//		PutPixel(r, c, pixColor);
+	//	}
+	//}
+	//delete[] shabeng;
 
 }
 
@@ -984,9 +1008,9 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 	glm::vec3 centerT = trasformVec3(transformMat, center);
 
 
-	DrawLine(centerT, xAxisT, glm::vec3(1, 0, 0));
-	DrawLine(centerT, yAxisT, glm::vec3(0, 1, 0));
-	DrawLine(centerT, zAxisT, glm::vec3(0, 0, 1));
+	ALTER_DrawLine(centerT, xAxisT, glm::vec3(1, 0, 0));
+	ALTER_DrawLine(centerT, yAxisT, glm::vec3(0, 1, 0));
+	ALTER_DrawLine(centerT, zAxisT, glm::vec3(0, 0, 1));
 }
 
 void Renderer::SetViewport(int width, int height)
