@@ -18,6 +18,11 @@ void LightSource::setPosition(const glm::vec3 & _position)
 	position = _position;
 }
 
+void LightSource::setScaling(const glm::vec3 & _scale)
+{
+	scaleLight = scaleLight;
+}
+
 void LightSource::setColor(const glm::vec3 & _color)
 {
 	color = _color;
@@ -51,6 +56,11 @@ void LightSource::setAmbient(const glm::vec3 & _ambient)
 glm::vec3 LightSource::getPosition() const
 {
 	return position;
+}
+
+glm::vec3 LightSource::getScaling() const
+{
+	return scaleLight;
 }
 
 glm::vec3 LightSource::getColor() const
