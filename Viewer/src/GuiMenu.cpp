@@ -443,6 +443,15 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	if (ImGui::Button("Reset ScaleLZ"))
 		ScaleLZ = 1.0f;
+	ImGui::SliderFloat("ScaleU", &ScaleLU, 0.0f, 120.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset ScaleLU"))
+	{
+		ScaleLU = 1.0f;
+		ScaleLX = 1.0f;
+		ScaleLY = 1.0f;
+		ScaleLZ = 1.0f;
+	}
 	
 	ImGui::Text("AmbientStr");
 	ImGui::SameLine();
@@ -471,7 +480,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button("Reset TargetZ"))
 			targetZ = 0.0f;
 	}
-
+	
 
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
@@ -486,6 +495,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 	glm::vec3 ScaleLight = glm::vec3(ScaleLX, ScaleLY, ScaleLZ);
 	activeLight.setScaling(ScaleLight);
+	if (ScaleLU != 1)
+	{
+		glm::vec3 ScaleLight = glm::vec3(ScaleLU, ScaleLU, ScaleLU);
+		activeLight.setScaling(ScaleLight);
+	}
 	
 	ImGui::End(); // lighting window end.
 
