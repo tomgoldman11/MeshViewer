@@ -68,6 +68,9 @@ glm::vec3 light_color = glm::vec3(1.0f, 1.0f, 1.0f);
 glm::vec3 ambientStr(0.9f, 0.9f, 0.9f);
 glm::vec3 diffuseStr(0.9f, 0.9f, 0.9f);
 glm::vec3 specularStr (0.9f,0.9f,0.9f);
+static float targetX = 0;
+static float targetY = 1;
+static float targetZ = 0;
 
 // shading fields
 static int Shade = 0;
@@ -147,6 +150,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			{
 				scene.AddLight(Utils::LoadLight(glm::vec3{ 0,0,49 }, glm::vec3{ 255, 255, 255 }, true, glm::vec3{ 0,1,0 }));
 			}
+			if (ImGui::MenuItem("add parallel light", "CTRL+E"))
+			{
+				scene.AddLight(Utils::LoadLight(glm::vec3{ 0,0,50 }, glm::vec3{ 255, 255, 255 }, false, glm::vec3{ 0,1,0 }));
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
@@ -164,7 +171,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			if (ImGui::MenuItem("Show Demo Menu")) { show_demo_window = true; }
 			ImGui::EndMenu();
 		}
-		// TODO: Add more menubar items (if you want to)
+
 		ImGui::EndMainMenuBar();
 	}
 
@@ -383,7 +390,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 	else if (activeLight.getType() == 0)
 	{
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Light Type : Parallel");
+		ImGui::TextColored(ImVec4(0.5f, 0.0f, 1.0f, 1.0f), "Light Type : Parallel");
 	}
 	ImGui::SameLine();
 	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Lights : %d", scene.GetLightCount());
@@ -394,21 +401,25 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ambientStr = activeLight.getAmbient();
 	diffuseStr = activeLight.getDiffuse();
 	specularStr = activeLight.getSpecular();
-	glm::vec4 ambient_light = scene.GetAmbientLight();
+	glm::vec3 currTarget = activeLight.getTarget();
+	targetX = currTarget.x;
+	targetY = currTarget.y;
+	targetZ = currTarget.z;
+
 
 	ImGui::InputInt("ActiveLight", &currlight);
 	if (currlight < 0) currlight = 0;
 	if (currlight >= scene.GetLightCount()) currlight = scene.GetLightCount() - 1;
 
-	ImGui::SliderFloat("PosX", &posX, -100.0f, 100.0f);
+	ImGui::SliderFloat("PosX", &posX, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosX"))
 		posX = 0.0f;
-	ImGui::SliderFloat("PosY", &posY, -100.0f, 100.0f);
+	ImGui::SliderFloat("PosY", &posY, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosY"))
 		posY = 0.0f;
-	ImGui::SliderFloat("PosZ", &posZ, -100.0f, 100.0f);
+	ImGui::SliderFloat("PosZ", &posZ, -200.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosZ"))
 		posZ = 50.0f;
@@ -425,6 +436,22 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	ImGui::ColorEdit3("SS", (float*)&specularStr);
 
+	if (!activeLight.getType())
+	{
+		ImGui::SliderFloat("TargetX", &targetX, -200.0f, 200.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset TargetX"))
+			targetX = 0.0f;
+		ImGui::SliderFloat("TargetY", &targetY, -200.0f, 200.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset TargetY"))
+			targetY = 1.0f;
+		ImGui::SliderFloat("TargetZ", &targetZ, -200.0f, 200.0f);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset TargetZ"))
+			targetZ = 0.0f;
+	}
+
 
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
@@ -432,9 +459,11 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	activeLight.setAmbient(ambientStr);
 	activeLight.setDiffuse(diffuseStr);
 	activeLight.setSpecular(specularStr);
-
-	scene.SetAmbientLight(ambient_light);
-
+	if (!activeLight.getType()) 
+	{
+		glm::vec3 lightTarget = glm::vec3(targetX, targetY, targetZ);
+		activeLight.setTarget(lightTarget);
+	}
 
 
 	ImGui::End(); // lighting window end.
