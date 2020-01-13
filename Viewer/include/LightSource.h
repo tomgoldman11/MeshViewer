@@ -16,6 +16,7 @@ public:
 	~LightSource();
 
 	//setters
+	void setScaling(const float _scale);
 	void setPosition(const glm::vec3 & _position);
 	void setScaling(const glm::vec3 & _scale);
 	void setColor(const glm::vec3 & _color);

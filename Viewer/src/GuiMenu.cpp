@@ -71,6 +71,10 @@ glm::vec3 specularStr (0.9f,0.9f,0.9f);
 static float targetX = 0;
 static float targetY = 1;
 static float targetZ = 0;
+static float ScaleLX = 1;
+static float ScaleLY = 1;
+static float ScaleLZ = 1;
+static float ScaleLU = 1;
 
 // shading fields
 static int Shade = 0;
@@ -286,7 +290,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::Text("ModelSpecular");
 	ImGui::SameLine();
 	ImGui::ColorEdit3("MS", (float*)&ModelSpecular);
-	ImGui::SliderInt("Shininess", &Shininess, 0, 100);
+	ImGui::SliderInt("Shininess", &Shininess, 0, 30);
 
 	activeModel->setAmbient(ModelAmbient);
 	activeModel->setDiffuse(ModelDiffuse);
@@ -319,27 +323,27 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	ImGui::RadioButton("perspective", &pers, 1);
 
-	ImGui::SliderFloat("Cam X", &camX, -200.0f, 200.0f);
+	ImGui::SliderFloat("Cam X", &camX, -720.0f, 720.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset camX"))
 		camX = 0.0f;
-	ImGui::SliderFloat("Cam Y", &camY, -200.0f, 200.0f);
+	ImGui::SliderFloat("Cam Y", &camY, -720.0f, 720.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset camY"))
 		camY = 0.0f;
-	ImGui::SliderFloat("Dis", &disZ, -200.0f, 200.0f);
+	ImGui::SliderFloat("Dis", &disZ, 100.0f, 200.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset dist"))
 		disZ = 1.0f;
-	ImGui::SliderFloat("AT X", &atX, -200.0f, 200.0f );
+	ImGui::SliderFloat("AT X", &atX, -720.0f, 720.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atX"))
 		atX = 0.0f;
-	ImGui::SliderFloat("AT Y", &atY, -200.0f, 200.0f);
+	ImGui::SliderFloat("AT Y", &atY, -720.0f, 720.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atY"))
 		atY = 0.0f;
-	ImGui::SliderFloat("AT Z", &atZ, -200.0f, 200.0f);
+	ImGui::SliderFloat("AT Z", &atZ, -720.0f, 720.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atZ"))
 		atZ = 0.0f;
@@ -405,24 +409,49 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	targetX = currTarget.x;
 	targetY = currTarget.y;
 	targetZ = currTarget.z;
-
+	glm::vec3 scaleVec = activeLight.getScaling();
+	ScaleLX = scaleVec.x;
+	ScaleLY = scaleVec.y;
+	ScaleLZ = scaleVec.z;
 
 	ImGui::InputInt("ActiveLight", &currlight);
 	if (currlight < 0) currlight = 0;
 	if (currlight >= scene.GetLightCount()) currlight = scene.GetLightCount() - 1;
 
-	ImGui::SliderFloat("PosX", &posX, -200.0f, 200.0f);
+	ImGui::SliderFloat("PosX", &posX, -500.0f, 500.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosX"))
 		posX = 0.0f;
-	ImGui::SliderFloat("PosY", &posY, -200.0f, 200.0f);
+	ImGui::SliderFloat("PosY", &posY, -500.0f, 500.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosY"))
 		posY = 0.0f;
-	ImGui::SliderFloat("PosZ", &posZ, -200.0f, 200.0f);
+	ImGui::SliderFloat("PosZ", &posZ, -500.0f, 500.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosZ"))
 		posZ = 50.0f;
+
+	ImGui::SliderFloat("ScaleX", &ScaleLX, 0.0f, 120.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset ScaleLX"))
+		ScaleLX = 1.0f;
+	ImGui::SliderFloat("ScaleY", &ScaleLY, 0.0f, 120.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset ScaleLY"))
+		ScaleLY = 1.0f;
+	ImGui::SliderFloat("ScaleZ", &ScaleLZ, 0.0f, 120.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset ScaleLZ"))
+		ScaleLZ = 1.0f;
+	ImGui::SliderFloat("ScaleU", &ScaleLU, 0.0f, 120.0f);
+	ImGui::SameLine();
+	if (ImGui::Button("Reset ScaleLU"))
+	{
+		ScaleLU = 1.0f;
+		ScaleLX = 1.0f;
+		ScaleLY = 1.0f;
+		ScaleLZ = 1.0f;
+	}
 	
 	ImGui::Text("AmbientStr");
 	ImGui::SameLine();
@@ -451,7 +480,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button("Reset TargetZ"))
 			targetZ = 0.0f;
 	}
-
+	
 
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
@@ -464,8 +493,14 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		glm::vec3 lightTarget = glm::vec3(targetX, targetY, targetZ);
 		activeLight.setTarget(lightTarget);
 	}
-
-
+	glm::vec3 ScaleLight = glm::vec3(ScaleLX, ScaleLY, ScaleLZ);
+	activeLight.setScaling(ScaleLight);
+	if (ScaleLU != 1)
+	{
+		glm::vec3 ScaleLight = glm::vec3(ScaleLU, ScaleLU, ScaleLU);
+		activeLight.setScaling(ScaleLight);
+	}
+	
 	ImGui::End(); // lighting window end.
 
 
