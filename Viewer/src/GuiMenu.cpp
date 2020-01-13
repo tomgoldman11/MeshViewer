@@ -496,7 +496,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (ImGui::Button("Reset End"))
 		fog_end = 0.0f;
 
-	ImGui::SliderFloat("FogDensity", &fog_density, 0.0f, 100.0f);
+	ImGui::SliderFloat("FogDensity", &fog_density, 0.0f, 2.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset Density"))
 		fog_density = 0.0f;
@@ -640,7 +640,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
 			TranslateY = 0.0f;
-		ImGui::SliderFloat("Translate Z", &TranslateZ, -600.0f, 600.0f); 
+		ImGui::SliderFloat("Translate Z", &TranslateZ, -2000.0f, 2000.0f); 
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			TranslateZ = 0.0f;
