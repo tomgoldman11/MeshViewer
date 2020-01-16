@@ -70,9 +70,6 @@ public:
 	void setShading(Shading _type);
 	Shading getSahding() const;
 
-	const glm::vec4& GetAmbientLight() const { return ambientLight; }
-	void SetAmbientLight(const glm::vec4& light) { ambientLight = light; }
-
 	Fog getFogType() const;
 	float getFogStart() const;
 	float getFogEnd() const;
@@ -100,8 +97,6 @@ private:
 	int active_lights_sources_index_;
 
 	Shading shading_type;
-
-	glm::vec4 ambientLight; // for adding ambient light into the scene
 
 	objFog fog;
 	antiAlising AA;

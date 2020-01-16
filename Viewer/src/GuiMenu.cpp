@@ -93,6 +93,7 @@ static float fog_density = 0.0f;
 // AntiAliasing
 bool AA_Switch = false;
 
+
 /**
  * Function implementation
  */
@@ -192,7 +193,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_demo_window)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
-	ImGui::Begin("Model Control");                          // Create a window called "Model Contorl" and append into it.
+	ImGui::Begin("Model Control");  // Create a window called "Model Contorl" and append into it.
 										
 	if (scene.GetModelCount() == 0)
 	{
@@ -598,7 +599,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	if(ImGui::Checkbox("AntiAliasing", &AA_Switch) == true)
 	{
-
+		
 	}
 
 	ImGui::End(); // end shading control window.
