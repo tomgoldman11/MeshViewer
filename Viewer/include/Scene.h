@@ -91,7 +91,5 @@ private:
 
 	Shading shading_type;
 
-	glm::vec4 ambientLight; // for adding ambient light into the scene
-
 	objFog fog;
 };
