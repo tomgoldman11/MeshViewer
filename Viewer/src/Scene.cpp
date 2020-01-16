@@ -11,6 +11,7 @@ Scene::Scene() :
 	activeBoundBox(false),
 	shading_type(flat), //flat, gouraud, phong
 	ambientLight(1.0,1.0,1.0,1.0),
+	AA({ false,1 }),
 	fog({ noFog, 1.00191271f , 1.0018f , glm::vec3(0.4, 0.4, 0.4) , 0.05f }) // type (noFog ,linear , exponential, exponentialSquered) , max, min, color //the default value match to our perspective view
 {
 
@@ -208,4 +209,29 @@ void Scene::setFogColor(const glm::vec3 & _color)
 objFog Scene::getFogObject() const
 {
 	return fog;
+}
+
+void Scene::AASwitch(const bool _mode)
+{
+	AA.active = _mode;
+}
+
+void Scene::setAAk(int _k)
+{
+	AA.k = _k;
+}
+
+antiAlising Scene::getAAobj() const
+{
+	return AA;
+}
+
+bool Scene::getAAMode() const
+{
+	return AA.active;
+}
+
+int Scene::getAAk() const
+{
+	return AA.k;
 }

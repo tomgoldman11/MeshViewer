@@ -18,6 +18,11 @@ struct objFog {
 	float density;
 };
 
+struct antiAlising {
+	bool active;
+	int k;
+};
+
 class Scene {
 
 public:
@@ -79,6 +84,11 @@ public:
 	void setFogDensity(const float _density);
 	void setFogColor(const glm::vec3 & _color);
 	objFog getFogObject() const;
+	void AASwitch(const bool _mode);
+	void setAAk(int _k);
+	bool getAAMode() const;
+	int getAAk() const;
+	antiAlising getAAobj() const;
 
 private:
 	std::vector<std::shared_ptr<MeshModel>> mesh_models_;
@@ -94,4 +104,5 @@ private:
 	glm::vec4 ambientLight; // for adding ambient light into the scene
 
 	objFog fog;
+	antiAlising AA;
 };

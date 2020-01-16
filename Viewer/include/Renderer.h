@@ -13,6 +13,7 @@ class Renderer
 	struct zColor {
 		float z;
 		glm::vec3 color;
+		int NOL;
 	};
 	
 	struct pixelInfo {
@@ -20,11 +21,6 @@ class Renderer
 		float R;
 		float G;
 		float B;
-	};
-
-	struct antiAlising {
-		bool active;
-		int k;
 	};
 
 public:
@@ -45,10 +41,6 @@ public:
 	glm::vec3 GetPixel(int i, int j);
 	void SetViewportHeight(const int _viewport_height);
 	void SetViewportWidth(const int _viewport_width);
-	void AASwitch();
-	void setAAk(int _k);
-	bool getAAMode() const;
-	bool getAAk() const;
 
 private:
 	std::map<std::pair<int, int>, zColor> Mapix;
@@ -65,11 +57,12 @@ private:
 	glm::vec4 trasformVec3(const glm::mat4 & transformationMatrix, glm::vec3 vector);
 	glm::vec4 eyePoint;
 	glm::vec4 eyePoint2;
-	antiAlising AA;
 	float farestKnownPoint;
 	float minZ;
 	float maxZ;
 	int currentLight;
+	antiAlising rendAA;
+	int aC;
 
 	glm::vec3 drawFacesNormals(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const bool print_normals);
 	void drawVerticesNormals(const MeshModel & mesh, const std::vector<glm::vec3>& vertices, const glm::mat4x4 & transformationMatrix, const bool print_normals);

@@ -124,14 +124,14 @@ void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float
 {
 	float scale = float(tan(fovy * 0.5 * M_PI / 180));
 	frustumView.top = near * scale, frustumView.bottom = -frustumView.top;
-	frustumView.right = frustumView.top * aspectRatio;
+	frustumView.right = frustumView.top;
 	frustumView.left = -frustumView.right;
 	frustumView._near = near, frustumView._far = far;
 
 	glm::mat4 normalization = glm::mat4(
-		{ (-2 / (frustumView.right - frustumView.left)),0,0,0 },
+		{ -(2 / (frustumView.right - frustumView.left)),0,0,0 },
 		{ 0,(2 / (frustumView.top - frustumView.bottom)),0,0 },
-		{ 0,0,(2 / (frustumView._near - frustumView._far)),0 },
+		{ 0,0,(2 / (frustumView._near - frustumView._far )),0 },
 		{ -((frustumView.right + frustumView.left) / (frustumView.right - frustumView.left)),	-((frustumView.top + frustumView.bottom) / (frustumView.top - frustumView.bottom)),	-((frustumView._far + frustumView._near) / (frustumView._far - frustumView._near)),	1 }
 	);
 
@@ -153,7 +153,7 @@ void Camera::setPerspectiveProjection_Alter(const float aspectRatio, const float
 
 	M[3][0] = 0;
 	M[3][1] = 0;
-	M[3][2] = -(2 * frustumView._far * frustumView._near) / (frustumView._far - frustumView._near);
+	M[3][2] = (2 * frustumView._far * frustumView._near) / (frustumView._far - frustumView._near);
 	M[3][3] = 0;
 
 	projection_transformation_ = M * normalization;

@@ -12,8 +12,8 @@
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),
 	viewport_height_(viewport_height),
-	AA({ false,1 }),
-	shabeng(NULL)
+	shabeng(NULL),
+	rendAA({ false,1 })
 {
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
@@ -31,7 +31,7 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 	if (i < 0) return; if (i >= viewport_width_) return;
 	if (j < 0) return; if (j >= viewport_height_) return;
 
-	if (AA.active)
+	if (rendAA.active)
 	{
 		int pxCount = 1;
 		std::map<std::pair<int, int>, zColor>::iterator neighborPixel;
@@ -53,10 +53,10 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 		//	color_buffer_[INDEX(viewport_width_, i, j, 2)] = 0;
 		//	return;
 		//}
-		//for (int r = i- AA.k; r <= i+ AA.k; r+=2)
+		//for (int r = i- rendAA.k; r <= i+ rendAA.k; r+=2)
 		//{
 		//	if (r < 0) continue; if (r >= viewport_width_) continue;
-		//	for (int c = j- AA.k; c <= j+ AA.k; c+=2)
+		//	for (int c = j- rendAA.k; c <= j+ rendAA.k; c+=2)
 		//	{
 		//		if (r == i && c == j) continue;
 		//		if (rand() % 5 != 1) continue;
@@ -106,26 +106,6 @@ void Renderer::SetViewportHeight(const int _viewport_height)
 void Renderer::SetViewportWidth(const int _viewport_width)
 {
 	viewport_width_ = _viewport_width;
-}
-
-void Renderer::AASwitch()
-{
-	AA.active = !AA.active;
-}
-
-void Renderer::setAAk(int _k)
-{
-	AA.k = _k;
-}
-
-bool Renderer::getAAMode() const
-{
-	return AA.active;
-}
-
-bool Renderer::getAAk() const
-{
-	return AA.k;
 }
 
 void Renderer::DrawLine(const glm::ivec3& p1, const glm::ivec3& p2, const glm::vec3& color)
@@ -673,7 +653,7 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 
 					break;
 				case exponentialSquared:
-					fog_factor = 50 + 1 / (exp(pow(fog.density*zPoint,2)));
+					fog_factor = 1 / (exp(pow(fog.density*zPoint,2)));
 
 					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
 
@@ -813,6 +793,7 @@ void Renderer::ClearColorBuffer(const glm::vec3& color)
 
 void Renderer::Render(const Scene& scene)
 {
+	rendAA = scene.getAAobj();
 	// TODO: Replace this code with real scene rendering code
 	Mapix.clear();
 	//shabeng = std::vector<float>(viewport_width_ * viewport_height_ * 3,0.8f);
@@ -838,7 +819,7 @@ void Renderer::Render(const Scene& scene)
 	const objFog sceneFog = scene.getFogObject();
 	minZ = 1000, maxZ = 0;
 
-	eyePoint = glm::vec4(activeCamera.getEye(), 0.0f);
+	eyePoint = MMM * glm::vec4(activeCamera.getEye(), 1.0f);
 
 	for (int i = 0; i < scene.GetModelCount(); i++) { // looping over the models
 		MeshModel mesh = scene.GetModel(i);
