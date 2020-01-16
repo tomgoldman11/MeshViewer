@@ -42,7 +42,7 @@ public:
 	void setAAk(int _k);
 	bool getAAMode() const;
 	bool getAAk() const;
-	antiAlising AA;
+	
 
 private:
 	std::map<std::pair<int, int>, zColor> Mapix;
@@ -58,7 +58,7 @@ private:
 	glm::vec4 trasformVec3(const glm::mat4 & transformationMatrix, glm::vec3 vector);
 	glm::vec4 eyePoint;
 	glm::vec4 eyePoint2;
-
+	antiAlising AA;
 	float farestKnownPoint;
 	float minZ;
 	float maxZ;

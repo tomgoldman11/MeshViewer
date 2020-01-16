@@ -599,7 +599,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	if(ImGui::Checkbox("AntiAliasing", &AA_Switch) == true)
 	{
-
+		
 	}
 
 	ImGui::End(); // end shading control window.
