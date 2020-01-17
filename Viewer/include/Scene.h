@@ -20,7 +20,7 @@ struct objFog {
 
 struct antiAlising {
 	bool active;
-	int k;
+	int k; 
 };
 
 class Scene {

@@ -117,7 +117,7 @@ char* const stringToCharSeq(const std::string& str)
 
 void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 {
-	ImGui::SetNextWindowPos(ImVec2(0,17), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0, 17), ImGuiCond_Once);
 	/*
 	 * MeshViewer menu
 	 *
@@ -194,7 +194,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
 	ImGui::Begin("Model Control");  // Create a window called "Model Contorl" and append into it.
-										
+
 	if (scene.GetModelCount() == 0)
 	{
 		ImGui::Text("No models loaded yet");
@@ -203,7 +203,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 	// multiple models
 	static int currmod = 0;
-	MeshModel* activeModel=&(scene.GetActiveModel());// getting the active model
+	MeshModel* activeModel = &(scene.GetActiveModel());// getting the active model
 	if (ImGui::InputInt("ActiveModel", &currmod))
 	{
 		if (currmod < 0) currmod = 0;
@@ -223,7 +223,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			TranslateY = activeModel->getTranslateVector_world().y;
 			TranslateZ = activeModel->getTranslateVector_world().z;
 		}
-		else if (WorldLocal ==1)
+		else if (WorldLocal == 1)
 		{
 			ScaleX = activeModel->getScaleVector_local().x;
 			ScaleY = activeModel->getScaleVector_local().y;
@@ -277,7 +277,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::Checkbox("Normals Per Face", &normals_per_face);
 	ImGui::SameLine();
 	ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
-	
+
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 	ModelAmbient = activeModel->getAmbient();
@@ -324,9 +324,9 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	ImGui::Begin("Camera Control"); // camera window.
 
-	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Camera # : %d" , scene.GetActiveCameraIndex());
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Camera # : %d", scene.GetActiveCameraIndex());
 	ImGui::SameLine();
-	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d" , scene.GetCameraCount()); 
+	ImGui::TextColored(ImVec4(0.5f, 0.3f, 1.0f, 1.0f), "# of Cameras : %d", scene.GetCameraCount());
 	static int currcam = 0;
 	Camera& activeCamera = scene.GetCamera(currcam); // getting the active camera. 
 	glm::vec3 currEye = activeCamera.getEye();
@@ -337,7 +337,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::InputInt("ActiveCam", &currcam);
 	if (currcam < 0) currcam = 0;
 	if (currcam >= scene.GetCameraCount()) currcam = scene.GetCameraCount() - 1;
-		
+
 	if (ImGui::Button("Switch Camera"))
 		scene.SetActiveCameraIndex(currcam);
 
@@ -371,7 +371,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		atZ = 0.0f;
 	if (pers == 0)
 	{
-		ImGui::SliderFloat("zoom", &zoom, 1.0f, 5.0f , "%.1f");
+		ImGui::SliderFloat("zoom", &zoom, 1.0f, 5.0f, "%.1f");
 		ImGui::SameLine();
 		if (ImGui::Button("Reset zoom"))
 			zoom = 1.0f;
@@ -385,7 +385,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 			fovy = 50.0f;
 		activeCamera.setFOVY(fovy);
 	}
-		
+
 	if (ImGui::Button("Set camera to active model")) {
 		glm::mat4 wt = activeModel->getWorldTransformation();
 		glm::mat4 lt = activeModel->getLocalTransformation();
@@ -402,7 +402,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	}
 
 	ImGui::End(); // camera window end.
-	
+
 
 	ImGui::Begin("Lighting Control");
 
@@ -410,7 +410,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	LightSource& activeLight = scene.GetLight(currlight); // getting the active light. 
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Active Light # : %d", scene.GetActiveLightIndex());
 	ImGui::SameLine();
-	if (activeLight.getType() == 1) 
+	if (activeLight.getType() == 1)
 	{
 		ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Light Type : Point");
 	}
@@ -474,7 +474,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ScaleLY = 1.0f;
 		ScaleLZ = 1.0f;
 	}
-	
+
 	ImGui::Text("AmbientStr");
 	ImGui::SameLine();
 	ImGui::ColorEdit3("AS", (float*)&ambientStr);
@@ -502,7 +502,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		if (ImGui::Button("Reset TargetZ"))
 			targetZ = 0.0f;
 	}
-	
+
 
 	glm::vec3 lightPosition = glm::vec3(posX, posY, posZ);
 	activeLight.setPosition(lightPosition);
@@ -510,7 +510,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	activeLight.setAmbient(ambientStr);
 	activeLight.setDiffuse(diffuseStr);
 	activeLight.setSpecular(specularStr);
-	if (!activeLight.getType()) 
+	if (!activeLight.getType())
 	{
 		glm::vec3 lightTarget = glm::vec3(targetX, targetY, targetZ);
 		activeLight.setTarget(lightTarget);
@@ -522,7 +522,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		glm::vec3 ScaleLight = glm::vec3(ScaleLU, ScaleLU, ScaleLU);
 		activeLight.setScaling(ScaleLight);
 	}
-	
+
 	ImGui::End(); // lighting window end.
 
 
@@ -530,7 +530,7 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 
 	ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Choose Shading Type:"); // dark blue
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Flat", Shade == flat)) 
+	if (ImGui::RadioButton("Flat", Shade == flat))
 	{
 		Shade = flat;
 	}
@@ -597,9 +597,13 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	scene.setFogColor(fog_color);
 
 
-	if(ImGui::Checkbox("AntiAliasing", &AA_Switch) == true)
+	if (ImGui::Checkbox("AntiAliasing", &AA_Switch) == true)
 	{
-		
+		scene.AASwitch(true);
+	}
+	else
+	{
+		scene.AASwitch(false);
 	}
 
 	ImGui::End(); // end shading control window.
