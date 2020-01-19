@@ -635,7 +635,7 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 
 					color = getFaceChanger(helper, currentLight, superNormal, origTriangle, meshMaterialAttr, glm::vec3(x, y, zPoint), modelTexture);
 				}
-
+				//Source: http://in2gpu.com/2014/07/22/create-fog-shader/
 				switch (fog.fogType)
 				{
 				case linear:

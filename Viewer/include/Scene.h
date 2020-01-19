@@ -24,7 +24,7 @@ struct antiAlising {
 };
 
 class Scene {
-
+	
 public:
 	Scene();
 
