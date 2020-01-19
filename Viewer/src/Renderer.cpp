@@ -553,6 +553,7 @@ void Renderer::drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, 
 
 void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool addColorFlag)
 {
+	z = 1 / z;
 	if (x < 0) return; if (x >= viewport_width_) return;
 	if (y < 0) return; if (y >= viewport_height_) return;
 
@@ -576,6 +577,7 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 		Mapix[std::make_pair(x, y)].color += color;
 		return;
 	}
+
 	//if (_distance > zBuffer[currentPixel]) {
 	//	shabeng[colorIndex + 0] = color.x;
 	//	shabeng[colorIndex + 1] = color.y;
