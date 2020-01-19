@@ -597,17 +597,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	scene.setFogColor(fog_color);
 
 
-	if (ImGui::Checkbox("AntiAliasing", &AA_Switch) == true)
-	{
-		scene.AASwitch(true);
-	}
-	else
-	{
-		scene.AASwitch(false);
-	}
+	ImGui::Checkbox("AntiAliasing", &AA_Switch);
 
 	ImGui::End(); // end shading control window.
 
+	if (AA_Switch)
+	{
+		scene.AASwitch(true);
+	}
+	else if (!AA_Switch)
+	{
+		scene.AASwitch(false);
+	}
 
 	if (Shade == flat)
 	{
