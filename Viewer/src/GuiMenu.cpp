@@ -27,7 +27,7 @@ bool bounding_box = false;
 bool normals_per_face = false;
 bool normals_per_vertex = false;
 bool ortho = false;
-static int pers = 0; // 0 for ortho , 1 for perspective
+static int pers = 1; // 0 for ortho , 1 for perspective
 static int WorldLocal = 0; // 0 for world , 1 for local
 
 glm::vec4 back_color = glm::vec4(0.8f, 0.8f, 0.8f, 1.00f); 
@@ -60,7 +60,7 @@ static float disZ = 1.0f;
 static float atX = 0.0f;
 static float atY = 0.0f;
 static float atZ = 0.0f;
-static float fovy = 50.0f; 
+float fovy = 50.0f; 
 float zoom = 1.0f;
 
 // lighting fields
@@ -273,10 +273,10 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::Checkbox("Scale Model", &show_scale_window);
 	ImGui::Checkbox("Rotate Model", &show_rotate_window);
 	ImGui::Checkbox("Translate Model", &show_translate_window);
-	ImGui::Checkbox("Bounding Box", &bounding_box);
-	ImGui::Checkbox("Normals Per Face", &normals_per_face);
-	ImGui::SameLine();
-	ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
+	//ImGui::Checkbox("Bounding Box", &bounding_box);
+	//ImGui::Checkbox("Normals Per Face", &normals_per_face);
+	//ImGui::SameLine();
+	//ImGui::Checkbox("Normals Per Vertex", &normals_per_vertex);
 
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
@@ -294,25 +294,25 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::Text("ModelSpecular");
 	ImGui::SameLine();
 	ImGui::ColorEdit3("MS", (float*)&ModelSpecular);
-	ImGui::SliderInt("Shininess", &Shininess, 0, 30);
+	ImGui::SliderInt("Shininess", &Shininess, 1, 100);
 
-	ImGui::Text("Model Texture:");
-	ImGui::SameLine();
+	//ImGui::Text("Model Texture:");
+	//ImGui::SameLine();
 
-	if (ImGui::RadioButton("Uniform", ModelT == uniform))
-	{
-		ModelT = uniform;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("NonUniform", ModelT == non_uniform))
-	{
-		ModelT = non_uniform;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("RandUniform", ModelT == random_uniform))
-	{
-		ModelT = random_uniform;
-	}
+	//if (ImGui::RadioButton("Uniform", ModelT == uniform))
+	//{
+	//	ModelT = uniform;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("NonUniform", ModelT == non_uniform))
+	//{
+	//	ModelT = non_uniform;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("RandUniform", ModelT == random_uniform))
+	//{
+	//	ModelT = random_uniform;
+	//}
 
 	activeModel->setAmbient(ModelAmbient);
 	activeModel->setDiffuse(ModelDiffuse);
@@ -345,27 +345,27 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::SameLine();
 	ImGui::RadioButton("perspective", &pers, 1);
 
-	ImGui::SliderFloat("Cam X", &camX, -720.0f, 720.0f);
+	ImGui::SliderFloat("Cam X", &camX, -20.0f, 20.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset camX"))
 		camX = 0.0f;
-	ImGui::SliderFloat("Cam Y", &camY, -720.0f, 720.0f);
+	ImGui::SliderFloat("Cam Y", &camY, -20.0f, 20.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset camY"))
 		camY = 0.0f;
-	ImGui::SliderFloat("Dis", &disZ, 100.0f, 200.0f);
+	ImGui::SliderFloat("Dis", &disZ, -10.0f, 20.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset dist"))
-		disZ = 1.0f;
-	ImGui::SliderFloat("AT X", &atX, -720.0f, 720.0f);
+		disZ = 10.0f;
+	ImGui::SliderFloat("AT X", &atX, -20.0f, 20.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atX"))
 		atX = 0.0f;
-	ImGui::SliderFloat("AT Y", &atY, -720.0f, 720.0f);
+	ImGui::SliderFloat("AT Y", &atY, -20.0f, 20.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atY"))
 		atY = 0.0f;
-	ImGui::SliderFloat("AT Z", &atZ, -720.0f, 720.0f);
+	ImGui::SliderFloat("AT Z", &atZ, -20.0f, 20.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset atZ"))
 		atZ = 0.0f;
@@ -436,19 +436,20 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ScaleLY = scaleVec.y;
 	ScaleLZ = scaleVec.z;
 
+
 	ImGui::InputInt("ActiveLight", &currlight);
 	if (currlight < 0) currlight = 0;
 	if (currlight >= scene.GetLightCount()) currlight = scene.GetLightCount() - 1;
 
-	ImGui::SliderFloat("PosX", &posX, -500.0f, 500.0f);
+	ImGui::SliderFloat("PosX", &posX, -50.0f, 50.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosX"))
 		posX = 0.0f;
-	ImGui::SliderFloat("PosY", &posY, -500.0f, 500.0f);
+	ImGui::SliderFloat("PosY", &posY, -50.0f, 50.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosY"))
 		posY = 0.0f;
-	ImGui::SliderFloat("PosZ", &posZ, -500.0f, 500.0f);
+	ImGui::SliderFloat("PosZ", &posZ, -50.0f, 50.0f);
 	ImGui::SameLine();
 	if (ImGui::Button("Reset PosZ"))
 		posZ = 50.0f;
@@ -475,17 +476,18 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ScaleLZ = 1.0f;
 	}
 
+
 	ImGui::Text("AmbientStr");
 	ImGui::SameLine();
 	ImGui::ColorEdit3("AS", (float*)&ambientStr);
 
-	ImGui::Text("DiffueStr");
-	ImGui::SameLine();
-	ImGui::ColorEdit3("DS", (float*)&diffuseStr);
+	//ImGui::Text("DiffueStr");
+	//ImGui::SameLine();
+	//ImGui::ColorEdit3("DS", (float*)&diffuseStr);
 
-	ImGui::Text("SpecularStr");
-	ImGui::SameLine();
-	ImGui::ColorEdit3("SS", (float*)&specularStr);
+	//ImGui::Text("SpecularStr");
+	//ImGui::SameLine();
+	//ImGui::ColorEdit3("SS", (float*)&specularStr);
 
 	if (!activeLight.getType())
 	{
@@ -526,149 +528,149 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	ImGui::End(); // lighting window end.
 
 
-	ImGui::Begin("Shading&Fog&AntiAliasing Control");
+	//ImGui::Begin("Shading&Fog&AntiAliasing Control");
 
-	ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Choose Shading Type:"); // dark blue
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Flat", Shade == flat))
-	{
-		Shade = flat;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Gouraud", Shade == gouraud))
-	{
-		Shade = gouraud;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Phong", Shade == phong))
-	{
-		Shade = phong;
-	}
+	//ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Choose Shading Type:"); // dark blue
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("Flat", Shade == flat))
+	//{
+	//	Shade = flat;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("Gouraud", Shade == gouraud))
+	//{
+	//	Shade = gouraud;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("Phong", Shade == phong))
+	//{
+	//	Shade = phong;
+	//}
 
-	ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Choose Fog Type:"); // dark blue
-	ImGui::SameLine();
-	if (ImGui::RadioButton("NoFog", FogT == noFog))
-	{
-		FogT = noFog;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Linear", FogT == linear))
-	{
-		FogT = linear;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Exponential", FogT == exponential))
-	{
-		FogT = exponential;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("ExponentialSquared", FogT == exponentialSquared))
-	{
-		FogT = exponentialSquared;
-	}
+	//ImGui::TextColored(ImVec4(0.2f, 0.0f, 1.0f, 1.0f), "Choose Fog Type:"); // dark blue
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("NoFog", FogT == noFog))
+	//{
+	//	FogT = noFog;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("Linear", FogT == linear))
+	//{
+	//	FogT = linear;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("Exponential", FogT == exponential))
+	//{
+	//	FogT = exponential;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::RadioButton("ExponentialSquared", FogT == exponentialSquared))
+	//{
+	//	FogT = exponentialSquared;
+	//}
 
-	fog_start = scene.getFogStart();
-	fog_end = scene.getFogEnd();
-	fog_density = scene.getFogDensity();
-	fog_color = scene.getFogColor();
+	//fog_start = scene.getFogStart();
+	//fog_end = scene.getFogEnd();
+	//fog_density = scene.getFogDensity();
+	//fog_color = scene.getFogColor();
 
-	ImGui::SliderFloat("FogStart", &fog_start, 0.0f, 30.0f);
-	ImGui::SameLine();
-	if (ImGui::Button("Reset Start"))
-		fog_start = 0.0f;
+	//ImGui::SliderFloat("FogStart", &fog_start, 0.0f, 30.0f);
+	//ImGui::SameLine();
+	//if (ImGui::Button("Reset Start"))
+	//	fog_start = 0.0f;
 
-	ImGui::SliderFloat("FogEnd", &fog_end, 0.0f, 30.0f);
-	ImGui::SameLine();
-	if (ImGui::Button("Reset End"))
-		fog_end = 0.0f;
+	//ImGui::SliderFloat("FogEnd", &fog_end, 0.0f, 30.0f);
+	//ImGui::SameLine();
+	//if (ImGui::Button("Reset End"))
+	//	fog_end = 0.0f;
 
-	ImGui::SliderFloat("FogDensity", &fog_density, 0.0f, 2.0f);
-	ImGui::SameLine();
-	if (ImGui::Button("Reset Density"))
-		fog_density = 0.0f;
+	//ImGui::SliderFloat("FogDensity", &fog_density, 0.0f, 2.0f);
+	//ImGui::SameLine();
+	//if (ImGui::Button("Reset Density"))
+	//	fog_density = 0.0f;
 
-	ImGui::Text("FogColor");
-	ImGui::SameLine();
-	ImGui::ColorEdit3("FC", (float*)&fog_color);
+	//ImGui::Text("FogColor");
+	//ImGui::SameLine();
+	//ImGui::ColorEdit3("FC", (float*)&fog_color);
 
-	scene.setFogStart(fog_start);
-	scene.setFogEnd(fog_end);
-	scene.setFogDensity(fog_density);
-	scene.setFogColor(fog_color);
+	//scene.setFogStart(fog_start);
+	//scene.setFogEnd(fog_end);
+	//scene.setFogDensity(fog_density);
+	//scene.setFogColor(fog_color);
 
 
-	ImGui::Checkbox("AntiAliasing", &AA_Switch);
+	//ImGui::Checkbox("AntiAliasing", &AA_Switch);
 
-	ImGui::End(); // end shading control window.
+	//ImGui::End(); // end shading control window.
 
-	if (AA_Switch)
-	{
-		scene.AASwitch(true);
-	}
-	else if (!AA_Switch)
-	{
-		scene.AASwitch(false);
-	}
+	//if (AA_Switch)
+	//{
+	//	scene.AASwitch(true);
+	//}
+	//else if (!AA_Switch)
+	//{
+	//	scene.AASwitch(false);
+	//}
 
-	if (Shade == flat)
-	{
-		scene.setShading(flat);
-	}
-	else if (Shade == gouraud)
-	{
-		scene.setShading(gouraud);
-	}
-	else if (Shade == phong)
-	{
-		scene.setShading(phong);
-	}
+	//if (Shade == flat)
+	//{
+	//	scene.setShading(flat);
+	//}
+	//else if (Shade == gouraud)
+	//{
+	//	scene.setShading(gouraud);
+	//}
+	//else if (Shade == phong)
+	//{
+	//	scene.setShading(phong);
+	//}
 
-	if (FogT == noFog)
-	{
-		scene.setFogType(noFog);
-	}
-	else if (FogT == linear)
-	{
-		scene.setFogType(linear);
-	}
-	else if (FogT == exponential)
-	{
-		scene.setFogType(exponential);
-	}
-	else if (FogT == exponentialSquared)
-	{
-		scene.setFogType(exponentialSquared);
-	}
-	if (ModelT == uniform)
-	{
-		activeModel->setTextureType(uniform);
-	}
-	else if (ModelT == non_uniform)
-	{
-		activeModel->setTextureType(non_uniform);
-	}
-	else if (ModelT == random_uniform)
-	{
-		activeModel->setTextureType(random_uniform);
-	}
+	//if (FogT == noFog)
+	//{
+	//	scene.setFogType(noFog);
+	//}
+	//else if (FogT == linear)
+	//{
+	//	scene.setFogType(linear);
+	//}
+	//else if (FogT == exponential)
+	//{
+	//	scene.setFogType(exponential);
+	//}
+	//else if (FogT == exponentialSquared)
+	//{
+	//	scene.setFogType(exponentialSquared);
+	//}
+	//if (ModelT == uniform)
+	//{
+	//	activeModel->setTextureType(uniform);
+	//}
+	//else if (ModelT == non_uniform)
+	//{
+	//	activeModel->setTextureType(non_uniform);
+	//}
+	//else if (ModelT == random_uniform)
+	//{
+	//	activeModel->setTextureType(random_uniform);
+	//}
 
 	if (show_scale_window)
 	{
 		ImGui::Begin("Scale Window", &show_scale_window);  
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Scaling Values From 0-120");
-		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 120.0f);      
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Scaling Values From 0-20");
+		ImGui::SliderFloat("Scale X", &ScaleX, 0.0f, 20.0f);      
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
 			ScaleX = 1.0f;
-		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 120.0f);  
+		ImGui::SliderFloat("Scale Y", &ScaleY, 0.0f, 20.0f);  
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
 			ScaleY = 1.0f;
-		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 120.0f); 
+		ImGui::SliderFloat("Scale Z", &ScaleZ, 0.0f, 20.0f); 
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			ScaleZ = 1.0f;
-		ImGui::SliderFloat("Scale U", &ScaleU, 0.0f, 120.0f);
+		ImGui::SliderFloat("Scale U", &ScaleU, 0.0f, 20.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset U"))
 		{
@@ -705,16 +707,16 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_rotate_window)
 	{
 		ImGui::Begin("Rotate Window", &show_rotate_window);   
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Rotation Values From -180 to 180"); // yellow
-		ImGui::SliderFloat("Rotate X", &RotateX, -180.0f, 180.0f);   
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Rotation Values From -360 to 360"); // yellow
+		ImGui::SliderFloat("Rotate X", &RotateX, -360.0f, 360.0f);   
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
 			RotateX = 0.0f;
-		ImGui::SliderFloat("Rotate Y", &RotateY, -180.0f, 180.0f);           
+		ImGui::SliderFloat("Rotate Y", &RotateY, -360.0f, 360.0f);           
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
 			RotateY = 0.0f;
-		ImGui::SliderFloat("Rotate Z", &RotateZ, -180.0f, 180.0f);  
+		ImGui::SliderFloat("Rotate Z", &RotateZ, -360.0f, 360.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			RotateZ = 0.0f;
@@ -734,16 +736,16 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 	if (show_translate_window)
 	{
 		ImGui::Begin("Translate Window", &show_translate_window);
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Translating Values From -600 to 600");
-		ImGui::SliderFloat("Translate X", &TranslateX, -600.0f, 600.0f);   
+		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Translating Values From -20 to 20");
+		ImGui::SliderFloat("Translate X", &TranslateX, -20.0f, 20.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset X"))
 			TranslateX = 0.0f;
-		ImGui::SliderFloat("Translate Y", &TranslateY, -600.0f, 600.0f);
+		ImGui::SliderFloat("Translate Y", &TranslateY, -20.0f, 20.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Y"))
 			TranslateY = 0.0f;
-		ImGui::SliderFloat("Translate Z", &TranslateZ, -2000.0f, 2000.0f); 
+		ImGui::SliderFloat("Translate Z", &TranslateZ, -20.0f, 20.0f);
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Z"))
 			TranslateZ = 0.0f;
@@ -760,30 +762,30 @@ void DrawImguiMenus(ImGuiIO& io, Scene& scene)
 		ImGui::End();
 	} // end show translate window
 
-	if (bounding_box)
-	{
-		scene.activeBoundBox = true;
-	}
-	else
-	{
-		scene.activeBoundBox = false;
-	}
-	if (normals_per_face)
-	{
-		scene.activeFacesNormals = true;
-	}
-	else
-	{
-		scene.activeFacesNormals = false;
-	}
-	if (normals_per_vertex)
-	{
-		scene.activeVerticesNormals = true;
-	}
-	else
-	{
-		scene.activeVerticesNormals = false;
-	}
+	//if (bounding_box)
+	//{
+	//	scene.activeBoundBox = true;
+	//}
+	//else
+	//{
+	//	scene.activeBoundBox = false;
+	//}
+	//if (normals_per_face)
+	//{
+	//	scene.activeFacesNormals = true;
+	//}
+	//else
+	//{
+	//	scene.activeFacesNormals = false;
+	//}
+	//if (normals_per_vertex)
+	//{
+	//	scene.activeVerticesNormals = true;
+	//}
+	//else
+	//{
+	//	scene.activeVerticesNormals = false;
+	//}
 	if (pers == 0) // orthographic
 	{
 		activeCamera.setOrthographicProjection();

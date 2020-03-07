@@ -8,6 +8,11 @@
 #define NORMALS_LENGTHF 0.2f
 #define INDEX(width,x,y,c) ((x)+(y)*(width))*3+(c)
 #define Z_INDEX(width,x,y) ((x)+(y)*(width))
+#include <iostream>
+using namespace std;
+
+//extern GLFWwindow* window;
+
 
 Renderer::Renderer(int viewport_width, int viewport_height) :
 	viewport_width_(viewport_width),
@@ -17,13 +22,21 @@ Renderer::Renderer(int viewport_width, int viewport_height) :
 {
 	InitOpenGLRendering();
 	CreateBuffers(viewport_width, viewport_height);
-	DrawLine(glm::vec3(0, 0,0), glm::vec3(1000, 1000,0), glm::vec3(0, 0, 0));
+	
+	colorShader.loadShaders("vshader.glsl", "fshader.glsl");
 }
+
+Renderer::Renderer()
+{
+	colorShader.loadShaders("vshader.glsl", "fshader.glsl");
+}
+
 
 Renderer::~Renderer()
 {
-	delete[] color_buffer_;
+	//delete[] color_buffer_;
 }
+
 
 
 void Renderer::PutPixel(int i, int j, const glm::vec3& color)
@@ -62,16 +75,16 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 		//		if (rand() % 5 != 1) continue;
 		//		if (c < 0) continue; if (c >= viewport_height_) continue;
 		//		std::map<std::pair<int, int>, zColor>::iterator neighborPixel = Mapix.find(std::make_pair(r, c));
-				if (neighborPixel != Mapix.end())
-				{
-					finalColor += neighborPixel->second.color;
-					++pxCount;
-				}
-				else
-				{
-					finalColor += glm::vec3(0.8, 0.8, 0.8);
-					++pxCount;
-				}
+		if (neighborPixel != Mapix.end())
+		{
+			finalColor += neighborPixel->second.color;
+			++pxCount;
+		}
+		else
+		{
+			finalColor += glm::vec3(0.8, 0.8, 0.8);
+			++pxCount;
+		}
 		//		
 		//	}
 		//}
@@ -91,10 +104,10 @@ void Renderer::PutPixel(int i, int j, const glm::vec3& color)
 
 glm::vec3 Renderer::GetPixel(int i, int j)
 {
-	if (i < 0) return glm::vec3(0,0,0); if (i >= viewport_width_) return glm::vec3(0,0,0);
-	if (j < 0) return glm::vec3(0,0,0); if (j >= viewport_height_) return glm::vec3(0, 0, 0);
+	if (i < 0) return glm::vec3(0, 0, 0); if (i >= viewport_width_) return glm::vec3(0, 0, 0);
+	if (j < 0) return glm::vec3(0, 0, 0); if (j >= viewport_height_) return glm::vec3(0, 0, 0);
 
-	glm::vec3 retVec (color_buffer_[INDEX(viewport_width_, i, j, 0)], color_buffer_[INDEX(viewport_width_, i, j, 1)], color_buffer_[INDEX(viewport_width_, i, j, 2)]);
+	glm::vec3 retVec(color_buffer_[INDEX(viewport_width_, i, j, 0)], color_buffer_[INDEX(viewport_width_, i, j, 1)], color_buffer_[INDEX(viewport_width_, i, j, 2)]);
 	return retVec;
 }
 
@@ -214,7 +227,7 @@ void Renderer::ALTER_DrawLine(const glm::ivec3& p1, const glm::ivec3& p2, const 
 	dy1 = int(fabs(dy));
 	px = 2 * dy1 - dx1;
 	py = 2 * dx1 - dy1;
-	
+
 	if (dy1 <= dx1) // delta y-s is smaller or equal to delta x-s
 	{
 		if (dx >= 0)// x2 >= x1
@@ -432,7 +445,7 @@ void Renderer::drawVerticesNormals(const MeshModel & mesh, const std::vector<glm
 	}
 }
 
-void Renderer::drawBoundBox(const MeshModel mesh, const glm::mat4x4& transformationMatrix)
+void Renderer::drawBoundBox(const MeshModel& mesh, const glm::mat4x4& transformationMatrix)
 {
 	glm::vec3 XnYZ, XnYnZ, nXnYnZ, nXnYZ, XYZ, XYnZ, nXYnZ, nXYZ;
 	// get corners vectors
@@ -486,25 +499,25 @@ void Renderer::flood(int x, int y, const glm::vec3& new_col, const glm::vec3& si
 		y = pixels.front().second;
 
 		pixels.pop();
-		if (GetPixel(x,y) != sidesColor && GetPixel(x, y) != new_col) {
+		if (GetPixel(x, y) != sidesColor && GetPixel(x, y) != new_col) {
 
 			//PutPixel(x, y, new_col);
 
 
 			//if (std::find(visited.begin(), visited.end(), std::make_pair(x, y + 1)) == visited.end()) {
-				pixels.push(std::make_pair(x, y + 1));
+			pixels.push(std::make_pair(x, y + 1));
 			//	visited.push_back(std::make_pair(x, y + 1));
 			//}
 			//if (std::find(visited.begin(), visited.end(), std::make_pair(x -1, y)) == visited.end()) {
-				pixels.push(std::make_pair(x - 1, y));
+			pixels.push(std::make_pair(x - 1, y));
 			//	visited.push_back(std::make_pair(x - 1, y));
 			//}
 			//if (std::find(visited.begin(), visited.end(), std::make_pair(x + 1, y)) == visited.end()) {
-				pixels.push(std::make_pair(x + 1, y));
+			pixels.push(std::make_pair(x + 1, y));
 			//	visited.push_back(std::make_pair(x + 1, y));
 			//}
 			//if (std::find(visited.begin(), visited.end(), std::make_pair(x, y - 1)) == visited.end()) {
-				pixels.push(std::make_pair(x, y - 1));
+			pixels.push(std::make_pair(x, y - 1));
 			//	visited.push_back(std::make_pair(x, y - 1));
 			//}
 
@@ -541,7 +554,7 @@ void Renderer::drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, 
 	glm::vec3 vec1T = trasformVec3(transformationMatrix, vec1);
 	glm::vec3 vec2T = trasformVec3(transformationMatrix, vec2);
 	glm::vec3 vec3T = trasformVec3(transformationMatrix, vec3);
-	
+
 	// draw the triangle
 	if (currFace.getVerticesCount() == 3) {
 		ALTER_DrawLine(vec1T, vec2T, color);
@@ -560,14 +573,14 @@ void Renderer::addToMapix(int x, int y, float z, const glm::vec3 & color, bool a
 	float _distance = std::sqrt(pow((x - eyePoint.x), 2) + pow((y - eyePoint.y), 2) + pow((z - eyePoint.z), 2));
 
 	std::map<std::pair<int, int>, zColor>::iterator pixel = Mapix.find(std::make_pair(x, y));
-	int currentPixel = x * viewport_width_ + y ;
+	int currentPixel = x * viewport_width_ + y;
 	int colorIndex = 3 * currentPixel;
 
 	if (pixel == Mapix.end()) { //if it doesnt exist...
 		Mapix[std::make_pair(x, y)] = zColor({ _distance, color });
 		return;
 	}
-	
+
 	if (_distance > pixel->second.z) {
 		Mapix[std::make_pair(x, y)] = zColor({ _distance, color });
 		return;
@@ -644,7 +657,7 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 					fog_factor = (fog.fog_maxdist - zPoint) / (fog.fog_maxdist - fog.fog_mindist);
 					if (fog_factor < 0.0) fog_factor = 0;
 					else if (fog_factor > 1.0) fog_factor = 1;
-					
+
 					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
 
 					break;
@@ -655,7 +668,7 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 
 					break;
 				case exponentialSquared:
-					fog_factor = 1 / (exp(pow(fog.density*zPoint,2)));
+					fog_factor = 1 / (exp(pow(fog.density*zPoint, 2)));
 
 					color = (1 - fog_factor) * fog.fog_color + fog_factor * color;
 
@@ -678,7 +691,7 @@ void Renderer::addColor(const Shading & shadingType, const glm::mat4x4 & helper,
 
 }
 
-glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point,const texture & modelTexture)
+glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point, const texture & modelTexture)
 {
 	float dotProd = 0.0f;
 	glm::vec3 lightDir;
@@ -691,12 +704,12 @@ glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatri
 		ambient = _materialAttr.ambient * light.getAmbient();
 		break;
 	case non_uniform:
-		newAmbient= glm::vec3(cos(currTriangle.vec1P.x*1000), cos(currTriangle.vec2P.y*1000), cos(currTriangle.vec3P.z*1000));
+		newAmbient = glm::vec3(cos(currTriangle.vec1P.x * 1000), cos(currTriangle.vec2P.y * 1000), cos(currTriangle.vec3P.z * 1000));
 		ambient = newAmbient * light.getAmbient();
 		break;
 	case random_uniform:
 		newAmbient = glm::vec3(cos(point.x), cos(point.y), cos(point.z));
-		ambient = newAmbient * light.getAmbient(); 
+		ambient = newAmbient * light.getAmbient();
 		break;
 	}
 
@@ -705,7 +718,7 @@ glm::vec3 Renderer::getFaceChanger(const glm::mat4x4 & globalTransformationMatri
 	if (light.getType()) {
 		lightDir = glm::normalize(lightPos - point);
 	}
-	else 
+	else
 	{
 		lightDir = glm::normalize(lightPos - light.getTarget());
 	}
@@ -810,9 +823,9 @@ void Renderer::Render(const Scene& scene)
 	const auto& activeLight = scene.GetActiveLight();
 	const glm::vec3 lightColor = activeLight.getColor();
 	const glm::mat4x4 viewMatrix = glm::inverse(activeCamera.getViewTransformation());
-    const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
+	const glm::mat4x4 projectionMatrix = activeCamera.getProjectionTransformation();
 	const glm::mat4x4 MMM = glm::mat4x4(
-		{1,0,0,0},
+		{ 1,0,0,0 },
 		{ 0,1,0,0 },
 		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
@@ -824,7 +837,7 @@ void Renderer::Render(const Scene& scene)
 	eyePoint = MMM * glm::vec4(activeCamera.getEye(), 1.0f);
 
 	for (int i = 0; i < scene.GetModelCount(); i++) { // looping over the models
-		MeshModel mesh = scene.GetModel(i);
+		auto& mesh = scene.GetModel(i);
 
 		// init face normals
 		mesh.setFaceNormals();
@@ -837,7 +850,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4x4 worldlMatrix = mesh.getWorldTransformation();
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix =  projectionMatrix* viewMatrix *worldlMatrix * modelMatrix;
+		transformationMatrix = projectionMatrix * viewMatrix *worldlMatrix * modelMatrix;
 
 		material meshMaterialAttr = mesh.getObjMaterialStruct();
 
@@ -855,7 +868,7 @@ void Renderer::Render(const Scene& scene)
 			glm::vec3 vec3 = vertices[v3];
 
 			triangleVecs currTriangle({ vec1,vec2,vec3 });
-			triangleVecsNormals currVerticesNormals({ mesh.getVertexNormal(v1),mesh.getVertexNormal(v2),mesh.getVertexNormal(v3)});
+			triangleVecsNormals currVerticesNormals({ mesh.getVertexNormal(v1),mesh.getVertexNormal(v2),mesh.getVertexNormal(v3) });
 
 			//// draw triagles
 			//drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace, mesh.getSidesColor());
@@ -866,14 +879,14 @@ void Renderer::Render(const Scene& scene)
 
 			//light
 			glm::vec3 result(0);
-			for (int indLight = 0; indLight < scene.GetLightCount(); ++indLight) { 
+			for (int indLight = 0; indLight < scene.GetLightCount(); ++indLight) {
 				addColor(shadingType, helper, scene.GetLight(indLight), normalTEST, currTriangle, meshMaterialAttr, currVerticesNormals, transformationMatrix, scene.getVerticesNormalsStatus(), faceCenter, sceneFog, modelTexture);
 			}
 
 
 		}
 		//draw vertices normals
-		if (scene.getVerticesNormalsStatus() && shadingType==flat)
+		if (scene.getVerticesNormalsStatus() && shadingType == flat)
 		{
 			drawVerticesNormals(mesh, vertices, transformationMatrix, scene.getVerticesNormalsStatus());
 		}
@@ -885,15 +898,15 @@ void Renderer::Render(const Scene& scene)
 		}
 	}
 
-	for (int i = 0;  i < scene.GetCameraCount(); ++i)
+	for (int i = 0; i < scene.GetCameraCount(); ++i)
 	{
 		if (i == scene.GetActiveCameraIndex())
 		{
 			continue;
 		}
 		Camera&  cameraObj = scene.GetCamera(i);
-		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
-		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		//std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\camera.obj");
+		std::shared_ptr<MeshModel> cameraModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\camera.obj");
 		//get the vertices
 		std::vector<glm::vec3> vertices = cameraModel->getVertices();
 		cameraModel->setTranslate_local(cameraObj.getEye());
@@ -905,7 +918,7 @@ void Renderer::Render(const Scene& scene)
 		const glm::mat4 inverseLookAt = glm::inverse(cameraObj.getViewTransformation());
 
 		//set a 4X4 transform matrix for the faces T = P*V*M
-		transformationMatrix = projectionMatrix* viewMatrix * inverseLookAt;
+		transformationMatrix = projectionMatrix * viewMatrix * inverseLookAt;
 
 		for (int j = 0; j < cameraModel->GetFacesCount(); j++) {
 			Face currFace = cameraModel->GetFace(j);
@@ -915,15 +928,15 @@ void Renderer::Render(const Scene& scene)
 			glm::vec3 vec2 = vertices[v2];
 			int v3 = currFace.GetVertexIndex(2) - 1;
 			glm::vec3 vec3 = vertices[v3];
-			drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace, glm::vec3(0,0,0));
+			drawFaceTriangle(vec1, vec2, vec3, transformationMatrix, currFace, glm::vec3(0, 0, 0));
 		}
 	}
 
 	for (int i = 0; i < scene.GetLightCount(); ++i)
 	{
 		LightSource&  lightObj = scene.GetLight(i);
-		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
-		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+		std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
 
 		//get the vertices
 		std::vector<glm::vec3> vertices = lightModel->getVertices();
@@ -952,7 +965,7 @@ void Renderer::Render(const Scene& scene)
 
 
 	//draw pixels
-	for (std::map<std::pair<int, int>, zColor>::iterator itr = Mapix.begin(); itr != Mapix.end(); ++itr) 
+	for (std::map<std::pair<int, int>, zColor>::iterator itr = Mapix.begin(); itr != Mapix.end(); ++itr)
 	{
 		PutPixel(itr->first.first, itr->first.second, itr->second.color);
 
@@ -1010,9 +1023,9 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 {
 	int half_width = viewport_width_ / 2;
 	int half_height = viewport_height_ / 2;
-	
+
 	glm::vec3 xAxis(300.0, 0.0, 0.0);
-	glm::vec3 yAxis(0.0,300.0, 0.0);
+	glm::vec3 yAxis(0.0, 300.0, 0.0);
 	glm::vec3 zAxis(0.0, 0.0, 300.0);
 	glm::vec3 center(0.0, 0.0, 0.0);
 	const glm::mat4x4 MMM = glm::mat4x4(
@@ -1021,7 +1034,7 @@ void Renderer::drawAxis(const glm::mat4 & projectionMatrix, const glm::mat4 & vi
 		{ 0,0,1,0 },
 		{ half_width,half_height,0,1 }
 	);
-	glm::mat4 transformMat =  projectionMatrix * viewMatrix;
+	glm::mat4 transformMat = projectionMatrix * viewMatrix;
 
 	//glm::vec4 centerT = transformMat * center;
 	//centerT = centerT / center.w;
@@ -1060,3 +1073,162 @@ float Renderer::getZOnLine(int x, int y, int x1, int y1, float z1, int x2, int y
 	return z;
 }
 
+void Renderer::Render2(const Scene& scene)
+{
+	int cameraCount = scene.GetCameraCount();
+	if (cameraCount > 0)
+	{
+		int modelCount = scene.GetModelCount();
+		const Camera& camera = scene.GetActiveCamera();
+
+		for (int currentModelIndex = 0; currentModelIndex < modelCount; currentModelIndex++)
+		{
+			auto& currentModel = scene.GetModel(currentModelIndex);
+
+			// Activate the 'colorShader' program (vertex and fragment shaders)
+			colorShader.use();
+			std::cout << "HELLO1 ";
+			std::cout << glGetError() << std::endl;
+
+			// Set the uniform variables
+			colorShader.setUniform("model", currentModel.getWorldTransformation() * currentModel.getLocalTransformation());
+			std::cout << "HELLO111 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("view", camera.getViewTransformation());
+			std::cout << "HELLO112 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("projection", camera.getProjectionTransformation());
+			std::cout << "HELLO113 ";
+			std::cout << glGetError() << std::endl;
+			for (int i = 0; i != scene.GetLightCount(); i++)
+			{
+				string lightsColorArrayString = std::string("lightColors[" + std::to_string(i) + "]").c_str();
+				string lightsLocationArrayString = std::string("lightsPositions[" + std::to_string(i) + "]").c_str();
+				colorShader.setUniform(lightsColorArrayString.c_str(), glm::vec4(scene.GetLight(i).getColor(), 1.0f)); // !!!!!
+				std::cout << "HELLO114 ";
+				std::cout << glGetError() << std::endl;
+				glm::vec3 currLightPos = camera.getProjectionTransformation() * camera.getViewTransformation() * glm::vec4(scene.GetLight(i).getPosition(), 0.0f);
+				colorShader.setUniform(lightsLocationArrayString.c_str(), currLightPos);
+				std::cout << "HELLO115 ";
+				std::cout << glGetError() << std::endl;
+			}
+			colorShader.setUniform("numberOfLights", scene.GetLightCount());
+			std::cout << "HELLO116 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("ambiantLighting", glm::vec4(scene.GetActiveLight().getAmbient(), 1.0f));
+			std::cout << "HELLO117 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("ambiantColor", glm::vec4(currentModel.getAmbient(), 1.0f));
+			std::cout << "HELLO118 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("diffuseColor", glm::vec4(currentModel.getDiffuse(), 1.0f));
+			std::cout << "HELLO119 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("specularColor", glm::vec4(currentModel.getSpecular(), 1.0f));
+			std::cout << "HELLO120 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("shininess", float(currentModel.getShininess()));
+			std::cout << "HELLO121 ";
+			std::cout << glGetError() << std::endl;
+			colorShader.setUniform("cameraLocation", scene.GetActiveCamera().getEye());
+			std::cout << "HELLO11 ";
+			std::cout << glGetError() << std::endl;
+			//colorShader.setUniform("modelTexture", std::string(currentModel.getTextureType()));
+			// Set 'texture1' as the active texture at slot #0
+			currentModel.BindTextures();
+
+			// Drag our model's faces (triangles) in fill mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glBindVertexArray(currentModel.GetVAO());
+			glDrawArrays(GL_TRIANGLES, 0, currentModel.getVerticesCount2());
+			glBindVertexArray(0);
+
+			// Unset 'texture1' as the active texture at slot #0
+			currentModel.UnbindTextures();
+
+
+			// Drag our model's faces (triangles) in line mode (wireframe)
+			//glDisable(GL_CULL_FACE);
+			//glDisable(GL_DEPTH_TEST);
+			//glClear(GL_DEPTH_BUFFER_BIT);
+	
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			std::cout << "HELLO2 ";
+			std::cout << glGetError() << std::endl;
+			
+			int vao = currentModel.GetVAO();
+		
+			glBindVertexArray(vao);
+			std::cout << "HELLO3 ";
+			std::cout << glGetError() << std::endl;
+			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+			glDrawArrays(GL_TRIANGLES, 0, currentModel.getVerticesCount2());
+			std::cout << "HELLO4 ";
+			std::cout << glGetError() << std::endl;
+			glBindVertexArray(0);
+			std::cout << "HELLO5 ";
+			std::cout << glGetError() << std::endl;
+		}
+
+		for (int i = 0; i < scene.GetLightCount(); ++i)
+		{
+			LightSource&  lightObj = scene.GetLight(i);
+			std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\Repositories\\mesh-viewer-tom-tal\\Data\\demo.obj");
+			//std::shared_ptr<MeshModel> lightModel = Utils::LoadMeshModel("D:\\graphics proj\\new\\mesh-viewer-tom-tal\\Data\\demo.obj");
+
+			//get the vertices
+			std::vector<glm::vec3> vertices = lightModel->getVertices();
+			lightModel->setTranslate_local(lightObj.getPosition());
+			lightModel->setScale_local(0.01f * lightObj.getScaling());
+
+			colorShader.use();
+
+			// Set the uniform variables
+			colorShader.setUniform("model", lightModel->getWorldTransformation() * lightModel->getLocalTransformation());
+			colorShader.setUniform("view", camera.getViewTransformation());
+			colorShader.setUniform("projection", camera.getProjectionTransformation());
+			for (int i = 0; i != scene.GetLightCount(); i++)
+			{
+				string lightsColorArrayString = std::string("lightColors[" + std::to_string(i) + "]").c_str();
+				string lightsLocationArrayString = std::string("lightsPositions[" + std::to_string(i) + "]").c_str();
+				colorShader.setUniform(lightsColorArrayString.c_str(), glm::vec4(scene.GetLight(i).getColor(), 1.0f)); // !!!!!
+				glm::vec3 currLightPos = camera.getProjectionTransformation() * camera.getViewTransformation() * glm::vec4(scene.GetLight(i).getPosition(), 0.0f);
+				colorShader.setUniform(lightsLocationArrayString.c_str(), currLightPos);
+			}
+			colorShader.setUniform("numberOfLights", scene.GetLightCount());
+			colorShader.setUniform("ambiantLighting", glm::vec4(scene.GetActiveLight().getAmbient(), 1.0f));
+			colorShader.setUniform("ambiantColor", glm::vec4(1.0f));
+			colorShader.setUniform("diffuseColor", glm::vec4(1.0f));
+			colorShader.setUniform("specularColor", glm::vec4(1.0f));
+			colorShader.setUniform("shininess", 1.0f);
+			colorShader.setUniform("cameraLocation", scene.GetActiveCamera().getEye());
+			lightModel->BindTextures();
+
+			// Drag our model's faces (triangles) in fill mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glBindVertexArray(lightModel->GetVAO());
+			glDrawArrays(GL_TRIANGLES, 0, lightModel->getVerticesCount2());
+			glBindVertexArray(0);
+
+			// Unset 'texture1' as the active texture at slot #0
+			lightModel->UnbindTextures();
+
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			int vao = lightModel->GetVAO();
+			glBindVertexArray(vao);
+			glDrawArrays(GL_TRIANGLES, 0, lightModel->getVerticesCount2());
+			glBindVertexArray(0);
+		}
+	}
+}
+
+
+void Renderer::ClearBuffers() {
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::ClearBuffers_ATER(const glm::vec4 color) {
+	glClearColor(color.r, color.g, color.b, color.a);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}

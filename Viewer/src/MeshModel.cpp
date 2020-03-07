@@ -22,34 +22,82 @@ MeshModel::MeshModel(std::vector<Face> faces, std::vector<glm::vec3> vertices, s
 	verticesNormals(_verticesNormals),
 	textureType(uniform) //uniform, non_uniform, random_uniform
 {
-	for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
+	//for (std::vector<glm::vec3>::const_iterator iterator = vertices.cbegin(); iterator != vertices.end(); ++iterator)
+	//{
+	//	bottom.x = std::min(bottom.x, iterator->x);
+	//	bottom.y = std::min(bottom.y, iterator->y);
+	//	bottom.z = std::min(bottom.z, iterator->z);
+
+	//	top.x = std::max(top.x, iterator->x);
+	//	top.y = std::max(top.y, iterator->y);
+	//	top.z = std::max(top.z, iterator->z);
+
+	//	//centerPoint.x += iterator->x;
+	//	//centerPoint.y += iterator->y;
+	//	//centerPoint.z += iterator->z;
+	//}
+
+	////centerPoint.x = centerPoint.x / vertices.size();
+	////centerPoint.y = centerPoint.y / vertices.size();
+	////centerPoint.z = centerPoint.z / vertices.size();
+
+	//centerPoint.x = (top.x +bottom.x)/2;
+	//centerPoint.y = (top.y + bottom.y) / 2;
+	//centerPoint.z = (top.z + bottom.z) / 2;
+
+	//setModelBoxVetrtices();
+
+	modelVertices.reserve(3 * faces.size());
+	for (int i = 0; i < faces.size(); i++)
 	{
-		bottom.x = std::min(bottom.x, iterator->x);
-		bottom.y = std::min(bottom.y, iterator->y);
-		bottom.z = std::min(bottom.z, iterator->z);
+		Face currentFace = faces.at(i);
+		for (int j = 0; j < 3; j++)
+		{
+			int vertexIndex = currentFace.GetVertexIndex(j) - 1;
 
-		top.x = std::max(top.x, iterator->x);
-		top.y = std::max(top.y, iterator->y);
-		top.z = std::max(top.z, iterator->z);
+			Vertex vertex;
+			vertex.position = vertices[vertexIndex];
+			vertex.normal = normals[vertexIndex];
 
-		//centerPoint.x += iterator->x;
-		//centerPoint.y += iterator->y;
-		//centerPoint.z += iterator->z;
+			if (textureCoords.size() > 0)
+			{
+				int textureCoordsIndex = currentFace.GetTextureIndex(j) - 1;
+				vertex.textureCoords = textureCoords[textureCoordsIndex];
+			}
+
+			modelVertices.push_back(vertex);
+		}
 	}
 
-	//centerPoint.x = centerPoint.x / vertices.size();
-	//centerPoint.y = centerPoint.y / vertices.size();
-	//centerPoint.z = centerPoint.z / vertices.size();
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
 
-	centerPoint.x = (top.x +bottom.x)/2;
-	centerPoint.y = (top.y + bottom.y) / 2;
-	centerPoint.z = (top.z + bottom.z) / 2;
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, modelVertices.size() * sizeof(Vertex), &modelVertices[0], GL_STATIC_DRAW);
 
-	setModelBoxVetrtices();
+	// Vertex Positions
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	// Normals attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+
+	// Vertex Texture Coords
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
+
+	// unbind to make sure other code does not change it somewhere else
+	glBindVertexArray(0);
+
 }
 
 MeshModel::~MeshModel()
 {
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+
 }
 
 const Face& MeshModel::GetFace(int index) const
@@ -449,6 +497,11 @@ int MeshModel::getVerticesCount() const
 	return vertices_.size();
 }
 
+int MeshModel::getVerticesCount2() const
+{
+	return modelVertices.size();
+}
+
 texture MeshModel::getTextureType() const
 {
 	return textureType;
@@ -480,4 +533,19 @@ void MeshModel::setModelBoxVetrtices()
 	boxAttr.XYnZ = glm::vec3(top.x, top.y, bottom.z);
 	boxAttr.nXYnZ = glm::vec3(bottom.x, top.y, bottom.z);
 	boxAttr.nXYZ = glm::vec3(bottom.x, top.y, top.z);
+}
+
+GLuint MeshModel::GetVAO() const
+{
+	return vao;
+}
+
+void MeshModel::BindTextures()
+{
+	textureModel.bind(0); 
+}
+
+void MeshModel::UnbindTextures()
+{
+	textureModel.unbind(0);
 }

@@ -19,5 +19,6 @@ public:
 	static std::string GetFileName(const std::string& filePath);
 	static bool  Utils::PointInTriangle(glm::vec2 pt, glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, float * zPoint);
 	static bool Utils::getLinearInterpolationOfPoints(float x, float y, const glm::vec3 & point1, const glm::vec3 & point2, const glm::vec3 & point3, float * const alpha, float * const beta, float * const gama, bool * const changed);
+	static std::vector<glm::vec3> CalculateNormals(std::vector<glm::vec3> vertices, std::vector<Face> faces);
 	static float Utils::sign(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 };

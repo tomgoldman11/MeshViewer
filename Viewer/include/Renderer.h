@@ -2,10 +2,14 @@
 #include "Scene.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
 #include <map>
 #include <array>
 #include <queue>
 #include <vector>
+#include "Texture2D.h"
+#include "ShaderProgram.h"
+#include <GL/gl.h>
 
 class Renderer
 {
@@ -15,7 +19,7 @@ class Renderer
 		glm::vec3 color;
 		int NOL;
 	};
-	
+
 	struct pixelInfo {
 		float distance;
 		float R;
@@ -25,12 +29,16 @@ class Renderer
 
 public:
 	Renderer(int viewportWidth, int viewportHeight);
+	Renderer();
 	virtual ~Renderer();
 	void Render(const Scene& scene);
 	void SwapBuffers();
 	void ClearColorBuffer(const glm::vec3& color);
 	void SetViewport(int width, int height);
 	float getZOnLine(int x, int y, int x1, int y1, float z1, int x2, int y2, float z2);
+	void Render2(const Scene& scene);
+	void ClearBuffers();
+	void ClearBuffers_ATER(const glm::vec4 color);
 	//void DrawAsterisk();
 	int GetViewportWidth() const;
 	int GetViewportHeight() const;
@@ -66,12 +74,17 @@ private:
 
 	glm::vec3 drawFacesNormals(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const bool print_normals);
 	void drawVerticesNormals(const MeshModel & mesh, const std::vector<glm::vec3>& vertices, const glm::mat4x4 & transformationMatrix, const bool print_normals);
-	void drawBoundBox(const MeshModel mesh, const glm::mat4x4 & transformationMatrix);
+	void drawBoundBox(const MeshModel& mesh, const glm::mat4x4 & transformationMatrix);
 	void flood(int x, int y, const glm::vec3& new_col, const glm::vec3& sidesColor, Face & currFace);
 	void drawFaceTriangle(const glm::vec3 & vec1, const glm::vec3 & vec2, const glm::vec3 & vec3, const glm::mat4x4 & transformationMatrix, const Face & currFace, const glm::vec3 &color);
-	void addToMapix(int x, int y, float z, const glm::vec3& color, bool addColor=false);
+	void addToMapix(int x, int y, float z, const glm::vec3& color, bool addColor = false);
 	void addColor(const Shading & shadingType, const glm::mat4x4 & helper, const LightSource & currentLight, const glm::vec3 & faceNormal, const triangleVecs & origTriangle, const material & meshMaterialAttr, const triangleVecsNormals & origVerticesNormals, const glm::mat4x4 & transformationMatrix, const bool & printVerticesNormals, const glm::vec3 & faceCenter, const objFog & fog, const texture & modelTexture);
 	glm::vec3 getFaceChanger(const glm::mat4x4 & globalTransformationMatrix, const LightSource & light, const glm::vec3 & normalTEST, const triangleVecs & currTriangle, const material & _materialAttr, const glm::vec3 & point, const texture & modelTexture);
 	glm::vec3 generateNewColor(const glm::mat4x4 & globalTransformationMatrix, const std::vector<std::shared_ptr<LightSource>> & lights_sources, const glm::mat4x4 & transformationMatrix, const glm::vec3 & normalTEST, const glm::vec3 & eye, const triangleVecs & currTriangle, const material & _materialAttr);
-	glm::vec3 drawVertixNormal( const glm::vec3 & vertex, const glm::vec3 & normal, const glm::mat4x4 & transformationMatrix, const bool print_normals);
+	glm::vec3 drawVertixNormal(const glm::vec3 & vertex, const glm::vec3 & normal, const glm::mat4x4 & transformationMatrix, const bool print_normals);
+
+	ShaderProgram lightShader;
+	ShaderProgram colorShader;
+	Texture2D texture1;
+
 };

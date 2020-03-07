@@ -1,9 +1,11 @@
 #pragma once
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <string>
 #include <algorithm>
 #include "Face.h"
 #include <map>
+#include "Texture2D.h"
 
 enum texture {uniform, non_uniform, random_uniform};
 
@@ -26,6 +28,12 @@ struct triangleVecsNormals {
 	glm::vec3 & vec3N;
 };
 
+struct Vertex
+{
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 textureCoords;
+};
 
 class MeshModel
 {
@@ -89,10 +97,18 @@ public:
 	material getObjMaterialStruct() const;
 	glm::vec3 getVertexNormal(int index) const;
 	int getVerticesCount() const;
+	int getVerticesCount2() const;
 	texture getTextureType() const;
+	GLuint GetVAO() const;
+	void BindTextures();
+	void UnbindTextures();
+
 private:
 
 	void setModelBoxVetrtices();
+	GLuint vbo;
+	GLuint vao;
+	Texture2D textureModel;
 
 	// getters
 	glm::mat4x4 getRotationMatrix();
@@ -108,7 +124,9 @@ private:
 	std::vector<glm::vec3> normals_;
 	std::string model_name_;
 	std::vector<glm::vec3> verticesNormals;
-	
+	std::vector<Vertex> modelVertices;
+	std::vector<glm::vec3> textureCoords;
+
 	// matrices
 	glm::mat4x4 worldTransform;
 	glm::mat4x4 localTransform;
